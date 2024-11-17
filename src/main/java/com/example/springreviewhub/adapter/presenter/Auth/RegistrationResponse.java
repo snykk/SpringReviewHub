@@ -4,6 +4,8 @@ import com.example.springreviewhub.core.domain.UserDomain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 public class RegistrationResponse {
@@ -12,7 +14,10 @@ public class RegistrationResponse {
     private String username;
     private String email;
     private String role;
-    private String password;
+    private LocalDateTime createAt;
+    private LocalDateTime updateAt;
+
+
 
     // Static mapper method
     public static RegistrationResponse fromDomain(UserDomain userDomain) {
@@ -20,8 +25,9 @@ public class RegistrationResponse {
                 userDomain.getId(),
                 userDomain.getUsername(),
                 userDomain.getEmail(),
-                userDomain.getRole(),
-                userDomain.getPassword()
+                userDomain.getRole().name(),
+                userDomain.getCreatedAt(),
+                userDomain.getUpdatedAt()
         );
     }
 }

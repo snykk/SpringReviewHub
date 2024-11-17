@@ -17,6 +17,6 @@ public class UserResponse {
         this.id = userDomain.getId();
         this.username = userDomain.getUsername();
         this.email = userDomain.getEmail();
-        this.role = userDomain.getRole();
+        this.role = userDomain.getRole().name();
     }
 }

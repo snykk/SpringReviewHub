@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -16,10 +17,12 @@ public class UserDomain {
     private String username;
     private String email;
     private String password;
-    private String role; // Roles: "ROLE_ADMIN", "ROLE_REVIEWER"
+    private Role role; // Roles: "ROLE_ADMIN", "ROLE_REVIEWER"
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public boolean isAdmin() {
-        return "ROLE_ADMIN".equals(this.role);
+        return Role.Admin.equals(this.role);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.springreviewhub.infrastructure.entity;
 
 import com.example.springreviewhub.core.domain.UserDomain;
+import com.example.springreviewhub.core.domain.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,8 +30,9 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)  // Make sure role is stored as a string representation of the enum
     @Column(nullable = false)
-    private String role; // Roles: "ROLE_ADMIN", "ROLE_REVIEWER"
+    private Role role; // Use enum Role
 
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.NONE) // Prevent modification from outside
@@ -63,7 +65,9 @@ public class UserEntity {
                 this.username,
                 this.email,
                 this.password,
-                this.role
+                this.role, // Directly return enum role
+                this.createdAt,
+                this.updatedAt
         );
     }
 
@@ -76,9 +80,9 @@ public class UserEntity {
                 userDomain.getUsername(),
                 userDomain.getEmail(),
                 userDomain.getPassword(),
-                userDomain.getRole(),
-                LocalDateTime.now(),
-                LocalDateTime.now()
+                userDomain.getRole(), // Pass the Role enum
+                null,
+                null
         );
     }
 }

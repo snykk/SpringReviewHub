@@ -24,7 +24,9 @@ public class LoginRequest {
                 username,
                 null,
                 password,
-                "ROLE_REVIEWER"
+                null,
+                null,
+                null
         );
     }
 }
