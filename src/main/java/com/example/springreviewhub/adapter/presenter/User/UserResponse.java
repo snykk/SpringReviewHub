@@ -1,4 +1,4 @@
-package com.example.springreviewhub.adapter.presenter.User;
+package com.example.springreviewhub.adapter.presenter.user;
 
 import com.example.springreviewhub.core.domain.UserDomain;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.example.springreviewhub.infrastructure.entity;
+package com.example.springreviewhub.infrastructure.database.entity;
 
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.domain.Role;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @Table(name = "users")
-public class UserEntity {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,8 +74,8 @@ public class UserEntity {
     /**
      * Convert `UserDomain` to `UserEntity`.
      */
-    public static UserEntity fromDomain(UserDomain userDomain) {
-        return new UserEntity(
+    public static User fromDomain(UserDomain userDomain) {
+        return new User(
                 userDomain.getId(),
                 userDomain.getUsername(),
                 userDomain.getEmail(),

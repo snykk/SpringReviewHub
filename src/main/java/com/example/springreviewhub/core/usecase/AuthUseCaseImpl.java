@@ -1,15 +1,12 @@
 package com.example.springreviewhub.core.usecase;
 
 import com.example.springreviewhub.core.domain.UserDomain;
-import com.example.springreviewhub.core.interfaces.IUserRepository;
-import com.example.springreviewhub.core.interfaces.IAuthUseCase;
+import com.example.springreviewhub.core.interfaces.repositories.IUserRepository;
+import com.example.springreviewhub.core.interfaces.usecases.IAuthUseCase;
 import com.example.springreviewhub.infrastructure.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class AuthUseCaseImpl implements IAuthUseCase {

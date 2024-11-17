@@ -1,9 +1,9 @@
 package com.example.springreviewhub.adapter.controller;
 
 import com.example.springreviewhub.adapter.presenter.BaseResponse;
-import com.example.springreviewhub.adapter.presenter.User.UserResponse;
+import com.example.springreviewhub.adapter.presenter.user.UserResponse;
 import com.example.springreviewhub.core.domain.UserDomain;
-import com.example.springreviewhub.core.interfaces.IUserUseCase;
+import com.example.springreviewhub.core.interfaces.usecases.IUserUseCase;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

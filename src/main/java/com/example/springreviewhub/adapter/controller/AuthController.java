@@ -1,12 +1,12 @@
 package com.example.springreviewhub.adapter.controller;
 
-import com.example.springreviewhub.adapter.presenter.Auth.LoginRequest;
-import com.example.springreviewhub.adapter.presenter.Auth.LoginResponse;
-import com.example.springreviewhub.adapter.presenter.Auth.RegistrationRequest;
-import com.example.springreviewhub.adapter.presenter.Auth.RegistrationResponse;
+import com.example.springreviewhub.adapter.presenter.auth.LoginRequest;
+import com.example.springreviewhub.adapter.presenter.auth.LoginResponse;
+import com.example.springreviewhub.adapter.presenter.auth.RegistrationRequest;
+import com.example.springreviewhub.adapter.presenter.auth.RegistrationResponse;
 import com.example.springreviewhub.adapter.presenter.BaseResponse;
 import com.example.springreviewhub.core.domain.UserDomain;
-import com.example.springreviewhub.core.interfaces.IAuthUseCase;
+import com.example.springreviewhub.core.interfaces.usecases.IAuthUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

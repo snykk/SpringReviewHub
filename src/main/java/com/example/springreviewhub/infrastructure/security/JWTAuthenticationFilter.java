@@ -1,6 +1,5 @@
 package com.example.springreviewhub.infrastructure.security;
 
-import com.example.springreviewhub.core.interfaces.IUserRepository;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +19,7 @@ import java.util.Collections;
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtService jwtUtil;
+    private JwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -31,11 +30,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
 
-            if (jwtUtil.validateToken(token)) {
-                Claims claims = jwtUtil.extractAllClaims(token);
+            if (jwtService.validateToken(token)) {
+                Claims claims = jwtService.extractAllClaims(token);
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        claims, null, Collections.singleton(() -> (String) claims.get("role")) // Tambahkan role sebagai granted authority
+                        claims, null, Collections.singleton(() -> ((String) claims.get("role")).toLowerCase()) // Tambahkan role sebagai granted authority
                 );
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

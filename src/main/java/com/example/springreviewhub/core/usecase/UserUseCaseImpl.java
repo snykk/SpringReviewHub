@@ -1,8 +1,8 @@
 package com.example.springreviewhub.core.usecase;
 
 import com.example.springreviewhub.core.domain.UserDomain;
-import com.example.springreviewhub.core.interfaces.IUserRepository;
-import com.example.springreviewhub.core.interfaces.IUserUseCase;
+import com.example.springreviewhub.core.interfaces.repositories.IUserRepository;
+import com.example.springreviewhub.core.interfaces.usecases.IUserUseCase;
 import com.example.springreviewhub.infrastructure.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

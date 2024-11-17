@@ -1,4 +1,4 @@
-package com.example.springreviewhub.core.interfaces;
+package com.example.springreviewhub.core.interfaces.usecases;
 
 import com.example.springreviewhub.core.domain.UserDomain;
 

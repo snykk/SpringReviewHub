@@ -1,4 +1,4 @@
-package com.example.springreviewhub.adapter.presenter.Auth;
+package com.example.springreviewhub.adapter.presenter.auth;
 
 import com.example.springreviewhub.core.domain.UserDomain;
 import lombok.AllArgsConstructor;

@@ -1,9 +1,9 @@
 package com.example.springreviewhub.adapter.repository;
 
 import com.example.springreviewhub.core.domain.UserDomain;
-import com.example.springreviewhub.core.interfaces.IUserRepository;
-import com.example.springreviewhub.infrastructure.entity.UserEntity;
-import com.example.springreviewhub.infrastructure.jpa.UserJpaRepository;
+import com.example.springreviewhub.core.interfaces.repositories.IUserRepository;
+import com.example.springreviewhub.infrastructure.database.entity.User;
+import com.example.springreviewhub.infrastructure.database.jpa.UserJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -19,12 +19,12 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public Optional<UserDomain> findByUsername(String username) {
-        return userJpaRepository.findByUsername(username).map(UserEntity::toDomain);
+        return userJpaRepository.findByUsername(username).map(User::toDomain);
     }
 
     @Override
     public UserDomain save(UserDomain user) {
-        UserEntity savedEntity = userJpaRepository.save(UserEntity.fromDomain(user));
+        User savedEntity = userJpaRepository.save(User.fromDomain(user));
         return savedEntity.toDomain();
     }
 }
