@@ -4,49 +4,41 @@ import com.example.springreviewhub.adapter.presenter.Auth.LoginRequest;
 import com.example.springreviewhub.adapter.presenter.Auth.LoginResponse;
 import com.example.springreviewhub.adapter.presenter.Auth.RegistrationRequest;
 import com.example.springreviewhub.adapter.presenter.Auth.RegistrationResponse;
-import com.example.springreviewhub.adapter.presenter.User.UserResponse;
+import com.example.springreviewhub.adapter.presenter.BaseResponse;
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.interfaces.IAuthUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final IAuthUseCase authUsecase;
+    private final IAuthUseCase authUseCase;
 
     @Autowired
     public AuthController(IAuthUseCase userUseCase) {
-        this.authUsecase = userUseCase;
+        this.authUseCase = userUseCase;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<BaseResponse<RegistrationResponse>> register(@RequestBody RegistrationRequest registrationRequest) {
         UserDomain userDomain = registrationRequest.toDomain();
 
-        UserDomain registeredUser = authUsecase.register(userDomain);
+        UserDomain registeredUser = authUseCase.register(userDomain);
 
         RegistrationResponse response = RegistrationResponse.fromDomain(registeredUser);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(BaseResponse.success("user created successfully", response));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<BaseResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
         UserDomain userDomain = loginRequest.toDomain();
 
-        String token = authUsecase.authenticate(userDomain);
+        String token = authUseCase.authenticate(userDomain);
 
-        return ResponseEntity.ok(new LoginResponse(token));
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<UserResponse> me(@AuthenticationPrincipal UserDetails userDetails) {
-        UserDomain authenticatedUser = authUsecase.getAuthenticatedUser(userDetails.getUsername());
-        return ResponseEntity.ok(new UserResponse(authenticatedUser));
+        return ResponseEntity.ok(BaseResponse.success("login success", new LoginResponse(token)));
     }
 }
