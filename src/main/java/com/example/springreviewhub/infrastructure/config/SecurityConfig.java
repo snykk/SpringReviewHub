@@ -1,5 +1,6 @@
 package com.example.springreviewhub.infrastructure.config;
 
+import com.example.springreviewhub.infrastructure.security.CustomAuthenticationEntryPoint;
 import com.example.springreviewhub.infrastructure.security.JWTAuthenticationFilter;
 import com.example.springreviewhub.infrastructure.security.CustomAccessDeniedHandler;
 import org.springframework.context.annotation.Bean;
@@ -17,8 +18,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTAuthenticationFilter jwtFilter, CustomAccessDeniedHandler accessDeniedHandler) throws Exception {
-        // Konfigurasi HTTP Security
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTAuthenticationFilter jwtFilter,
+                                                   CustomAccessDeniedHandler accessDeniedHandler,
+                                                   CustomAuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
                 .requestMatchers("/api/auth/**").permitAll()
@@ -29,7 +31,9 @@ public class SecurityConfig {
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler);
+                .authenticationEntryPoint(authenticationEntryPoint) // untuk 401 Unauthorized
+                .accessDeniedHandler(accessDeniedHandler); // untuk 403 Forbidden
+
         return http.build();
     }
 

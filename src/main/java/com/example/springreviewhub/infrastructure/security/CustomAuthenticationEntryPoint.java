@@ -3,36 +3,38 @@ package com.example.springreviewhub.infrastructure.security;
 import com.example.springreviewhub.adapter.presenter.BaseResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper objectMapper; // Inject ObjectMapper
+    private final ObjectMapper objectMapper;
 
-    // Constructor injection for ObjectMapper
-    public CustomAccessDeniedHandler(ObjectMapper objectMapper) {
+    public CustomAuthenticationEntryPoint(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
+            throws IOException, ServletException {
         // Set status code to FORBIDDEN
-        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
         // Set the Content-Type header to application/json
         response.setContentType("application/json");
 
         // Create BaseResponse object with failure message
-        BaseResponse<Object> baseResponse = BaseResponse.failure("forbidden: you don't have access to this resource");
+        BaseResponse<Object> baseResponse = BaseResponse.failure("unauthorized: Token is invalid or expired");
 
         // Write the JSON response
         objectMapper.writeValue(response.getWriter(), baseResponse);
     }
 }
+
