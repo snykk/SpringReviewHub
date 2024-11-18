@@ -16,18 +16,4 @@ public class RegistrationResponse {
     private String role;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-
-
-
-    // Static mapper method
-    public static RegistrationResponse fromDomain(UserDomain userDomain) {
-        return new RegistrationResponse(
-                userDomain.getId(),
-                userDomain.getUsername(),
-                userDomain.getEmail(),
-                userDomain.getRole().name(),
-                userDomain.getCreatedAt(),
-                userDomain.getUpdatedAt()
-        );
-    }
 }

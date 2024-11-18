@@ -1,17 +1,11 @@
 package com.example.springreviewhub.core.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserDomain {
     private Long id;
     private String username;
@@ -23,6 +17,42 @@ public class UserDomain {
 
     public boolean isAdmin() {
         return Role.Admin.equals(this.role);
+    }
+
+    // Chaining Setters
+    public UserDomain setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public UserDomain setUsername(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public UserDomain setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public UserDomain setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public UserDomain setRole(Role role) {
+        this.role = role;
+        return this;
+    }
+
+    public UserDomain setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public UserDomain setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
     }
 
     @Override

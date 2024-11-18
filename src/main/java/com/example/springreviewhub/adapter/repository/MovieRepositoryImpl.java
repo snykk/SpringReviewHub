@@ -1,9 +1,9 @@
 package com.example.springreviewhub.adapter.repository;
 
-import com.example.springreviewhub.adapter.mapper.MovieMapper;
 import com.example.springreviewhub.core.domain.MovieDomain;
 import com.example.springreviewhub.core.interfaces.repositories.IMovieRepository;
 import com.example.springreviewhub.infrastructure.database.entity.Movie;
+import com.example.springreviewhub.infrastructure.database.entity.mapper.MovieMapper;
 import com.example.springreviewhub.infrastructure.database.jpa.MovieJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

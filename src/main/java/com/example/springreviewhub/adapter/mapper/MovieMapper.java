@@ -3,56 +3,21 @@ package com.example.springreviewhub.adapter.mapper;
 import com.example.springreviewhub.adapter.presenter.movie.MovieRequest;
 import com.example.springreviewhub.adapter.presenter.movie.MovieResponse;
 import com.example.springreviewhub.core.domain.MovieDomain;
-import com.example.springreviewhub.infrastructure.database.entity.Movie;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MovieMapper {
 
-    // Domain <-> Entity
-    public static MovieDomain fromEntityToDomain(Movie movie) {
-        if (movie == null) {
-            return null;
-        }
-        return new MovieDomain()
-                .setId(movie.getId())
-                .setTitle(movie.getTitle())
-                .setDescription(movie.getDescription())
-                .setReleaseDate(movie.getReleaseDate())
-                .setDuration(movie.getDuration())
-                .setGenre(movie.getGenre())
-                .setDirector(movie.getDirector())
-                .setRating(movie.getRating())
-                .setCreatedAt(movie.getCreatedAt())
-                .setUpdatedAt(movie.getUpdatedAt());
-    }
-
-    public static Movie fromDomainToEntity(MovieDomain movieDomain) {
-        if (movieDomain == null) {
-            return null;
-        }
-        return new Movie()
-                .setId(movieDomain.getId())
-                .setTitle(movieDomain.getTitle())
-                .setDescription(movieDomain.getDescription())
-                .setReleaseDate(movieDomain.getReleaseDate())
-                .setDuration(movieDomain.getDuration())
-                .setGenre(movieDomain.getGenre())
-                .setDirector(movieDomain.getDirector())
-                .setRating(movieDomain.getRating());
-    }
-
-
-    public static List<MovieDomain> fromEntityListToDomList(List<Movie> movies) {
-        return movies.stream()
-                .map(MovieMapper::fromEntityToDomain)
-                .collect(Collectors.toList());
-    }
-
-
-
-    // Domain <-> DTO
+    /**
+     * Convert a `MovieRequest` object to a `MovieDomain` object.
+     *
+     * @param movieRequest the request object from the API layer containing movie input data
+     * @return a `MovieDomain` object representing the domain-level movie model
+     *
+     * This method is typically used to convert incoming API requests into domain models,
+     * which can be processed by the core application logic.
+     */
     public static MovieDomain fromMovieRequestToDomain(MovieRequest movieRequest) {
         if (movieRequest == null) {
             return null;
@@ -67,7 +32,15 @@ public class MovieMapper {
                 .setDirector(movieRequest.getDirector());
     }
 
-
+    /**
+     * Convert a `MovieDomain` object to a `MovieResponse` object.
+     *
+     * @param movieDomain the domain object containing movie data
+     * @return a `MovieResponse` object to be sent as an API response
+     *
+     * This method is used to convert domain models into response objects,
+     * which can be returned to the client via the API layer.
+     */
     public static MovieResponse fromDomainToMovieResponse(MovieDomain movieDomain) {
         return new MovieResponse(
                 movieDomain.getId(),
@@ -81,6 +54,15 @@ public class MovieMapper {
         );
     }
 
+    /**
+     * Convert a list of `MovieDomain` objects to a list of `MovieResponse` objects.
+     *
+     * @param movieDomains a list of domain-level movie models
+     * @return a list of `MovieResponse` objects to be sent as an API response
+     *
+     * This method is useful for batch operations, such as returning a list of movies
+     * in a paginated API response. It leverages streams for efficient mapping.
+     */
     public static List<MovieResponse> fromDomainListToResponseList(List<MovieDomain> movieDomains) {
         return movieDomains.stream()
                 .map(MovieMapper::fromDomainToMovieResponse)

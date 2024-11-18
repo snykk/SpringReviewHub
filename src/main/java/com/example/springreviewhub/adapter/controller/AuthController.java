@@ -1,5 +1,6 @@
 package com.example.springreviewhub.adapter.controller;
 
+import com.example.springreviewhub.adapter.mapper.AuthMapper;
 import com.example.springreviewhub.adapter.presenter.auth.LoginRequest;
 import com.example.springreviewhub.adapter.presenter.auth.LoginResponse;
 import com.example.springreviewhub.adapter.presenter.auth.RegistrationRequest;
@@ -24,18 +25,18 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<RegistrationResponse>> register(@RequestBody RegistrationRequest registrationRequest) {
-        UserDomain userDomain = registrationRequest.toDomain();
+        UserDomain userDomain = AuthMapper.fromRegisRequestToUserDomain(registrationRequest);
 
         UserDomain registeredUser = authUseCase.register(userDomain);
 
-        RegistrationResponse response = RegistrationResponse.fromDomain(registeredUser);
+        RegistrationResponse response = AuthMapper.fromUserDomainToRegisResponse(registeredUser);
 
         return ResponseEntity.ok(BaseResponse.success("user created successfully", response));
     }
 
     @PostMapping("/login")
     public ResponseEntity<BaseResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
-        UserDomain userDomain = loginRequest.toDomain();
+        UserDomain userDomain = AuthMapper.fromLoginRequestToUserDomain(loginRequest);
 
         String token = authUseCase.authenticate(userDomain);
 

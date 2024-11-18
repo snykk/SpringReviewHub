@@ -1,6 +1,5 @@
 package com.example.springreviewhub.infrastructure.database.entity;
 
-import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.domain.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,10 +7,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Setter
 @Getter
 @ToString
 @Table(name = "users")
@@ -56,33 +52,29 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    /**
-     * Convert `UserEntity` to `UserDomain`.
-     */
-    public UserDomain toDomain() {
-        return new UserDomain(
-                this.id,
-                this.username,
-                this.email,
-                this.password,
-                this.role, // Directly return enum role
-                this.createdAt,
-                this.updatedAt
-        );
+    // Chaining setters
+    public User setId(Long id) {
+        this.id = id;
+        return this;
     }
 
-    /**
-     * Convert `UserDomain` to `UserEntity`.
-     */
-    public static User fromDomain(UserDomain userDomain) {
-        return new User(
-                userDomain.getId(),
-                userDomain.getUsername(),
-                userDomain.getEmail(),
-                userDomain.getPassword(),
-                userDomain.getRole(), // Pass the Role enum
-                null,
-                null
-        );
+    public User setUsername(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public User setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public User setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public User setRole(Role role) {
+        this.role = role;
+        return this;
     }
 }
