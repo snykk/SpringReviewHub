@@ -4,6 +4,7 @@ import com.example.springreviewhub.infrastructure.exception.InvalidAuthHeaderExc
 import com.example.springreviewhub.infrastructure.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -32,30 +33,42 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+
         String authorizationHeader = request.getHeader("Authorization");
-        String token = getToken(authorizationHeader);
 
         try {
-            if (jwtService.validateToken(token)) {
-                Claims claims = jwtService.extractAllClaims(token);
+            String token = getToken(authorizationHeader);
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        claims, null, Collections.singleton(() -> ((String) claims.get("role")).toLowerCase()) // Menambahkan role
-                );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (!jwtService.validateToken(token)) {
+                throw new InvalidTokenException("invalid token");
             }
-        } catch (InvalidAuthHeaderException | InvalidTokenException e) {
-            // Melempar exception untuk penanganan di filter chain berikutnya
-            throw e;
-        } catch (Exception e) {
-            // Melempar generic exception untuk penanganan default
-            throw new InvalidTokenException("Unauthorized: Token is invalid or expired");
-        }
 
-        chain.doFilter(request, response);
+            Claims claims = jwtService.extractAllClaims(token);
+
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    claims, null, Collections.singleton(() -> ((String) claims.get("role")).toLowerCase())
+            );
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            chain.doFilter(request, response);
+
+        } catch (InvalidAuthHeaderException | InvalidTokenException e) {
+            setErrorResponse(response, HttpStatus.UNAUTHORIZED, e.getMessage());
+        } catch (Exception e) {
+            setErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred");
+        }
     }
+
+    private void setErrorResponse(HttpServletResponse response, HttpStatus status, String message) throws IOException {
+        response.setStatus(status.value());
+        response.setContentType("application/json");
+        response.getWriter().write(
+                String.format("{\"success\": %b, \"message\": \"%s\"}", false, message)
+        );
+    }
+
 
     private boolean isExcludedFromAuth(String uri) {
         return uri.startsWith("/api/auth/login") || uri.startsWith("/api/auth/register");
@@ -63,17 +76,17 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private static String getToken(String authorizationHeader) {
         if (authorizationHeader == null || authorizationHeader.isEmpty()) {
-            throw new InvalidAuthHeaderException("Missing Authorization Header");
+            throw new InvalidAuthHeaderException("missing authorization header");
         }
 
         String[] headerParts = authorizationHeader.split(" ");
 
         if (headerParts.length != 2) {
-            throw new InvalidAuthHeaderException("Invalid Header Format");
+            throw new InvalidAuthHeaderException("invalid header format");
         }
 
         if (!headerParts[0].equals("Bearer")) {
-            throw new InvalidAuthHeaderException("Token must contain Bearer");
+            throw new InvalidAuthHeaderException("token must contain 'Bearer'");
         }
 
         return headerParts[1];

@@ -24,16 +24,12 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
-        // Set status code to FORBIDDEN
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
-        // Set the Content-Type header to application/json
         response.setContentType("application/json");
 
-        // Create BaseResponse object with failure message
-        BaseResponse<Object> baseResponse = BaseResponse.failure("unauthorized: Token is invalid or expired");
+        BaseResponse<Object> baseResponse = BaseResponse.failure("authentication failed: " + authException.getMessage());
 
-        // Write the JSON response
         objectMapper.writeValue(response.getWriter(), baseResponse);
     }
 }
