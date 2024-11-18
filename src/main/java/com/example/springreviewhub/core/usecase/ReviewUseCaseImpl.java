@@ -1,18 +1,15 @@
 package com.example.springreviewhub.core.usecase;
 
-import com.example.springreviewhub.adapter.exception.repository.TransactionOperationException;
-import com.example.springreviewhub.core.domain.MovieDomain;
 import com.example.springreviewhub.core.domain.ReviewDomain;
 import com.example.springreviewhub.core.exception.DuplicateReviewException;
-import com.example.springreviewhub.core.exception.InsufficientPermission;
+import com.example.springreviewhub.core.exception.PermissionIssueException;
 import com.example.springreviewhub.core.exception.ReviewNotFoundException;
 import com.example.springreviewhub.core.interfaces.repositories.IReviewRepository;
 import com.example.springreviewhub.core.interfaces.usecases.IReviewUseCase;
-import com.example.springreviewhub.infrastructure.database.entity.Review;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,9 +46,46 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
         ReviewDomain existingReview = existingReviewOpt.get();
 
         if (!existingReview.getUserId().equals(reviewDomain.getUserId())) {
-            throw new InsufficientPermission("you don't have access to update this review");
+            throw new PermissionIssueException("you don't have access to update this review");
         }
 
         return reviewRepository.updateReviewAndUpdateMovieRating(reviewDomain);
     }
+
+    @Override
+    public List<ReviewDomain> getAllReviews() {
+        return reviewRepository.findAll();
+    }
+
+    @Override
+    public ReviewDomain getReviewById(Long id) {
+        return reviewRepository.findById(id)
+                .orElseThrow(() -> new ReviewNotFoundException("Review with ID " + id + " not found."));
+    }
+
+    @Override
+    public List<ReviewDomain> getReviewsByMovieId(Long movieId) {
+        return reviewRepository.findByMovieId(movieId);
+    }
+
+    @Override
+    public List<ReviewDomain> getReviewsByUserId(Long userId) {
+        return reviewRepository.findByUserId(userId);
+    }
+
+    @Override
+    public void deleteReview(Long reviewId, Long userId) {
+        Optional<ReviewDomain> reviewOpt = reviewRepository.findById(reviewId);
+        if (reviewOpt.isEmpty()) {
+            throw new ReviewNotFoundException("Review with ID " + reviewId + " not found.");
+        }
+
+        ReviewDomain review = reviewOpt.get();
+        if (!review.getUserId().equals(userId)) {
+            throw new PermissionIssueException("You do not have permission to delete this review.");
+        }
+
+        reviewRepository.deleteById(reviewId);
+    }
+
 }

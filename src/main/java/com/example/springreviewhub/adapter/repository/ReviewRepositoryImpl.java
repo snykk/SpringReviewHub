@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -144,5 +145,41 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     public Optional<ReviewDomain> findById(Long reviewId) {
         return reviewJpaRepository.findById(reviewId)
                 .map(ReviewMapper::fromEntityToDomain);
+    }
+
+
+    @Override
+    public List<ReviewDomain> findAll() {
+        return reviewJpaRepository.findAll().stream()
+                .map(ReviewMapper::fromEntityToDomain)
+                .toList();
+    }
+
+    @Override
+    public List<ReviewDomain> findByMovieId(Long movieId) {
+        TypedQuery<Review> query = entityManager.createQuery(
+                "SELECT r FROM Review r WHERE r.movieId = :movieId", Review.class);
+        query.setParameter("movieId", movieId);
+
+        return query.getResultList().stream()
+                .map(ReviewMapper::fromEntityToDomain)
+                .toList();
+    }
+
+    @Override
+    public List<ReviewDomain> findByUserId(Long userId) {
+        TypedQuery<Review> query = entityManager.createQuery(
+                "SELECT r FROM Review r WHERE r.userId = :userId", Review.class);
+        query.setParameter("userId", userId);
+
+        return query.getResultList().stream()
+                .map(ReviewMapper::fromEntityToDomain)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long reviewId) {
+        reviewJpaRepository.deleteById(reviewId);
     }
 }

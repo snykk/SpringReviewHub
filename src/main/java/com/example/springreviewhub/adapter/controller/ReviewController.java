@@ -15,6 +15,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/reviews")
 @Validated
@@ -48,13 +50,67 @@ public class ReviewController {
             @RequestBody @Valid ReviewRequest reviewReq,
             @AuthenticationPrincipal Claims claims
     ) {
+        Long userId = ((Number) claims.get("id")).longValue();
+
         ReviewDomain reviewDomain = ReviewMapper.fromReviewRequestToDomain(reviewReq);
 
-        ReviewDomain updatedReview = reviewUseCase.updateReview(id, ((Number) claims.get("id")).longValue(), reviewDomain);
+        ReviewDomain updatedReview = reviewUseCase.updateReview(id, userId, reviewDomain);
 
         return ResponseEntity.status(200).body(BaseResponse.success(
                 "review data updated successfully",
                 ReviewMapper.fromDomainToReviewResponse(updatedReview))
         );
     }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<ReviewResponse>>> getAllReviews() {
+        List<ReviewResponse> reviews = reviewUseCase.getAllReviews().stream()
+                .map(ReviewMapper::fromDomainToReviewResponse)
+                .toList();
+
+        return ResponseEntity.ok(BaseResponse.success(
+                "all review data fetched successfully",
+                reviews));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse<ReviewResponse>> getReviewById(@PathVariable Long id) {
+        ReviewDomain review = reviewUseCase.getReviewById(id);
+
+        return ResponseEntity.ok(BaseResponse.success(
+                String.format("review data with id %d fetched successfully", id),
+                ReviewMapper.fromDomainToReviewResponse(review)));
+    }
+
+    @GetMapping("/movie/{id}")
+    public ResponseEntity<BaseResponse<List<ReviewResponse>>> getReviewsByMovieId(@PathVariable Long id) {
+        List<ReviewResponse> reviews = reviewUseCase.getReviewsByMovieId(id).stream()
+                .map(ReviewMapper::fromDomainToReviewResponse)
+                .toList();
+
+        return ResponseEntity.ok(BaseResponse.success(
+                String.format("review data by movie id %d fetched successfully", id),
+                reviews));
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<BaseResponse<List<ReviewResponse>>> getReviewsByUserId(@PathVariable Long id) {
+        List<ReviewResponse> reviews = reviewUseCase.getReviewsByUserId(id).stream()
+                .map(ReviewMapper::fromDomainToReviewResponse)
+                .toList();
+
+        return ResponseEntity.ok(BaseResponse.success(
+                String.format("review data by user id %d fetched successfully", id),
+                reviews));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<Void>> deleteReview(@PathVariable Long id, @AuthenticationPrincipal Claims claims) {
+        Long userId = ((Number) claims.get("id")).longValue();
+
+        reviewUseCase.deleteReview(id, userId);
+
+        return ResponseEntity.status(204).build();
+    }
+
 }
