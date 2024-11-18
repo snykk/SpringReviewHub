@@ -50,13 +50,12 @@ public class AuthMapper {
      * registration or user creation process.
      */
     public static RegistrationResponse fromUserDomainToRegisResponse(UserDomain userDomain) {
-        return new RegistrationResponse(
-                userDomain.getId(),
-                userDomain.getUsername(),
-                userDomain.getEmail(),
-                userDomain.getRole().name(),
-                userDomain.getCreatedAt(),
-                userDomain.getUpdatedAt()
-        );
+        return new RegistrationResponse()
+                .setId(userDomain.getId())
+                .setUsername(userDomain.getUsername())
+                .setEmail(userDomain.getEmail())
+                .setRole(userDomain.getRole().name())
+                .setCreatedAt(userDomain.getCreatedAt())
+                .setUpdatedAt(userDomain.getUpdatedAt());
     }
 }

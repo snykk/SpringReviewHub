@@ -1,6 +1,5 @@
 package com.example.springreviewhub.adapter.presenter.review;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

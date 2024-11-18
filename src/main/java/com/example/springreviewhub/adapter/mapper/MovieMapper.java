@@ -42,17 +42,20 @@ public class MovieMapper {
      * which can be returned to the client via the API layer.
      */
     public static MovieResponse fromDomainToMovieResponse(MovieDomain movieDomain) {
-        return new MovieResponse(
-                movieDomain.getId(),
-                movieDomain.getTitle(),
-                movieDomain.getDescription(),
-                movieDomain.getReleaseDate(),
-                movieDomain.getDuration(),
-                movieDomain.getGenre(),
-                movieDomain.getDirector(),
-                movieDomain.getRating()
-        );
+        if (movieDomain == null) {
+            return null;
+        }
+        return new MovieResponse()
+                .setId(movieDomain.getId())
+                .setTitle(movieDomain.getTitle())
+                .setDescription(movieDomain.getDescription())
+                .setReleaseDate(movieDomain.getReleaseDate())
+                .setDuration(movieDomain.getDuration())
+                .setGenre(movieDomain.getGenre())
+                .setDirector(movieDomain.getDirector())
+                .setRating(movieDomain.getRating());
     }
+
 
     /**
      * Convert a list of `MovieDomain` objects to a list of `MovieResponse` objects.

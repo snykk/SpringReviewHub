@@ -1,5 +1,6 @@
 package com.example.springreviewhub.adapter.controller;
 
+import com.example.springreviewhub.adapter.mapper.UserMapper;
 import com.example.springreviewhub.adapter.presenter.BaseResponse;
 import com.example.springreviewhub.adapter.presenter.user.UserResponse;
 import com.example.springreviewhub.core.domain.UserDomain;
@@ -24,6 +25,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<BaseResponse<UserResponse>> me(@AuthenticationPrincipal Claims claims) {
         UserDomain authenticatedUser = userUseCase.getAuthenticatedUser(claims.getSubject());
-        return ResponseEntity.ok(BaseResponse.success("user data fetched successfully", new UserResponse(authenticatedUser)));
+
+        return ResponseEntity.ok(BaseResponse.success("user data fetched successfully", UserMapper.fromDomainToUserResponse(authenticatedUser)));
     }
 }
