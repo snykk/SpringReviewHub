@@ -1,6 +1,7 @@
 package com.example.springreviewhub.infrastructure.config;
 
 import com.example.springreviewhub.infrastructure.security.JWTAuthenticationFilter;
+import com.example.springreviewhub.infrastructure.security.CustomAccessDeniedHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,10 +14,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-public class    SecurityConfig {
+public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTAuthenticationFilter jwtFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTAuthenticationFilter jwtFilter, CustomAccessDeniedHandler accessDeniedHandler) throws Exception {
+        // Konfigurasi HTTP Security
         http.csrf().disable()
                 .authorizeRequests()
                 .requestMatchers("/api/auth/**").permitAll()
@@ -25,17 +27,19 @@ public class    SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/api/movies").hasAuthority("admin")
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler);
         return http.build();
     }
 
-
-
+    // AuthenticationManager untuk otentikasi
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    // PasswordEncoder untuk hashing password
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

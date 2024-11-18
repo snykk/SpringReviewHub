@@ -7,6 +7,7 @@ import com.example.springreviewhub.core.exception.UsernameAlreadyTakenException;
 import com.example.springreviewhub.core.exception.MovieNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
