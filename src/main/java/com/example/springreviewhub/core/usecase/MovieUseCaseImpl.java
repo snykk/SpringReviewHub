@@ -33,15 +33,15 @@ public class MovieUseCaseImpl implements IMovieUseCase {
     }
 
     @Override
-    public MovieDomain createMovie(MovieDomain movieReq) {
-        return movieRepository.createMovie(movieReq);
+    public MovieDomain createMovie(MovieDomain movieDomain) {
+        return movieRepository.createMovie(movieDomain);
     }
 
     @Override
-    public MovieDomain updateMovie(Long id, MovieDomain movieReq) {
+    public MovieDomain updateMovie(Long id, MovieDomain movieDomain) {
         movieRepository.getMovieById(id)
                 .orElseThrow(() -> new MovieNotFoundException(id));
-        return movieRepository.updateMovie(id, movieReq);
+        return movieRepository.updateMovie(id, movieDomain);
     }
 
     @Override

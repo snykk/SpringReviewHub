@@ -79,6 +79,33 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(BadRequestException ex) {
+        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(response);
+    }
+
+    @ExceptionHandler(ConflictUsernameException.class)
+    public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(ConflictUsernameException ex) {
+        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
+
+    @ExceptionHandler(InvalidOldPasswordException.class)
+    public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(InvalidOldPasswordException ex) {
+        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(response);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Object>> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.failure("an unexpected error occurred: " + ex.getMessage()));
