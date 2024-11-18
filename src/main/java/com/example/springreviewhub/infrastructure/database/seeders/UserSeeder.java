@@ -3,7 +3,6 @@ package com.example.springreviewhub.infrastructure.database.seeders;
 import com.example.springreviewhub.core.domain.Role;
 import com.example.springreviewhub.infrastructure.database.entity.User;
 import com.example.springreviewhub.infrastructure.database.jpa.UserJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
