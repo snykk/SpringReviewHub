@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/reviews")
@@ -37,11 +34,27 @@ public class ReviewController {
     ) {
         ReviewDomain reviewDomain = ReviewMapper.fromReviewRequestToDomain(reviewReq);
 
-        ReviewDomain createdMovie = reviewUseCase.createReview(((Number) claims.get("id")).longValue(), reviewDomain);
+        ReviewDomain createdReview = reviewUseCase.createReview(((Number) claims.get("id")).longValue(), reviewDomain);
 
         return ResponseEntity.status(201).body(BaseResponse.success(
-                "review data create successfully",
-                ReviewMapper.fromDomainToReviewResponse(createdMovie))
+                "review data created successfully",
+                ReviewMapper.fromDomainToReviewResponse(createdReview))
+        );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BaseResponse<ReviewResponse>> updateReview(
+            @PathVariable Long id,
+            @RequestBody @Valid ReviewRequest reviewReq,
+            @AuthenticationPrincipal Claims claims
+    ) {
+        ReviewDomain reviewDomain = ReviewMapper.fromReviewRequestToDomain(reviewReq);
+
+        ReviewDomain updatedReview = reviewUseCase.updateReview(id, ((Number) claims.get("id")).longValue(), reviewDomain);
+
+        return ResponseEntity.status(200).body(BaseResponse.success(
+                "review data updated successfully",
+                ReviewMapper.fromDomainToReviewResponse(updatedReview))
         );
     }
 }

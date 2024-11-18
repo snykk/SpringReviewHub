@@ -70,6 +70,15 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(ReviewNotFoundException ex) {
+        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Object>> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.failure("an unexpected error occurred: " + ex.getMessage()));
