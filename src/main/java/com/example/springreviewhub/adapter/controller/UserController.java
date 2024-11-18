@@ -22,8 +22,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<BaseResponse<UserResponse>> me(@AuthenticationPrincipal Claims userDetails) {
-        UserDomain authenticatedUser = userUseCase.getAuthenticatedUser(userDetails.getSubject());
+    public ResponseEntity<BaseResponse<UserResponse>> me(@AuthenticationPrincipal Claims claims) {
+        UserDomain authenticatedUser = userUseCase.getAuthenticatedUser(claims.getSubject());
         return ResponseEntity.ok(BaseResponse.success("user data fetched successfully", new UserResponse(authenticatedUser)));
     }
 }

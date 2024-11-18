@@ -1,10 +1,7 @@
 package com.example.springreviewhub.adapter.exception;
 
 import com.example.springreviewhub.adapter.presenter.BaseResponse;
-import com.example.springreviewhub.core.exception.AuthenticationException;
-import com.example.springreviewhub.core.exception.UserNotFoundException;
-import com.example.springreviewhub.core.exception.UsernameAlreadyTakenException;
-import com.example.springreviewhub.core.exception.MovieNotFoundException;
+import com.example.springreviewhub.core.exception.*;
 import com.example.springreviewhub.infrastructure.exception.InvalidAuthHeaderException;
 import com.example.springreviewhub.infrastructure.exception.InvalidTokenException;
 import org.springframework.http.HttpStatus;
@@ -64,11 +61,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.failure(ex.getMessage()));
     }
 
+    @ExceptionHandler(DuplicateReviewException.class)
+    public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(DuplicateReviewException ex) {
+        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Object>> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.failure("an unexpected error occurred: " + ex.getMessage()));
     }
-
-
-
 }
