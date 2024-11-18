@@ -8,12 +8,15 @@ import com.example.springreviewhub.adapter.presenter.auth.RegistrationResponse;
 import com.example.springreviewhub.adapter.presenter.BaseResponse;
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.interfaces.usecases.IAuthUseCase;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@Validated
 public class AuthController {
 
     private final IAuthUseCase authUseCase;
@@ -24,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse<RegistrationResponse>> register(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<BaseResponse<RegistrationResponse>> register(@RequestBody @Valid RegistrationRequest registrationRequest) {
         UserDomain userDomain = AuthMapper.fromRegisRequestToUserDomain(registrationRequest);
 
         UserDomain registeredUser = authUseCase.register(userDomain);
@@ -35,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<BaseResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
         UserDomain userDomain = AuthMapper.fromLoginRequestToUserDomain(loginRequest);
 
         String token = authUseCase.authenticate(userDomain);

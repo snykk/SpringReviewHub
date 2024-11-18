@@ -6,8 +6,10 @@ import com.example.springreviewhub.adapter.presenter.movie.MovieResponse;
 import com.example.springreviewhub.core.domain.MovieDomain;
 import com.example.springreviewhub.core.interfaces.usecases.IMovieUseCase;
 import com.example.springreviewhub.adapter.presenter.movie.MovieRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/movies")
+@Validated
 public class MovieController {
 
     private final IMovieUseCase movieUseCase;
@@ -48,7 +51,7 @@ public class MovieController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<MovieResponse>> createMovie(@RequestBody MovieRequest movieReq) {
+    public ResponseEntity<BaseResponse<MovieResponse>> createMovie(@RequestBody @Valid MovieRequest movieReq) {
         MovieDomain movieDomain = MovieMapper.fromMovieRequestToDomain(movieReq);
 
         MovieDomain createdMovie = movieUseCase.createMovie(movieDomain);
@@ -60,7 +63,7 @@ public class MovieController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<MovieResponse>> updateMovie(@PathVariable Long id, @RequestBody MovieRequest movieReq) {
+    public ResponseEntity<BaseResponse<MovieResponse>> updateMovie(@PathVariable Long id, @RequestBody @Valid MovieRequest movieReq) {
         MovieDomain movieDomain = MovieMapper.fromMovieRequestToDomain(movieReq);
 
         MovieDomain updatedMovie = movieUseCase.updateMovie(id, movieDomain);
