@@ -6,7 +6,6 @@ import com.example.springreviewhub.infrastructure.exception.InvalidAuthHeaderExc
 import com.example.springreviewhub.infrastructure.exception.InvalidTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -83,8 +82,8 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-    @ExceptionHandler(ConflictUsernameException.class)
-    public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(ConflictUsernameException ex) {
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(ConflictException ex) {
         BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
 
         return ResponseEntity

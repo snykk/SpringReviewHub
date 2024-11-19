@@ -93,7 +93,7 @@ public class UserController {
 
         userUseCase.changePassword(userId, changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
 
-        return ResponseEntity.ok(BaseResponse.success("password changed successfully", null));
+        return ResponseEntity.ok(BaseResponse.success("password changed successfully"));
     }
 
     @PostMapping("/change-email")

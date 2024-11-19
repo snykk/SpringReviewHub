@@ -1,4 +1,4 @@
-package com.example.springreviewhub.adapter.exception.repository;
+package com.example.springreviewhub.core.exception;
 
 /**
  * Custom exception for database transaction errors.

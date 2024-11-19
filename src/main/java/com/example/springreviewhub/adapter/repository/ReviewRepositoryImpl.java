@@ -1,6 +1,6 @@
 package com.example.springreviewhub.adapter.repository;
 
-import com.example.springreviewhub.adapter.exception.repository.TransactionOperationException;
+import com.example.springreviewhub.core.exception.TransactionOperationException;
 import com.example.springreviewhub.core.domain.ReviewDomain;
 import com.example.springreviewhub.core.interfaces.repositories.IReviewRepository;
 import com.example.springreviewhub.infrastructure.database.entity.Movie;

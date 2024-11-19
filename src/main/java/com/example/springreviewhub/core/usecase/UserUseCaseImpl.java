@@ -2,7 +2,7 @@ package com.example.springreviewhub.core.usecase;
 
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.exception.BadRequestException;
-import com.example.springreviewhub.core.exception.ConflictUsernameException;
+import com.example.springreviewhub.core.exception.ConflictException;
 import com.example.springreviewhub.core.exception.InvalidOldPasswordException;
 import com.example.springreviewhub.core.exception.UserNotFoundException;
 import com.example.springreviewhub.core.interfaces.repositories.IUserRepository;
@@ -56,7 +56,7 @@ public class UserUseCaseImpl implements IUserUseCase {
             if (userRepository.findByUsername(updatedUser.getUsername())
                     .filter(user -> !user.getId().equals(existingUser.getId()))
                     .isPresent()) {
-                throw new ConflictUsernameException("username already exists");
+                throw new ConflictException("username already exists");
             }
             existingUser.setUsername(updatedUser.getUsername());
         }
@@ -102,18 +102,17 @@ public class UserUseCaseImpl implements IUserUseCase {
                 .orElseThrow(() -> new UserNotFoundException("user not found"));
 
         if (existingUser.getEmail().equals(newEmail)) {
-            throw new ConflictUsernameException("email did not change");
+            throw new ConflictException("email did not change");
         }
 
-        boolean isEmailTaken = userRepository.findByEmail(newEmail)
+        if (userRepository.findByEmail(newEmail)
                 .filter(user -> !user.getId().equals(existingUser.getId()))
-                .isPresent();
-
-        if (isEmailTaken) {
-            throw new ConflictUsernameException("username already exists");
+                .isPresent()) {
+            throw new ConflictException("email already exists");
         }
 
-        existingUser.setUsername(newEmail);
+        existingUser.setEmail(newEmail).
+                setEmailVerified(false);
 
         return userRepository.save(existingUser);
     }
