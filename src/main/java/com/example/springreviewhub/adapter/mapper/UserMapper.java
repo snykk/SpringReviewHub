@@ -25,7 +25,11 @@ public class UserMapper {
             return null;
         }
         return new UserDomain()
-                .setUsername(userRequest.getUsername());
+                .setUsername(userRequest.getUsername())
+                .setPhoneNumber(userRequest.getPhoneNumber())
+                .setAddress(userRequest.getAddress())
+                .setDateOfBirth(userRequest.getDateOfBirth())
+                .setBio(userRequest.getBio());
     }
 
     /**

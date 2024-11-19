@@ -7,6 +7,7 @@ import com.example.springreviewhub.core.exception.InvalidOldPasswordException;
 import com.example.springreviewhub.core.exception.UserNotFoundException;
 import com.example.springreviewhub.core.interfaces.repositories.IUserRepository;
 import com.example.springreviewhub.core.interfaces.usecases.IUserUseCase;
+import com.example.springreviewhub.core.util.UpdateUtils;
 import com.example.springreviewhub.infrastructure.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,19 +52,19 @@ public class UserUseCaseImpl implements IUserUseCase {
         UserDomain existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("user not found"));
 
-        if (existingUser.getUsername().equals(updatedUser.getUsername())) {
-            throw new ConflictUsernameException("username did not change");
+        if (updatedUser.getUsername() != null) {
+            if (userRepository.findByUsername(updatedUser.getUsername())
+                    .filter(user -> !user.getId().equals(existingUser.getId()))
+                    .isPresent()) {
+                throw new ConflictUsernameException("username already exists");
+            }
+            existingUser.setUsername(updatedUser.getUsername());
         }
 
-        boolean isUsernameTaken = userRepository.findByUsername(updatedUser.getUsername())
-                .filter(user -> !user.getId().equals(existingUser.getId()))
-                .isPresent();
-
-        if (isUsernameTaken) {
-            throw new ConflictUsernameException("username already exists");
-        }
-
-        existingUser.setUsername(updatedUser.getUsername());
+        UpdateUtils.updateIfNotNull(existingUser::setPhoneNumber, updatedUser.getPhoneNumber());
+        UpdateUtils.updateIfNotNull(existingUser::setAddress, updatedUser.getAddress());
+        UpdateUtils.updateIfNotNull(existingUser::setDateOfBirth, updatedUser.getDateOfBirth());
+        UpdateUtils.updateIfNotNull(existingUser::setBio, updatedUser.getBio());
 
         return userRepository.save(existingUser);
     }

@@ -9,7 +9,7 @@ public interface IUserUseCase {
     List<UserDomain> getAllUsers();
     UserDomain getUserById(Long id);
     UserDomain updateUser(Long userId, UserDomain updatedUser);
-    public void deleteUser(Long userId);
+    void deleteUser(Long userId);
     void changePassword(Long userId, String oldPassword, String newPassword);
     UserDomain changeEmail(Long userId, String newEmail);
 
