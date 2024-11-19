@@ -48,6 +48,8 @@ public class UserMapper {
                 .setUsername(userDomain.getUsername())
                 .setEmail(userDomain.getEmail())
                 .setPassword(userDomain.getPassword())
-                .setRole(userDomain.getRole());
+                .setRole(userDomain.getRole())
+                .setCreatedAt(userDomain.getCreatedAt())
+                .setUpdatedAt(userDomain.getUpdatedAt());
     }
 }

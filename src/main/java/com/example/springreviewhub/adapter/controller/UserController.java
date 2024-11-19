@@ -16,6 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 @Validated
@@ -37,6 +39,13 @@ public class UserController {
                 UserMapper.fromDomainToUserResponse(authenticatedUser)));
     }
 
+    @GetMapping("")
+    public ResponseEntity<BaseResponse<List<UserResponse>>> getAll() {
+        List<UserDomain> users = userUseCase.getAllUsers();
+        return ResponseEntity.ok(
+                BaseResponse.success("all users fetched successfully", UserMapper.fromDomainListToResponseList(users))
+        );
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<UserResponse>> getById(@PathVariable Long id) {

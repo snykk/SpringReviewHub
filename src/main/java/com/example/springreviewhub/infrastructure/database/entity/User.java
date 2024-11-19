@@ -31,11 +31,11 @@ public class User {
     private Role role; // Use enum Role
 
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.NONE) // Prevent modification from outside
-    private LocalDateTime createdAt = LocalDateTime.now();
+//    @Setter(AccessLevel.NONE) // Prevent modification from outside
+    private LocalDateTime createdAt;
 
-    @Column()
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
@@ -75,6 +75,20 @@ public class User {
 
     public User setRole(Role role) {
         this.role = role;
+        return this;
+    }
+
+    public User setCreatedAt(LocalDateTime createdAt) {
+        if (createdAt != null) {
+            this.createdAt = createdAt;
+        }
+        return this;
+    }
+
+    public User setUpdatedAt(LocalDateTime updatedAt) {
+        if (updatedAt != null) {
+            this.updatedAt = updatedAt;
+        }
         return this;
     }
 }

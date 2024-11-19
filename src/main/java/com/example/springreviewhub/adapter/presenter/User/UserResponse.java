@@ -1,7 +1,8 @@
 package com.example.springreviewhub.adapter.presenter.user;
 
-import com.example.springreviewhub.core.domain.UserDomain;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class UserResponse {
@@ -10,6 +11,8 @@ public class UserResponse {
     private String username;
     private String email;
     private String role;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // Chaining setter methods
     public UserResponse setId(Long id) {
@@ -29,6 +32,16 @@ public class UserResponse {
 
     public UserResponse setRole(String role) {
         this.role = role;
+        return this;
+    }
+
+    public UserResponse setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public UserResponse setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
         return this;
     }
 }

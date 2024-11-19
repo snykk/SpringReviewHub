@@ -39,10 +39,22 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public UserDomain save(UserDomain user) {
+        System.out.println("INi user");
+        System.out.println(user);
         User userEntity = UserMapper.fromDomain(user);
+
+        System.out.println("ini entity");
+        System.out.println(userEntity);
         User savedEntity = userJpaRepository.save(userEntity);
 
-        return UserMapper.toDomain(savedEntity);
+        System.out.println("save entity");
+        System.out.println(savedEntity);
+
+        UserDomain userDomain = UserMapper.toDomain(savedEntity);
+        System.out.println("save domain");
+        System.out.println(userDomain);
+
+        return userDomain;
     }
 
     @Override

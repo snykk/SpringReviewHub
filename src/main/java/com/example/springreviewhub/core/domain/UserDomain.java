@@ -1,11 +1,13 @@
 package com.example.springreviewhub.core.domain;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
+@ToString
 public class UserDomain {
     private Long id;
     private String username;

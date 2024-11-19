@@ -45,7 +45,9 @@ public class UserMapper {
                 .setId(userDomain.getId())
                 .setUsername(userDomain.getUsername())
                 .setEmail(userDomain.getEmail())
-                .setRole(userDomain.getRole().name());
+                .setRole(userDomain.getRole().name())
+                .setCreatedAt(userDomain.getCreatedAt())
+                .setUpdatedAt(userDomain.getUpdatedAt());
     }
 
     /**
