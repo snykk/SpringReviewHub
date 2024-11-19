@@ -41,6 +41,8 @@ public class AuthMapper {
                 .setAddress(registrationRequest.getAddress())
                 .setDateOfBirth(registrationRequest.getDateOfBirth())
                 .setBio(registrationRequest.getBio())
+                .setIsActive(true) // Default to True
+                .setEmailVerified(false) // Default to false
                 .setRole(Role.Reviewer); // Default to Reviewer
     }
 

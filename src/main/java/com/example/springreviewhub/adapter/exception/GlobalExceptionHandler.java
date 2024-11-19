@@ -29,11 +29,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.failure(ex.getMessage()));
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<BaseResponse<Object>> handleAuthenticationException(AuthenticationException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.failure(ex.getMessage()));
-    }
-
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<BaseResponse<Object>> handleUserNotFoundException(UserNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponse.failure(ex.getMessage()));
@@ -103,6 +98,34 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(response);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<BaseResponse<Object>> handleInvalidCredentials(InvalidCredentialsException ex) {
+        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
+
+        return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                .body(response);
+
+    }
+
+    @ExceptionHandler(AccountLockedException.class)
+    public ResponseEntity<BaseResponse<Object>> handleAccountLocked(AccountLockedException ex) {
+        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(response);
+    }
+
+    @ExceptionHandler(EmailNotVerifiedException.class)
+    public ResponseEntity<BaseResponse<Object>> handleEmailNotVerified(EmailNotVerifiedException ex) {
+        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(response);
     }
 

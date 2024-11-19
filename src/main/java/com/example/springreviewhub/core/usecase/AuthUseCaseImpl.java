@@ -38,14 +38,22 @@ public class AuthUseCaseImpl implements IAuthUseCase {
 
     @Override
     public String authenticate(UserDomain user) {
-        UserDomain userFromDB = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new AuthenticationException("Invalid username or password"));
+        UserDomain userDomainFromDB = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
-        if (!passwordEncoder.matches(user.getPassword(), userFromDB.getPassword())) {
-            throw new AuthenticationException("Invalid username or password");
+        if (!userDomainFromDB.isActive()) {
+            throw new AccountLockedException("Account is locked");
         }
 
-        return jwtUtil.generateToken(user.getUsername(), userFromDB);
+        if (!userDomainFromDB.isEmailVerified()) {
+            throw new EmailNotVerifiedException("Email is not verified");
+        }
+
+        if (!passwordEncoder.matches(user.getPassword(), userDomainFromDB.getPassword())) {
+            throw new InvalidCredentialsException("Invalid username or password");
+        }
+
+        return jwtUtil.generateToken(user.getUsername(), userDomainFromDB);
     }
 
     @Override
