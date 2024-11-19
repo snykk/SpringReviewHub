@@ -26,7 +26,16 @@ public class UserMapper {
                 .setPassword(user.getPassword())
                 .setRole(user.getRole())
                 .setCreatedAt(user.getCreatedAt())
-                .setUpdatedAt(user.getUpdatedAt());
+                .setUpdatedAt(user.getUpdatedAt())
+                .setIsActive(user.isActive())
+                .setLastLoginAt(user.getLastLoginAt())
+                .setFailedLoginAttempts(user.getFailedLoginAttempts())
+                .setPhoneNumber(user.getPhoneNumber())
+                .setAddress(user.getAddress())
+                .setDateOfBirth(user.getDateOfBirth())
+                .setEmailVerified(user.isEmailVerified())
+                .setBio(user.getBio())
+                .setDeletedAt(user.getDeletedAt());
     }
 
     /**
@@ -50,6 +59,15 @@ public class UserMapper {
                 .setPassword(userDomain.getPassword())
                 .setRole(userDomain.getRole())
                 .setCreatedAt(userDomain.getCreatedAt())
-                .setUpdatedAt(userDomain.getUpdatedAt());
+                .setUpdatedAt(userDomain.getUpdatedAt())
+                .setIsActive(userDomain.isActive())
+                .setLastLoginAt(userDomain.getLastLoginAt())
+                .setFailedLoginAttempts(userDomain.getFailedLoginAttempts())
+                .setPhoneNumber(userDomain.getPhoneNumber())
+                .setAddress(userDomain.getAddress())
+                .setDateOfBirth(userDomain.getDateOfBirth())
+                .setEmailVerified(userDomain.isEmailVerified())
+                .setBio(userDomain.getBio())
+                .setDeletedAt(userDomain.getDeletedAt());
     }
 }

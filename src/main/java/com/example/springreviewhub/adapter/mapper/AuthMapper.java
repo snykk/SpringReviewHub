@@ -29,14 +29,18 @@ public class AuthMapper {
      * @param registrationRequest the registration request containing user details
      * @return a `UserDomain` object populated with registration data
      *
-     * This method includes default role assignment as `Role.Reviewer`, which
-     * can be updated later based on business rules.
+     * This method maps all necessary fields from the registration request to the
+     * domain object, including assigning the default role.
      */
     public static UserDomain fromRegisRequestToUserDomain(RegistrationRequest registrationRequest) {
         return new UserDomain()
                 .setUsername(registrationRequest.getUsername())
                 .setEmail(registrationRequest.getEmail())
                 .setPassword(registrationRequest.getPassword())
+                .setPhoneNumber(registrationRequest.getPhoneNumber())
+                .setAddress(registrationRequest.getAddress())
+                .setDateOfBirth(registrationRequest.getDateOfBirth())
+                .setBio(registrationRequest.getBio())
                 .setRole(Role.Reviewer); // Default to Reviewer
     }
 
@@ -46,8 +50,7 @@ public class AuthMapper {
      * @param userDomain the user domain object to be converted
      * @return a `RegistrationResponse` object containing user details for response
      *
-     * This method is used to provide structured response data after a successful
-     * registration or user creation process.
+     * This method provides response data after successful user registration.
      */
     public static RegistrationResponse fromUserDomainToRegisResponse(UserDomain userDomain) {
         return new RegistrationResponse()
@@ -55,7 +58,14 @@ public class AuthMapper {
                 .setUsername(userDomain.getUsername())
                 .setEmail(userDomain.getEmail())
                 .setRole(userDomain.getRole().name())
+                .setIsActive(userDomain.isActive())
+                .setEmailVerified(userDomain.isEmailVerified())
+                .setPhoneNumber(userDomain.getPhoneNumber())
+                .setAddress(userDomain.getAddress())
+                .setDateOfBirth(userDomain.getDateOfBirth())
+                .setBio(userDomain.getBio())
                 .setCreatedAt(userDomain.getCreatedAt())
                 .setUpdatedAt(userDomain.getUpdatedAt());
     }
+
 }

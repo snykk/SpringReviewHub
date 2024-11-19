@@ -7,6 +7,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Component
@@ -28,15 +30,31 @@ public class UserSeeder implements CommandLineRunner {
                     .setUsername("najibfikri")
                     .setEmail("najibfikri26@gmail.com")
                     .setPassword(passwordEncoder.encode("12345678"))
-                    .setRole(Role.Admin);
+                    .setRole(Role.Admin)
+                    .setIsActive(true)
+                    .setFailedLoginAttempts(0)
+                    .setEmailVerified(true)
+                    .setPhoneNumber("081234567890")
+                    .setAddress("Jl kerang no 69")
+                    .setDateOfBirth(LocalDate.of(1800, 1, 1))
+                    .setBio("Seorang admin biasa")
+                    .setCreatedAt(LocalDateTime.now())
+                    .setUpdatedAt(LocalDateTime.now());
 
             User reviewer = new User()
                     .setUsername("snykk")
                     .setEmail("snykk@gmail.com")
                     .setPassword(passwordEncoder.encode("12345678"))
-                    .setRole(Role.Reviewer);
-
-
+                    .setRole(Role.Reviewer)
+                    .setIsActive(true)
+                    .setFailedLoginAttempts(0)
+                    .setEmailVerified(true)
+                    .setPhoneNumber("089876543210")
+                    .setAddress("Jl kerang no 24")
+                    .setDateOfBirth(LocalDate.of(1801, 1, 1))
+                    .setBio("Seorang reviewer tidak biasa")
+                    .setCreatedAt(LocalDateTime.now())
+                    .setUpdatedAt(LocalDateTime.now());
 
             userJpaRepository.saveAll(Arrays.asList(admin, reviewer));
 

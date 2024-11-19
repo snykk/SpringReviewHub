@@ -46,8 +46,17 @@ public class UserMapper {
                 .setUsername(userDomain.getUsername())
                 .setEmail(userDomain.getEmail())
                 .setRole(userDomain.getRole().name())
+                .setIsActive(userDomain.isActive())
+                .setLastLoginAt(userDomain.getLastLoginAt())
+                .setFailedLoginAttempts(userDomain.getFailedLoginAttempts())
+                .setPhoneNumber(userDomain.getPhoneNumber())
+                .setAddress(userDomain.getAddress())
+                .setDateOfBirth(userDomain.getDateOfBirth())
+                .setEmailVerified(userDomain.isEmailVerified())
+                .setBio(userDomain.getBio())
                 .setCreatedAt(userDomain.getCreatedAt())
-                .setUpdatedAt(userDomain.getUpdatedAt());
+                .setUpdatedAt(userDomain.getUpdatedAt())
+                .setDeletedAt(userDomain.getDeletedAt());
     }
 
     /**
