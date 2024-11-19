@@ -33,13 +33,6 @@ public class User {
     @Column(nullable = false, length = 20)
     private Role role;
 
-    @Column(nullable = false, updatable = false)
-//    @Setter(AccessLevel.NONE) // Prevent modification from outside
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
     @Column(nullable = false)
     @ColumnDefault("true")
     private boolean isActive;
@@ -64,6 +57,13 @@ public class User {
 
     @Column(length = 500)
     private String bio; // Nullable
+
+    @Column(nullable = false, updatable = false)
+    // @Setter(AccessLevel.NONE) // Prevent modification from outside
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt; // Nullable
 

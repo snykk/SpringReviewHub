@@ -50,8 +50,24 @@ public class AuthUseCaseImpl implements IAuthUseCase {
         }
 
         if (!passwordEncoder.matches(user.getPassword(), userDomainFromDB.getPassword())) {
-            throw new InvalidCredentialsException("Invalid username or password");
+            int failedAttempts = userDomainFromDB.getFailedLoginAttempts() + 1;
+            userDomainFromDB.setFailedLoginAttempts(failedAttempts);
+
+            int remainingAttempts = 3 - failedAttempts;
+
+            if (failedAttempts >= 3) {
+                userDomainFromDB.setIsActive(false);
+                userRepository.save(userDomainFromDB);
+                throw new AccountLockedException("Account locked due to multiple failed login attempts");
+            }
+
+            userRepository.save(userDomainFromDB);
+
+            throw new InvalidCredentialsException("Invalid username or password. Remaining attempts: " + remainingAttempts);
         }
+
+        userDomainFromDB.setFailedLoginAttempts(0);
+        userRepository.save(userDomainFromDB);
 
         return jwtUtil.generateToken(user.getUsername(), userDomainFromDB);
     }
