@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -67,6 +68,9 @@ public class AuthUseCaseImpl implements IAuthUseCase {
         }
 
         userDomainFromDB.setFailedLoginAttempts(0);
+
+        userDomainFromDB.setLastLoginAt(LocalDateTime.now());
+
         userRepository.save(userDomainFromDB);
 
         return jwtUtil.generateToken(user.getUsername(), userDomainFromDB);
