@@ -7,11 +7,85 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Interface for the Movie repository.
+ * <p>
+ * This interface defines the contract for operations related to movie data management.
+ * It provides methods for retrieving, creating, updating, deleting, and searching movies.
+ * </p>
+ */
 public interface IMovieRepository {
+
+    /**
+     * Retrieves all movies in the repository.
+     * <p>
+     * This method fetches a list of all movie records.
+     * </p>
+     *
+     * @return a list of all movies
+     */
     List<MovieDomain> getAllMovies();
+
+    /**
+     * Retrieves a movie by its unique identifier.
+     * <p>
+     * This method attempts to find a movie by its ID. If the movie exists, it returns it wrapped in an Optional,
+     * otherwise, it returns an empty Optional.
+     * </p>
+     *
+     * @param id the unique identifier of the movie
+     * @return an Optional containing the movie if found, or an empty Optional if not found
+     */
     Optional<MovieDomain> getMovieById(Long id);
+
+    /**
+     * Creates a new movie in the repository.
+     * <p>
+     * This method persists a new movie entity in the repository. The movie is returned after being saved.
+     * </p>
+     *
+     * @param movieDomain the movie to be created
+     * @return the created movie
+     */
     MovieDomain createMovie(MovieDomain movieDomain);
+
+    /**
+     * Updates an existing movie in the repository.
+     * <p>
+     * This method updates the details of a movie identified by its ID. If the movie is found, it is updated with
+     * the new values from the provided movie entity and returned.
+     * </p>
+     *
+     * @param id the unique identifier of the movie to be updated
+     * @param movieDomain the new movie data
+     * @return the updated movie
+     */
     MovieDomain updateMovie(Long id, MovieDomain movieDomain);
+
+    /**
+     * Deletes a movie from the repository.
+     * <p>
+     * This method removes the movie identified by its ID from the repository. If the movie exists, it is deleted
+     * and no further action is taken. Otherwise, no effect occurs.
+     * </p>
+     *
+     * @param id the unique identifier of the movie to be deleted
+     */
     void deleteMovie(Long id);
+
+    /**
+     * Searches for movies based on various criteria.
+     * <p>
+     * This method allows searching for movies based on title, genre, rating, and release date range.
+     * The search will return a list of movies matching the specified criteria.
+     * </p>
+     *
+     * @param title the title of the movie (can be partial)
+     * @param genre the genre of the movie
+     * @param minRating the minimum rating threshold for movies
+     * @param startDate the starting release date for the search
+     * @param endDate the ending release date for the search
+     * @return a list of movies matching the search criteria
+     */
     List<MovieDomain> searchMovies(String title, String genre, BigDecimal minRating, LocalDate startDate, LocalDate endDate);
 }

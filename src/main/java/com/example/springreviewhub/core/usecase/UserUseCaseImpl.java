@@ -32,7 +32,7 @@ public class UserUseCaseImpl implements IUserUseCase {
     @Override
     public UserDomain getAuthenticatedUser(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("user not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
 
@@ -44,19 +44,19 @@ public class UserUseCaseImpl implements IUserUseCase {
     @Override
     public UserDomain getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("user not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Override
     public UserDomain updateUser(Long userId, UserDomain updatedUser) {
         UserDomain existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (updatedUser.getUsername() != null) {
             if (userRepository.findByUsername(updatedUser.getUsername())
                     .filter(user -> !user.getId().equals(existingUser.getId()))
                     .isPresent()) {
-                throw new ConflictException("username already exists");
+                throw new ConflictException("Username already exists");
             }
             existingUser.setUsername(updatedUser.getUsername());
         }
@@ -73,7 +73,7 @@ public class UserUseCaseImpl implements IUserUseCase {
     @Override
     public void deleteUser(Long userId) {
         UserDomain user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         userRepository.delete(user.getId());
     }
@@ -81,14 +81,14 @@ public class UserUseCaseImpl implements IUserUseCase {
     @Override
     public void changePassword(Long userId, String oldPassword, String newPassword) {
         if (oldPassword.equals(newPassword)) {
-            throw new BadRequestException("old password cannot be the same as the new password");
+            throw new BadRequestException("Old password cannot be the same as the new password");
         }
 
         UserDomain user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            throw new InvalidOldPasswordException("old password is incorrect");
+            throw new InvalidOldPasswordException("Old password is incorrect");
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
@@ -102,13 +102,13 @@ public class UserUseCaseImpl implements IUserUseCase {
                 .orElseThrow(() -> new UserNotFoundException("user not found"));
 
         if (existingUser.getEmail().equals(newEmail)) {
-            throw new ConflictException("email did not change");
+            throw new ConflictException("Email did not change");
         }
 
         if (userRepository.findByEmail(newEmail)
                 .filter(user -> !user.getId().equals(existingUser.getId()))
                 .isPresent()) {
-            throw new ConflictException("email already exists");
+            throw new ConflictException("Email already exists");
         }
 
         existingUser.setEmail(newEmail).

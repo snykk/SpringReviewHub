@@ -9,15 +9,43 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+/**
+ * A seeder class for preloading movie data into the database.
+ * <p>
+ * This class implements the {@link CommandLineRunner} interface, which allows it to run specific
+ * logic after the application context is fully initialized. The seeder checks if the database is
+ * empty, and if so, it inserts a predefined list of movies.
+ * </p>
+ * <p>
+ * The movie data includes details such as title, description, release date, duration, genre, director,
+ * and rating. This is useful for setting up initial data for testing or development environments.
+ * </p>
+ */
 @Component
 public class MovieSeeder implements CommandLineRunner {
 
     private final MovieJpaRepository movieJpaRepository;
 
+    /**
+     * Constructs a new instance of {@code MovieSeeder} with the given {@code MovieJpaRepository}.
+     *
+     * @param movieRepository the repository used for saving movie data to the database
+     */
     public MovieSeeder(MovieJpaRepository movieRepository) {
         this.movieJpaRepository = movieRepository;
     }
 
+    /**
+     * Runs the seeder logic to populate the database with predefined movie data.
+     * <p>
+     * If the database is empty, this method saves a list of movies into the database.
+     * The data includes a diverse set of movies with attributes like title, genre,
+     * release date, and ratings.
+     * </p>
+     *
+     * @param args command-line arguments (not used in this implementation)
+     * @throws Exception if an error occurs during execution
+     */
     @Override
     public void run(String... args) throws Exception {
         if (movieJpaRepository.count() == 0) {

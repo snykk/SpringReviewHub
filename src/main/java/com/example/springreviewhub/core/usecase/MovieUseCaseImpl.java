@@ -41,6 +41,7 @@ public class MovieUseCaseImpl implements IMovieUseCase {
     public MovieDomain updateMovie(Long id, MovieDomain movieDomain) {
         movieRepository.getMovieById(id)
                 .orElseThrow(() -> new MovieNotFoundException(id));
+
         return movieRepository.updateMovie(id, movieDomain);
     }
 
@@ -48,6 +49,7 @@ public class MovieUseCaseImpl implements IMovieUseCase {
     public void deleteMovie(Long id) {
         movieRepository.getMovieById(id)
                 .orElseThrow(() -> new MovieNotFoundException(id));
+
         movieRepository.deleteMovie(id);
     }
 

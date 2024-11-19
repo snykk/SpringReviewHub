@@ -34,9 +34,11 @@ public class ReviewController {
             @RequestBody @Valid ReviewRequest reviewReq,
             @AuthenticationPrincipal Claims claims
     ) {
+        Long userId = ((Number) claims.get("id")).longValue();
+
         ReviewDomain reviewDomain = ReviewMapper.fromReviewRequestToDomain(reviewReq);
 
-        ReviewDomain createdReview = reviewUseCase.createReview(((Number) claims.get("id")).longValue(), reviewDomain);
+        ReviewDomain createdReview = reviewUseCase.createReview(userId, reviewDomain);
 
         return ResponseEntity.status(201).body(BaseResponse.success(
                 "review data created successfully",
@@ -74,7 +76,9 @@ public class ReviewController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<ReviewResponse>> getReviewById(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<ReviewResponse>> getReviewById(
+            @PathVariable Long id
+    ) {
         ReviewDomain review = reviewUseCase.getReviewById(id);
 
         return ResponseEntity.ok(BaseResponse.success(
@@ -83,7 +87,9 @@ public class ReviewController {
     }
 
     @GetMapping("/movie/{id}")
-    public ResponseEntity<BaseResponse<List<ReviewResponse>>> getReviewsByMovieId(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<List<ReviewResponse>>> getReviewsByMovieId(
+            @PathVariable Long id
+    ) {
         List<ReviewResponse> reviews = reviewUseCase.getReviewsByMovieId(id).stream()
                 .map(ReviewMapper::fromDomainToReviewResponse)
                 .toList();
@@ -94,7 +100,9 @@ public class ReviewController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<BaseResponse<List<ReviewResponse>>> getReviewsByUserId(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<List<ReviewResponse>>> getReviewsByUserId(
+            @PathVariable Long id
+    ) {
         List<ReviewResponse> reviews = reviewUseCase.getReviewsByUserId(id).stream()
                 .map(ReviewMapper::fromDomainToReviewResponse)
                 .toList();

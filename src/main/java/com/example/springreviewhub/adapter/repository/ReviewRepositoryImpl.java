@@ -41,6 +41,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     public ReviewDomain storeReviewAndUpdateMovieRating(ReviewDomain reviewDomain) {
         try {
             Review reviewEntity = ReviewMapper.fromDomainToEntity(reviewDomain);
+
             reviewJpaRepository.save(reviewEntity);
 
             TypedQuery<Double> ratingQuery = entityManager.createQuery(
@@ -58,6 +59,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
             if (movieOpt.isPresent()) {
                 Movie movie = movieOpt.get();
                 movie.setRating(avgRatingBigDecimal);
+
                 movieJpaRepository.save(movie);
             } else {
                 throw new TransactionOperationException("movie not found for updating rating.");
@@ -107,16 +109,16 @@ public class ReviewRepositoryImpl implements IReviewRepository {
             if (existingReviewOpt.isEmpty()) {
                 throw new TransactionOperationException("review not found for ID: " + reviewDomain.getId());
             }
-            Review existingReview = existingReviewOpt.get();
 
+            Review existingReview = existingReviewOpt.get();
             existingReview.setText(reviewDomain.getText()).setRating(reviewDomain.getRating());
             reviewJpaRepository.save(existingReview);
 
             TypedQuery<Double> ratingQuery = entityManager.createQuery(
                     "SELECT AVG(r.rating) FROM Review r WHERE r.movieId = :movieId", Double.class);
             ratingQuery.setParameter("movieId", reviewDomain.getMovieId());
-            Double avgRating = ratingQuery.getSingleResult();
 
+            Double avgRating = ratingQuery.getSingleResult();
             if (avgRating == null) {
                 avgRating = 0.0;
             }
@@ -125,8 +127,9 @@ public class ReviewRepositoryImpl implements IReviewRepository {
 
             Optional<Movie> movieOpt = movieJpaRepository.findById(reviewDomain.getMovieId());
             if (movieOpt.isPresent()) {
-                Movie movie = movieOpt.get();
-                movie.setRating(avgRatingBigDecimal);
+                Movie movie = movieOpt.get()
+                        .setRating(avgRatingBigDecimal);
+
                 movieJpaRepository.save(movie);
             } else {
                 throw new TransactionOperationException("movie not found for updating rating.");

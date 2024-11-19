@@ -11,6 +11,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+/**
+ * A seeder class for preloading user data into the database.
+ * <p>
+ * This class implements the {@link CommandLineRunner} interface, allowing it to execute specific
+ * logic after the application context is initialized. It checks if the user table is empty,
+ * and if so, preloads it with predefined admin and reviewer accounts.
+ * </p>
+ * <p>
+ * The preloaded users include attributes such as username, email, password, role, and additional
+ * metadata like bio, address, and date of birth.
+ * </p>
+ */
 @Component
 public class UserSeeder implements CommandLineRunner {
 
@@ -18,11 +30,28 @@ public class UserSeeder implements CommandLineRunner {
 
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Constructs a new instance of {@code UserSeeder}.
+     *
+     * @param userJpaRepository the repository used for interacting with the user table
+     * @param passwordEncoder   the encoder used for securely hashing user passwords
+     */
     public UserSeeder(UserJpaRepository userJpaRepository, PasswordEncoder passwordEncoder) {
         this.userJpaRepository = userJpaRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Executes the logic to seed initial user data into the database.
+     * <p>
+     * If the database is empty, this method creates and saves two user accounts:
+     * an admin account and a reviewer account. Passwords are securely hashed using the
+     * provided {@code PasswordEncoder}.
+     * </p>
+     *
+     * @param args command-line arguments (not used in this implementation)
+     * @throws Exception if an error occurs during execution
+     */
     @Override
     public void run(String... args) throws Exception {
         if (userJpaRepository.count() == 0) {

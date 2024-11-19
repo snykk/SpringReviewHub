@@ -22,39 +22,31 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public Optional<UserDomain> findByUsername(String username) {
-        return userJpaRepository.findByUsername(username).map(UserMapper::toDomain);
+        return userJpaRepository.findByUsername(username)
+                .map(UserMapper::toDomain);
     }
 
     @Override
     public Optional<UserDomain> findById(Long id) {
 
-        return userJpaRepository.findById(id).map(UserMapper::toDomain);
+        return userJpaRepository.findById(id)
+                .map(UserMapper::toDomain);
     }
 
     @Override
     public List<UserDomain> findAll() {
 
-        return userJpaRepository.findAll().stream().map(UserMapper::toDomain).collect(Collectors.toList());
+        return userJpaRepository.findAll().stream()
+                .map(UserMapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
     public UserDomain save(UserDomain user) {
-        System.out.println("INi user");
-        System.out.println(user);
         User userEntity = UserMapper.fromDomain(user);
 
-        System.out.println("ini entity");
-        System.out.println(userEntity);
         User savedEntity = userJpaRepository.save(userEntity);
 
-        System.out.println("save entity");
-        System.out.println(savedEntity);
-
-        UserDomain userDomain = UserMapper.toDomain(savedEntity);
-        System.out.println("save domain");
-        System.out.println(userDomain);
-
-        return userDomain;
+        return UserMapper.toDomain(savedEntity);
     }
 
     @Override

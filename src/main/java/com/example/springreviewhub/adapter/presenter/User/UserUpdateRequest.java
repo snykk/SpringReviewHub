@@ -2,11 +2,9 @@
 
     import jakarta.validation.constraints.*;
     import lombok.Getter;
-    import lombok.Setter;
 
     import java.time.LocalDate;
 
-    @Setter
     @Getter
     public class UserUpdateRequest {
 

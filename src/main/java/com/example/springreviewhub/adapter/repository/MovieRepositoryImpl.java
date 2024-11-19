@@ -26,37 +26,43 @@ public class MovieRepositoryImpl implements IMovieRepository {
     @Override
     public List<MovieDomain> getAllMovies() {
         List<Movie> movieEntities = movieJpaRepository.findAll();
+
         return MovieMapper.fromEntityListToDomList(movieEntities);
     }
 
     @Override
     public Optional<MovieDomain> getMovieById(Long id) {
         Optional<Movie> movieEntity = movieJpaRepository.findById(id);
+
         return movieEntity.map(MovieMapper::fromEntityToDomain);
     }
 
     @Override
     public MovieDomain createMovie(MovieDomain movieDomain) {
         Movie movie = MovieMapper.fromDomainToEntity(movieDomain);
+
         Movie savedMovie = movieJpaRepository.save(movie);
+
         return MovieMapper.fromEntityToDomain(savedMovie);
     }
 
     @Override
     public MovieDomain updateMovie(Long id, MovieDomain movieDomain) {
         Optional<Movie> existingMovie = movieJpaRepository.findById(id);
+
         if (existingMovie.isPresent()) {
-            Movie movie = existingMovie.get();
-            movie.setTitle(movieDomain.getTitle());
-            movie.setDescription(movieDomain.getDescription());
-            movie.setReleaseDate(movieDomain.getReleaseDate());
-            movie.setDuration(movieDomain.getDuration());
-            movie.setGenre(movieDomain.getGenre());
-            movie.setDirector(movieDomain.getDirector());
-            movie.setRating(movieDomain.getRating());
+            Movie movie = existingMovie.get()
+                    .setTitle(movieDomain.getTitle())
+                    .setDescription(movieDomain.getDescription())
+                    .setReleaseDate(movieDomain.getReleaseDate())
+                    .setDuration(movieDomain.getDuration())
+                    .setGenre(movieDomain.getGenre())
+                    .setDirector(movieDomain.getDirector())
+                    .setRating(movieDomain.getRating());
 
             Movie updatedMovie = movieJpaRepository.save(movie);
-            return MovieMapper.fromEntityToDomain(updatedMovie); // Mengembalikan domain setelah update
+
+            return MovieMapper.fromEntityToDomain(updatedMovie);
         } else {
             throw new RuntimeException("Movie not found with id: " + id);
         }
@@ -68,8 +74,15 @@ public class MovieRepositoryImpl implements IMovieRepository {
     }
 
     @Override
-    public List<MovieDomain> searchMovies(String title, String genre, BigDecimal minRating, LocalDate startDate, LocalDate endDate) {
+    public List<MovieDomain> searchMovies(
+            String title,
+            String genre,
+            BigDecimal minRating,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
         List<Movie> movieEntities = movieJpaRepository.advancedSearch(title, genre, minRating, startDate, endDate);
-        return MovieMapper.fromEntityListToDomList(movieEntities); // Menggunakan mapper untuk konversi
+
+        return MovieMapper.fromEntityListToDomList(movieEntities);
     }
 }

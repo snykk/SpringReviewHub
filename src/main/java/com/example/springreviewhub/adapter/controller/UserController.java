@@ -10,6 +10,7 @@ import com.example.springreviewhub.adapter.presenter.user.UserLimitedResponse;
 import com.example.springreviewhub.core.domain.Role;
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.interfaces.usecases.IUserUseCase;
+import com.example.springreviewhub.infrastructure.database.entity.User;
 import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,9 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<BaseResponse<AdvanceUserResponse>> me(@AuthenticationPrincipal Claims claims) {
+    public ResponseEntity<BaseResponse<AdvanceUserResponse>> me(
+            @AuthenticationPrincipal Claims claims
+    ) {
         UserDomain authenticatedUser = userUseCase.getAuthenticatedUser(claims.getSubject());
 
         return ResponseEntity.ok(BaseResponse.success(
@@ -43,26 +46,29 @@ public class UserController {
     }
 
     @GetMapping("")
-    public ResponseEntity<BaseResponse<List<?>>> getAll(@AuthenticationPrincipal Claims claims) {
+    public ResponseEntity<BaseResponse<List<?>>> getAll(
+            @AuthenticationPrincipal Claims claims
+    ) {
         String role = claims.get("role", String.class);
 
         List<UserDomain> users = userUseCase.getAllUsers();
 
         if (Role.Admin.name().equals(role)) {
-            List<AdvanceUserResponse> adminResponses = users.stream()
-                    .map(UserMapper::fromDomainToAdvanceUserResponse)
-                    .collect(Collectors.toList());
+            List<AdvanceUserResponse> adminResponses = UserMapper.fromDomainListToAdvanceUserResponseList(users);
+
             return ResponseEntity.ok(BaseResponse.success("all users fetched successfully", adminResponses));
         } else {
-            List<UserLimitedResponse> userResponses = users.stream()
-                    .map(UserMapper::fromDomainToUserLimitedResponse)
-                    .collect(Collectors.toList());
+            List<UserLimitedResponse> userResponses = UserMapper.fromDomainListToUserLimitedResponseList(users);
+
             return ResponseEntity.ok(BaseResponse.success("all users fetched successfully", userResponses));
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<?>> getById(@PathVariable Long id, @AuthenticationPrincipal Claims claims) {
+    public ResponseEntity<BaseResponse<?>> getById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Claims claims
+    ) {
         String role = claims.get("role", String.class);
 
         UserDomain user = userUseCase.getUserById(id);
@@ -91,15 +97,16 @@ public class UserController {
 
         UserDomain user = userUseCase.updateUser(userId, userDomain);
 
-        return ResponseEntity.ok(
-                BaseResponse.success(
+        return ResponseEntity.ok(BaseResponse.success(
                         "user data updated successfully",
                         UserMapper.fromDomainToAdvanceUserResponse(user))
         );
     }
 
     @DeleteMapping("")
-    public ResponseEntity<?> delete(@AuthenticationPrincipal Claims claims) {
+    public ResponseEntity<?> delete(
+            @AuthenticationPrincipal Claims claims
+    ) {
         Long userId = ((Number) claims.get("id")).longValue();
 
         userUseCase.deleteUser(userId);
@@ -114,7 +121,10 @@ public class UserController {
     ) {
         Long userId = ((Number) claims.get("id")).longValue();
 
-        userUseCase.changePassword(userId, changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
+        userUseCase.changePassword(
+                userId,
+                changePasswordRequest.getOldPassword(),
+                changePasswordRequest.getNewPassword());
 
         return ResponseEntity.ok(BaseResponse.success("password changed successfully"));
     }

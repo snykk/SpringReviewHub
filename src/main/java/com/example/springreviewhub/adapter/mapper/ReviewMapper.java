@@ -12,7 +12,7 @@ public class ReviewMapper {
     /**
      * Convert a `ReviewRequest` object to a `ReviewDomain` object.
      *
-     * @param reviewRequest the request object from the API layer containing review input data
+     * @param reviewRequest the request object from the Controller layer containing review input data
      * @return a `ReviewDomain` object representing the domain-level review model
      *
      * This method is typically used to convert incoming API requests into domain models,
@@ -35,7 +35,7 @@ public class ReviewMapper {
      * @return a `ReviewResponse` object to be sent as an API response
      *
      * This method is used to convert domain models into response objects,
-     * which can be returned to the client via the API layer.
+     * which can be returned to the client via the Controller layer.
      */
     public static ReviewResponse fromDomainToReviewResponse(ReviewDomain reviewDomain) {
         if (reviewDomain == null) {
@@ -50,7 +50,6 @@ public class ReviewMapper {
                 .setCreatedAt(reviewDomain.getCreatedAt())
                 .setUpdatedAt(reviewDomain.getUpdatedAt());
     }
-
 
     /**
      * Convert a list of `ReviewDomain` objects to a list of `ReviewResponse` objects.

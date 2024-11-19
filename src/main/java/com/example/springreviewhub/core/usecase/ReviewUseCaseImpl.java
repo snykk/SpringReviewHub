@@ -28,7 +28,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
 
         boolean reviewExists = reviewRepository.existsByUserIdAndMovieId(userId, reviewDomain.getMovieId());
         if (reviewExists) {
-            throw new DuplicateReviewException("user has already submitted a review for this movie.");
+            throw new DuplicateReviewException("User has already submitted a review for this movie.");
         }
 
         return reviewRepository.storeReviewAndUpdateMovieRating(reviewDomain);
@@ -46,7 +46,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
         ReviewDomain existingReview = existingReviewOpt.get();
 
         if (!existingReview.getUserId().equals(reviewDomain.getUserId())) {
-            throw new PermissionIssueException("you don't have access to update this review");
+            throw new PermissionIssueException("You don't have permission to update this review");
         }
 
         return reviewRepository.updateReviewAndUpdateMovieRating(reviewDomain);

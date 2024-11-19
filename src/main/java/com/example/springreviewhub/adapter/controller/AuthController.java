@@ -27,7 +27,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse<RegistrationResponse>> register(@RequestBody @Valid RegistrationRequest registrationRequest) {
+    public ResponseEntity<BaseResponse<RegistrationResponse>> register(
+            @RequestBody @Valid RegistrationRequest registrationRequest
+    ) {
         UserDomain userDomain = AuthMapper.fromRegisRequestToUserDomain(registrationRequest);
 
         UserDomain registeredUser = authUseCase.register(userDomain);
@@ -38,7 +40,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<BaseResponse<LoginResponse>> login(
+            @RequestBody @Valid LoginRequest loginRequest
+    ) {
         UserDomain userDomain = AuthMapper.fromLoginRequestToUserDomain(loginRequest);
 
         String token = authUseCase.authenticate(userDomain);

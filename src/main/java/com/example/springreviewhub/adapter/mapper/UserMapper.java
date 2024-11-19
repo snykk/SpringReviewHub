@@ -17,7 +17,7 @@ public class UserMapper {
      * @param userRequest the request object containing user data
      * @return a `UserDomain` object to be used in the core application logic
      *
-     * This method is used to map user input from the API layer into domain-level
+     * This method is used to map user input from the Controller layer into domain-level
      * objects that the application can process. Password encoding and role assignment
      * should be handled elsewhere, if applicable.
      */
@@ -40,7 +40,7 @@ public class UserMapper {
      * @return a `UserResponse` object to be sent as an API response
      *
      * This method is used to convert domain models into response objects,
-     * which can be returned to the client via the API layer.
+     * which can be returned to the client via the Controller layer.
      */
     public static AdvanceUserResponse fromDomainToAdvanceUserResponse(UserDomain userDomain) {
         if (userDomain == null) {
@@ -90,7 +90,7 @@ public class UserMapper {
      * @return a `UserLimitedResponse` object to be sent as an API response
      *
      * This method is used to convert domain models into response objects,
-     * which can be returned to the client via the API layer.
+     * which can be returned to the client via the Controller layer.
      */
     public static UserLimitedResponse fromDomainToUserLimitedResponse(UserDomain userDomain) {
         if (userDomain == null) {

@@ -33,13 +33,16 @@ public class MovieController {
         List<MovieDomain> movies = movieUseCase.getAllMovies();
 
         List<MovieResponse> responses = MovieMapper.fromDomainListToResponseList(movies);
+
         return ResponseEntity.ok(BaseResponse.success(
                 "movies data fetched successfully",
                 responses));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<MovieResponse>> getMovieById(@PathVariable Long id) {
+    public ResponseEntity<BaseResponse<MovieResponse>> getMovieById(
+            @PathVariable Long id
+    ) {
         MovieDomain movie = movieUseCase.getMovieById(id);
 
         MovieResponse movieResponse = MovieMapper.fromDomainToMovieResponse(movie);
@@ -51,7 +54,9 @@ public class MovieController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<MovieResponse>> createMovie(@RequestBody @Valid MovieRequest movieReq) {
+    public ResponseEntity<BaseResponse<MovieResponse>> createMovie(
+            @RequestBody @Valid MovieRequest movieReq
+    ) {
         MovieDomain movieDomain = MovieMapper.fromMovieRequestToDomain(movieReq);
 
         MovieDomain createdMovie = movieUseCase.createMovie(movieDomain);
@@ -63,7 +68,10 @@ public class MovieController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<MovieResponse>> updateMovie(@PathVariable Long id, @RequestBody @Valid MovieRequest movieReq) {
+    public ResponseEntity<BaseResponse<MovieResponse>> updateMovie(
+            @PathVariable Long id,
+            @RequestBody @Valid MovieRequest movieReq
+    ) {
         MovieDomain movieDomain = MovieMapper.fromMovieRequestToDomain(movieReq);
 
         MovieDomain updatedMovie = movieUseCase.updateMovie(id, movieDomain);
@@ -75,7 +83,9 @@ public class MovieController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMovie(
+            @PathVariable Long id
+    ) {
         movieUseCase.deleteMovie(id);
 
         return ResponseEntity.status(204).build();
@@ -87,7 +97,8 @@ public class MovieController {
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) BigDecimal minRating,
             @RequestParam(required = false) LocalDate startDate,
-            @RequestParam(required = false) LocalDate endDate) {
+            @RequestParam(required = false) LocalDate endDate
+    ) {
         if (minRating != null && (minRating.compareTo(BigDecimal.ONE) < 0 || minRating.compareTo(BigDecimal.TEN) > 0)) {
             throw new IllegalArgumentException("minRating must be between 1.0 and 10.0");
         }

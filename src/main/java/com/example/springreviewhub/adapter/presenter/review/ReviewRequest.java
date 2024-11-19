@@ -2,10 +2,8 @@ package com.example.springreviewhub.adapter.presenter.review;
 
 import jakarta.validation.constraints.*;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class ReviewRequest {
 
     @NotBlank(message = "Review text is required")

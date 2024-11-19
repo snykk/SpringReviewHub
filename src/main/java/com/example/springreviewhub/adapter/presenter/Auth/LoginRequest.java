@@ -1,12 +1,9 @@
 package com.example.springreviewhub.adapter.presenter.auth;
 
-import com.example.springreviewhub.core.domain.UserDomain;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.Setter;
 
-@Setter
 @Getter
 public class LoginRequest {
 

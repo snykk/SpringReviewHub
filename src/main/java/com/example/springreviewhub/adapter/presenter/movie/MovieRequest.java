@@ -2,13 +2,11 @@ package com.example.springreviewhub.adapter.presenter.movie;
 
 import jakarta.validation.constraints.*;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
-@Setter
 public class MovieRequest {
 
     @NotBlank(message = "Title is required")
@@ -36,7 +34,6 @@ public class MovieRequest {
     private String director;
 
     @NotNull(message = "Rating is required")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Rating must be at least 0.0")
-    @DecimalMax(value = "10.0", inclusive = true, message = "Rating must not exceed 10.0")
+    @DecimalMax(value = "10.0", message = "Rating must not exceed 10.0")
     private BigDecimal rating;
 }

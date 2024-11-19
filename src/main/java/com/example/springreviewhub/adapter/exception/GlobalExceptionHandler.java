@@ -42,7 +42,8 @@ public class GlobalExceptionHandler {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.failure("binding exception", errors));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.failure("binding exception", errors));
     }
 
     @ExceptionHandler(InvalidAuthHeaderException.class)
@@ -57,79 +58,49 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateReviewException.class)
     public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(DuplicateReviewException ex) {
-        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponse.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(ReviewNotFoundException.class)
     public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(ReviewNotFoundException ex) {
-        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponse.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(BadRequestException ex) {
-        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(ConflictException ex) {
-        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponse.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidOldPasswordException.class)
     public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(InvalidOldPasswordException ex) {
-        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<BaseResponse<Object>> handleInvalidCredentials(InvalidCredentialsException ex) {
-        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
-
-        return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(BaseResponse.failure(ex.getMessage()));
 
     }
 
     @ExceptionHandler(AccountLockedException.class)
     public ResponseEntity<BaseResponse<Object>> handleAccountLocked(AccountLockedException ex) {
-        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(BaseResponse.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(EmailNotVerifiedException.class)
     public ResponseEntity<BaseResponse<Object>> handleEmailNotVerified(EmailNotVerifiedException ex) {
-        BaseResponse<Object> response = BaseResponse.failure(ex.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(BaseResponse.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Object>> handleGeneralException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(BaseResponse.failure("an unexpected error occurred: " + ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(BaseResponse.failure("an unexpected error occurred: " + ex.getMessage()));
     }
 }

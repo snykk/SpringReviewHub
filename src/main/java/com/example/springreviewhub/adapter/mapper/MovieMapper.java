@@ -12,7 +12,7 @@ public class MovieMapper {
     /**
      * Convert a `MovieRequest` object to a `MovieDomain` object.
      *
-     * @param movieRequest the request object from the API layer containing movie input data
+     * @param movieRequest the request object from the Controller layer containing movie input data
      * @return a `MovieDomain` object representing the domain-level movie model
      *
      * This method is typically used to convert incoming API requests into domain models,
@@ -39,7 +39,7 @@ public class MovieMapper {
      * @return a `MovieResponse` object to be sent as an API response
      *
      * This method is used to convert domain models into response objects,
-     * which can be returned to the client via the API layer.
+     * which can be returned to the client via the Controller layer.
      */
     public static MovieResponse fromDomainToMovieResponse(MovieDomain movieDomain) {
         if (movieDomain == null) {
