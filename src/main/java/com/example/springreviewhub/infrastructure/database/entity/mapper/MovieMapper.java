@@ -32,7 +32,8 @@ public class MovieMapper {
                 .setDirector(movie.getDirector())
                 .setRating(movie.getRating())
                 .setCreatedAt(movie.getCreatedAt())
-                .setUpdatedAt(movie.getUpdatedAt());
+                .setUpdatedAt(movie.getUpdatedAt())
+                .setDeletedAt(movie.getDeletedAt());
     }
 
     /**
@@ -57,7 +58,10 @@ public class MovieMapper {
                 .setDuration(movieDomain.getDuration())
                 .setGenre(movieDomain.getGenre())
                 .setDirector(movieDomain.getDirector())
-                .setRating(movieDomain.getRating());
+                .setRating(movieDomain.getRating())
+                .setCreatedAt(movieDomain.getCreatedAt())
+                .setUpdatedAt(movieDomain.getUpdatedAt())
+                .setDeletedAt(movieDomain.getDeletedAt());
     }
 
     /**

@@ -15,16 +15,8 @@ import java.util.List;
  */
 public interface IMovieUseCase {
 
-    /**
-     * Retrieves a list of all movies.
-     * <p>
-     * This method returns all movies available in the system. It can be used to display
-     * a list of movies to the user or for internal processing.
-     * </p>
-     *
-     * @return a list of {@link MovieDomain} objects representing all movies
-     */
-    List<MovieDomain> getAllMovies();
+
+    List<MovieDomain> getAllMoviesWithRole(String role);
 
     /**
      * Retrieves details of a specific movie by its ID.
@@ -37,6 +29,8 @@ public interface IMovieUseCase {
      * @return the {@link MovieDomain} object representing the movie
      */
     MovieDomain getMovieById(Long id);
+
+    MovieDomain getMovieByIdWithRole(Long id, String role);
 
     /**
      * Creates a new movie entry in the system.

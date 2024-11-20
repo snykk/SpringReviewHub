@@ -21,12 +21,13 @@ public class MovieDomain {
     private String title;
     private String description;
     private LocalDate releaseDate;
-    private BigDecimal rating; // Average movie rating (e.g., out of 10)
-    private Integer duration; // Duration of the movie in minutes
-    private String genre; // Genre of the movie (e.g., Action, Comedy)
-    private String director; // Director of the movie
-    private LocalDateTime createdAt; // Record creation timestamp
-    private LocalDateTime updatedAt; // Record last update timestamp
+    private BigDecimal rating;
+    private Integer duration;
+    private String genre;
+    private String director;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
 
     //=========== Chaining Setters ============
     // Each setter returns the current object to allow for method chaining.
@@ -142,6 +143,17 @@ public class MovieDomain {
     }
 
     /**
+     * Sets the deleted timestamp.
+     *
+     * @param deletedAt the timestamp of data deletion.
+     * @return the current instance for method chaining.
+     */
+    public MovieDomain setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+        return this;
+    }
+
+    /**
      * Compares this MovieDomain object to another object for equality.
      * The comparison is based on the values of the attributes in both objects.
      *
@@ -177,6 +189,12 @@ public class MovieDomain {
         return Objects.hash(id, title, description, releaseDate, rating, duration, genre, director, createdAt, updatedAt);
     }
 
+    /**
+     * Provides a string representation of the MovieDomain object.
+     * This is useful for debugging and logging.
+     *
+     * @return a string representing the MovieDomain object
+     */
     @Override
     public String toString() {
         return "MovieDomain{" +
@@ -190,6 +208,7 @@ public class MovieDomain {
                 ", director='" + director + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", deletedAt=" + deletedAt +
                 '}';
     }
 }

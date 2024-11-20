@@ -6,9 +6,12 @@ import com.example.springreviewhub.adapter.presenter.movie.MovieResponse;
 import com.example.springreviewhub.core.domain.MovieDomain;
 import com.example.springreviewhub.core.interfaces.usecases.IMovieUseCase;
 import com.example.springreviewhub.adapter.presenter.movie.MovieRequest;
+import com.example.springreviewhub.infrastructure.security.JwtService;
+import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +32,13 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<List<MovieResponse>>> getAllMovies() {
-        List<MovieDomain> movies = movieUseCase.getAllMovies();
+    public ResponseEntity<BaseResponse<List<MovieResponse>>> getAllMovies(
+            @AuthenticationPrincipal Claims claims
+    ) {
+        String role = JwtService.extractRoleFromClaims(claims);
+        List<MovieDomain> movies = movieUseCase.getAllMoviesWithRole(role);
 
-        List<MovieResponse> responses = MovieMapper.fromDomainListToResponseList(movies);
+        List<MovieResponse> responses = MovieMapper.fromDomainListToResponseList(movies, role);
 
         return ResponseEntity.ok(BaseResponse.success(
                 "movies data fetched successfully",
@@ -41,11 +47,14 @@ public class MovieController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<MovieResponse>> getMovieById(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal Claims claims
     ) {
-        MovieDomain movie = movieUseCase.getMovieById(id);
+        String role = JwtService.extractRoleFromClaims(claims);
 
-        MovieResponse movieResponse = MovieMapper.fromDomainToMovieResponse(movie);
+        MovieDomain movie = movieUseCase.getMovieByIdWithRole(id, role);
+
+        MovieResponse movieResponse = MovieMapper.fromDomainToMovieResponse(movie, role);
 
         return ResponseEntity.ok(BaseResponse.success(
                 String.format("Movie data with id %d fetched successfully", id),
@@ -55,30 +64,36 @@ public class MovieController {
 
     @PostMapping
     public ResponseEntity<BaseResponse<MovieResponse>> createMovie(
-            @RequestBody @Valid MovieRequest movieReq
-    ) {
+            @RequestBody @Valid MovieRequest movieReq,
+            @AuthenticationPrincipal Claims claims
+            ) {
+        String role = JwtService.extractRoleFromClaims(claims);
+
         MovieDomain movieDomain = MovieMapper.fromMovieRequestToDomain(movieReq);
 
         MovieDomain createdMovie = movieUseCase.createMovie(movieDomain);
 
         return ResponseEntity.status(201).body(BaseResponse.success(
                 "movie data create successfully",
-                MovieMapper.fromDomainToMovieResponse(createdMovie))
+                MovieMapper.fromDomainToMovieResponse(createdMovie, role))
         );
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<MovieResponse>> updateMovie(
             @PathVariable Long id,
-            @RequestBody @Valid MovieRequest movieReq
+            @RequestBody @Valid MovieRequest movieReq,
+            @AuthenticationPrincipal Claims claims
     ) {
+        String role = JwtService.extractRoleFromClaims(claims);
+
         MovieDomain movieDomain = MovieMapper.fromMovieRequestToDomain(movieReq);
 
         MovieDomain updatedMovie = movieUseCase.updateMovie(id, movieDomain);
 
         return ResponseEntity.ok(BaseResponse.success(
                 String.format("Movie with id %d has been successfully updated", id),
-                MovieMapper.fromDomainToMovieResponse(updatedMovie)
+                MovieMapper.fromDomainToMovieResponse(updatedMovie, role)
         ));
     }
 
@@ -93,19 +108,22 @@ public class MovieController {
 
     @GetMapping("/search")
     public ResponseEntity<BaseResponse<List<MovieResponse>>> searchMovies(
+            @AuthenticationPrincipal Claims claims,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) BigDecimal minRating,
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalDate endDate
     ) {
+        String role = JwtService.extractRoleFromClaims(claims);
+
         if (minRating != null && (minRating.compareTo(BigDecimal.ONE) < 0 || minRating.compareTo(BigDecimal.TEN) > 0)) {
             throw new IllegalArgumentException("minRating must be between 1.0 and 10.0");
         }
 
         List<MovieDomain> movies = movieUseCase.searchMovies(title, genre, minRating, startDate, endDate);
 
-        List<MovieResponse> movieResponses = MovieMapper.fromDomainListToResponseList(movies);
+        List<MovieResponse> movieResponses = MovieMapper.fromDomainListToResponseList(movies, role);
 
         return ResponseEntity.ok(
                 BaseResponse.success("Movies fetched successfully", movieResponses)

@@ -10,7 +10,6 @@ import com.example.springreviewhub.adapter.presenter.user.UserLimitedResponse;
 import com.example.springreviewhub.core.domain.Role;
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.exception.PermissionIssueException;
-import com.example.springreviewhub.core.exception.UnauthorizedException;
 import com.example.springreviewhub.core.interfaces.usecases.IUserUseCase;
 import com.example.springreviewhub.infrastructure.security.JwtService;
 import io.jsonwebtoken.Claims;

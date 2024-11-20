@@ -22,13 +22,19 @@ public class MovieUseCaseImpl implements IMovieUseCase {
     }
 
     @Override
-    public List<MovieDomain> getAllMovies() {
-        return movieRepository.getAllMovies();
+    public List<MovieDomain> getAllMoviesWithRole(String role) {
+        return movieRepository.getAllMoviesWithRole(role);
     }
 
     @Override
     public MovieDomain getMovieById(Long id) {
         return movieRepository.getMovieById(id)
+                .orElseThrow(() -> new MovieNotFoundException(id));
+    }
+
+    @Override
+    public MovieDomain getMovieByIdWithRole(Long id, String role) {
+        return movieRepository.getMovieByIdWithRole(id, role)
                 .orElseThrow(() -> new MovieNotFoundException(id));
     }
 
@@ -50,7 +56,7 @@ public class MovieUseCaseImpl implements IMovieUseCase {
         movieRepository.getMovieById(id)
                 .orElseThrow(() -> new MovieNotFoundException(id));
 
-        movieRepository.deleteMovie(id);
+        movieRepository.softDelete(id);
     }
 
     @Override

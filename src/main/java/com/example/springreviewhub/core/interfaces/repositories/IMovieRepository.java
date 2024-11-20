@@ -24,7 +24,7 @@ public interface IMovieRepository {
      *
      * @return a list of all movies
      */
-    List<MovieDomain> getAllMovies();
+    List<MovieDomain> getAllMoviesWithRole(String role);
 
     /**
      * Retrieves a movie by its unique identifier.
@@ -38,6 +38,7 @@ public interface IMovieRepository {
      */
     Optional<MovieDomain> getMovieById(Long id);
 
+    Optional<MovieDomain> getMovieByIdWithRole(Long id, String role);
     /**
      * Creates a new movie in the repository.
      * <p>
@@ -62,16 +63,8 @@ public interface IMovieRepository {
      */
     MovieDomain updateMovie(Long id, MovieDomain movieDomain);
 
-    /**
-     * Deletes a movie from the repository.
-     * <p>
-     * This method removes the movie identified by its ID from the repository. If the movie exists, it is deleted
-     * and no further action is taken. Otherwise, no effect occurs.
-     * </p>
-     *
-     * @param id the unique identifier of the movie to be deleted
-     */
-    void deleteMovie(Long id);
+
+    void softDelete(Long id);
 
     /**
      * Searches for movies based on various criteria.

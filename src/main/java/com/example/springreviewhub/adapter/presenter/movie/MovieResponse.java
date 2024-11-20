@@ -1,9 +1,11 @@
 package com.example.springreviewhub.adapter.presenter.movie;
 
+import com.example.springreviewhub.adapter.presenter.user.AdvanceUserResponse;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 public class MovieResponse {
@@ -15,6 +17,8 @@ public class MovieResponse {
     private String genre;
     private String director;
     private BigDecimal rating;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // Chaining setters
     public MovieResponse setId(Long id) {
@@ -54,6 +58,16 @@ public class MovieResponse {
 
     public MovieResponse setRating(BigDecimal rating) {
         this.rating = rating;
+        return this;
+    }
+
+    public MovieResponse setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public MovieResponse setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
         return this;
     }
 }

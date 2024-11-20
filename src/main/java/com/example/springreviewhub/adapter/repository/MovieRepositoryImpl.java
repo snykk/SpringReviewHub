@@ -24,8 +24,8 @@ public class MovieRepositoryImpl implements IMovieRepository {
     }
 
     @Override
-    public List<MovieDomain> getAllMovies() {
-        List<Movie> movieEntities = movieJpaRepository.findAll();
+    public List<MovieDomain> getAllMoviesWithRole(String role) {
+        List<Movie> movieEntities = movieJpaRepository.findAllWithRole(role);
 
         return MovieMapper.fromEntityListToDomList(movieEntities);
     }
@@ -33,6 +33,13 @@ public class MovieRepositoryImpl implements IMovieRepository {
     @Override
     public Optional<MovieDomain> getMovieById(Long id) {
         Optional<Movie> movieEntity = movieJpaRepository.findById(id);
+
+        return movieEntity.map(MovieMapper::fromEntityToDomain);
+    }
+
+    @Override
+    public Optional<MovieDomain> getMovieByIdWithRole(Long id, String role) {
+        Optional<Movie> movieEntity = movieJpaRepository.findByIdWithRole(id, role);
 
         return movieEntity.map(MovieMapper::fromEntityToDomain);
     }
@@ -69,8 +76,8 @@ public class MovieRepositoryImpl implements IMovieRepository {
     }
 
     @Override
-    public void deleteMovie(Long id) {
-        movieJpaRepository.deleteById(id);
+    public void softDelete(Long id) {
+        movieJpaRepository.softDeleteMovie(id);
     }
 
     @Override

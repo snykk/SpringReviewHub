@@ -89,6 +89,11 @@ public class Movie {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     /**
+     * The timestamp when the movie record was deleted. This is nullable and indicates when the movie data was deleted.
+     */
+    private LocalDateTime deletedAt; // Nullable
+
+    /**
      * Sets the creation and update timestamps before the entity is persisted.
      * This method is called automatically during the persist lifecycle event.
      */
@@ -200,6 +205,43 @@ public class Movie {
     }
 
     /**
+     * Sets the creation timestamp of the movie.
+     *
+     * @param createdAt the creation timestamp to set
+     * @return the current instance of the Movie object, allowing for method chaining
+     */
+    public Movie setCreatedAt(LocalDateTime createdAt) {
+        if (createdAt != null) {
+            this.createdAt = createdAt;
+        }
+        return this;
+    }
+
+    /**
+     * Sets the last update timestamp of the movie.
+     *
+     * @param updatedAt the last update timestamp to set
+     * @return the current instance of the Movie object, allowing for method chaining
+     */
+    public Movie setUpdatedAt(LocalDateTime updatedAt) {
+        if (updatedAt != null) {
+            this.updatedAt = updatedAt;
+        }
+        return this;
+    }
+
+    /**
+     * Sets the deletion timestamp of the movie.
+     *
+     * @param deletedAt the timestamp to set when the movie is deleted
+     * @return the current instance of the movie object
+     */
+    public Movie setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+        return this;
+    }
+
+    /**
      * Returns a string representation of the movie entity.
      * This includes all attributes of the movie for easy debugging and logging.
      *
@@ -218,6 +260,7 @@ public class Movie {
                 ", rating=" + rating +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", deletedAt=" + deletedAt +
                 '}';
     }
 }
