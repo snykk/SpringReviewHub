@@ -48,9 +48,9 @@ public class UserController {
     public ResponseEntity<BaseResponse<List<?>>> getAll(
             @AuthenticationPrincipal Claims claims
     ) {
-        String role = claims.get("role", String.class);
+        String role = JwtService.extractRoleFromClaims(claims);
 
-        List<UserDomain> users = userUseCase.getAllUsers();
+        List<UserDomain> users = userUseCase.getAllUsersWithRole(role);
 
         if (Role.Admin.name().equals(role)) {
             List<AdvanceUserResponse> adminResponses = UserMapper.fromDomainListToAdvanceUserResponseList(users);
@@ -68,9 +68,9 @@ public class UserController {
             @PathVariable Long id,
             @AuthenticationPrincipal Claims claims
     ) {
-        String role = claims.get("role", String.class);
+        String role = JwtService.extractRoleFromClaims(claims);
 
-        UserDomain user = userUseCase.getUserById(id);
+        UserDomain user = userUseCase.getUserByIdWithRole(id, role);
 
         if (Role.Admin.name().equals(role)) {
             return ResponseEntity.ok(BaseResponse.success(

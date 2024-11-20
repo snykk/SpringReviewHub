@@ -39,6 +39,20 @@ public interface IUserRepository {
     Optional<UserDomain> findById(Long id);
 
     /**
+     * Finds a user by their ID and role.
+     * <p>
+     * This method searches for a user based on their unique ID and role. It ensures that the user is either an Admin
+     * or has the role specified in the parameter. If the user exists and matches the criteria, it returns the user
+     * wrapped in an `Optional`, otherwise an empty `Optional`.
+     * </p>
+     *
+     * @param id the unique identifier of the user
+     * @param role the role of the user (e.g., 'Admin')
+     * @return an `Optional` containing the user if found and matching the role, otherwise `Optional.empty()`
+     */
+    Optional<UserDomain> findByIdWithRole(Long id, String role);
+
+    /**
      * Finds a user by their email address.
      * <p>
      * This method searches for a user based on their email address. It returns an `Optional` containing the user
@@ -51,14 +65,15 @@ public interface IUserRepository {
     Optional<UserDomain> findByEmail(String email);
 
     /**
-     * Retrieves all users from the repository.
+     * Finds all users that have a specific role.
      * <p>
-     * This method fetches a list of all users stored in the repository.
+     * This method retrieves all users who have the specified role. It returns a list of users with the given role.
      * </p>
      *
-     * @return a list of all users
+     * @param role the role of the users to retrieve (e.g., 'Admin')
+     * @return a list of users who have the specified role
      */
-    List<UserDomain> findAll();
+    List<UserDomain> findAllWithRole(String role);
 
     /**
      * Saves a new user or updates an existing user in the repository.
@@ -73,12 +88,13 @@ public interface IUserRepository {
     UserDomain save(UserDomain user);
 
     /**
-     * Deletes a user by their unique identifier (ID).
+     * Soft deletes a user by setting a flag or marking the user as deleted.
      * <p>
-     * This method removes a user from the repository based on their unique ID.
+     * This method performs a soft delete on the user by marking them as deleted in the repository. It does not
+     * physically remove the user from the database, but rather marks them as deleted.
      * </p>
      *
-     * @param id the unique identifier of the user to be deleted
+     * @param id the ID of the user to soft delete
      */
-    void delete(Long id);
+    void softDelete(Long id);
 }

@@ -1,5 +1,6 @@
 package com.example.springreviewhub.core.usecase;
 
+import com.example.springreviewhub.core.domain.Role;
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.exception.BadRequestException;
 import com.example.springreviewhub.core.exception.ConflictException;
@@ -35,15 +36,14 @@ public class UserUseCaseImpl implements IUserUseCase {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-
     @Override
-    public List<UserDomain> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDomain> getAllUsersWithRole(String role) {
+        return userRepository.findAllWithRole(role);
     }
 
     @Override
-    public UserDomain getUserById(Long id) {
-        return userRepository.findById(id)
+    public UserDomain getUserByIdWithRole(Long id, String role) {
+        return userRepository.findByIdWithRole(id, role)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
@@ -69,13 +69,12 @@ public class UserUseCaseImpl implements IUserUseCase {
         return userRepository.save(existingUser);
     }
 
-
     @Override
     public void deleteUser(Long userId) {
-        UserDomain user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        userRepository.delete(user.getId());
+        userRepository.softDelete(userId);
     }
 
     @Override
@@ -99,7 +98,7 @@ public class UserUseCaseImpl implements IUserUseCase {
     @Override
     public UserDomain changeEmail(Long userId, String newEmail) {
         UserDomain existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (existingUser.getEmail().equals(newEmail)) {
             throw new ConflictException("Email did not change");
@@ -111,9 +110,9 @@ public class UserUseCaseImpl implements IUserUseCase {
             throw new ConflictException("Email already exists");
         }
 
-        existingUser.setEmail(newEmail).
-                setEmailVerified(false);
+        existingUser.setEmail(newEmail).setEmailVerified(false);
 
         return userRepository.save(existingUser);
     }
 }
+

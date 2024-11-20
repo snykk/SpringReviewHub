@@ -2,12 +2,10 @@ package com.example.springreviewhub.adapter.presenter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-//@Setter
 @Getter
 public class BaseResponse<T> {
     private boolean success;

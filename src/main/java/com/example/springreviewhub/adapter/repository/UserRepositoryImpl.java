@@ -28,31 +28,33 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public Optional<UserDomain> findById(Long id) {
-
         return userJpaRepository.findById(id)
                 .map(UserMapper::toDomain);
     }
 
     @Override
-    public List<UserDomain> findAll() {
+    public Optional<UserDomain> findByIdWithRole(Long id, String role) {
+        return userJpaRepository.findByIdWithRole(id, role)
+                .map(UserMapper::toDomain);
+    }
 
-        return userJpaRepository.findAll().stream()
+    @Override
+    public List<UserDomain> findAllWithRole(String role) {
+
+        return userJpaRepository.findAllWithRole(role).stream()
                 .map(UserMapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
     public UserDomain save(UserDomain user) {
         User userEntity = UserMapper.fromDomain(user);
-
         User savedEntity = userJpaRepository.save(userEntity);
-
         return UserMapper.toDomain(savedEntity);
     }
 
     @Override
-    public void delete(Long id) {
-
-        userJpaRepository.deleteById(id);
+    public void softDelete(Long id) {
+        userJpaRepository.softDeleteUser(id);
     }
 
     @Override

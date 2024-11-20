@@ -27,27 +27,29 @@ public interface IUserUseCase {
     UserDomain getAuthenticatedUser(String username);
 
     /**
-     * Retrieves a list of all users.
+     * Retrieves all users with a specific role.
      * <p>
-     * This method fetches all users in the system. It is primarily used for administrative
-     * purposes or to display a list of registered users.
+     * This method fetches a list of users who have the specified role. It is used for administrative tasks
+     * where all users of a specific role (e.g., Admin) need to be listed.
      * </p>
      *
-     * @return a list of {@link UserDomain} objects representing all users
+     * @param role the role to filter users by (e.g., 'Admin')
+     * @return a list of {@link UserDomain} objects representing users with the specified role
      */
-    List<UserDomain> getAllUsers();
+    List<UserDomain> getAllUsersWithRole(String role);
 
     /**
-     * Retrieves a user's details by their unique ID.
+     * Retrieves a user by their unique ID and role.
      * <p>
-     * This method fetches the details of a user based on their ID. It is commonly used
-     * for profile viewing or administrative actions.
+     * This method fetches a user based on their ID and ensures the user has the specified role.
+     * It is commonly used in cases where role-based access control is required.
      * </p>
      *
-     * @param id the unique identifier of the user
-     * @return the {@link UserDomain} object representing the user
+     * @param id   the unique identifier of the user
+     * @param role the role the user should have (e.g., 'Admin')
+     * @return a {@link UserDomain} object representing the user if found, or an empty Optional if not
      */
-    UserDomain getUserById(Long id);
+    UserDomain getUserByIdWithRole(Long id, String role);
 
     /**
      * Updates a user's details.
