@@ -51,6 +51,25 @@ public class JwtService {
     }
 
     /**
+     * Creates custom claims to be included in the JWT.
+     * <p>
+     * This method centralizes the logic for adding user-specific claims like ID, email, and role.
+     *
+     * @param user a {@link UserDomain} object representing the authenticated user
+     * @return a {@link Map} containing custom claims
+     */
+    public Map<String, Object> createCustomClaims(UserDomain user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("id", user.getId());
+        extraClaims.put("email", user.getEmail());
+        extraClaims.put("role", user.getRole());
+        return extraClaims;
+    }
+
+    /**
      * Generates a JWT token for the specified user.
      * <p>
      * The token includes custom claims, such as the user's ID, email, and role, in addition
@@ -61,16 +80,9 @@ public class JwtService {
      * @return a signed JWT token as a {@link String}
      */
     public String generateToken(String username, UserDomain user) {
-        // Define custom claims to be included in the JWT
-        Map<String, Object> extraClaims = new HashMap<>() {{
-            put("id", user.getId());
-            put("email", user.getEmail());
-            put("role", user.getRole());
-        }};
-
         // Build and sign the token
         return Jwts.builder()
-                .setClaims(extraClaims)
+                .setClaims(createCustomClaims(user))
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
@@ -109,6 +121,50 @@ public class JwtService {
      */
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
+    }
+
+    /**
+     * Extracts the user ID from the provided Claims object.
+     * <p>
+     * This method is static so it can be reused wherever needed without requiring an instance of JwtService.
+     *
+     * @param claims the {@link Claims} object extracted from a JWT
+     * @return the user ID as a {@link Long}
+     * @throws IllegalArgumentException if the 'id' claim is missing or invalid
+     */
+    public static Long extractIdFromClaims(Claims claims) {
+        if (claims == null || claims.get("id") == null) {
+            throw new IllegalArgumentException("Invalid Claims: Missing 'id'");
+        }
+        return ((Number) claims.get("id")).longValue();
+    }
+
+    /**
+     * Extracts the email from the provided Claims object.
+     *
+     * @param claims the {@link Claims} object extracted from a JWT
+     * @return the email as a {@link String}
+     * @throws IllegalArgumentException if the 'email' claim is missing or invalid
+     */
+    public static String extractEmailFromClaims(Claims claims) {
+        if (claims == null || claims.get("email") == null) {
+            throw new IllegalArgumentException("Invalid Claims: Missing 'email'");
+        }
+        return claims.get("email", String.class);
+    }
+
+    /**
+     * Extracts the role from the provided Claims object.
+     *
+     * @param claims the {@link Claims} object extracted from a JWT
+     * @return the role as a {@link String}
+     * @throws IllegalArgumentException if the 'role' claim is missing or invalid
+     */
+    public static String extractRoleFromClaims(Claims claims) {
+        if (claims == null || claims.get("role") == null) {
+            throw new IllegalArgumentException("Invalid Claims: Missing 'role'");
+        }
+        return claims.get("role", String.class);
     }
 
     /**

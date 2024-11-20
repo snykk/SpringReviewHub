@@ -10,7 +10,7 @@ import com.example.springreviewhub.adapter.presenter.user.UserLimitedResponse;
 import com.example.springreviewhub.core.domain.Role;
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.interfaces.usecases.IUserUseCase;
-import com.example.springreviewhub.infrastructure.database.entity.User;
+import com.example.springreviewhub.infrastructure.security.JwtService;
 import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -91,7 +90,7 @@ public class UserController {
             @RequestBody @Valid UserUpdateRequest updateRequest,
             @AuthenticationPrincipal Claims claims
     ) {
-        Long userId = ((Number) claims.get("id")).longValue();
+        Long userId = JwtService.extractIdFromClaims(claims);
 
         UserDomain userDomain = UserMapper.fromUserUpdateRequestToDomain(updateRequest);
 
@@ -107,7 +106,7 @@ public class UserController {
     public ResponseEntity<?> delete(
             @AuthenticationPrincipal Claims claims
     ) {
-        Long userId = ((Number) claims.get("id")).longValue();
+        Long userId = JwtService.extractIdFromClaims(claims);
 
         userUseCase.deleteUser(userId);
 
@@ -119,7 +118,7 @@ public class UserController {
             @AuthenticationPrincipal Claims claims,
             @RequestBody @Valid UserChangePasswordRequest changePasswordRequest
     ) {
-        Long userId = ((Number) claims.get("id")).longValue();
+        Long userId = JwtService.extractIdFromClaims(claims);
 
         userUseCase.changePassword(
                 userId,
@@ -134,7 +133,7 @@ public class UserController {
             @AuthenticationPrincipal Claims claims,
             @RequestBody @Valid UserChangeEmailRequest userChangeEmailRequest
     ) {
-        Long userId = ((Number) claims.get("id")).longValue();
+        Long userId = JwtService.extractIdFromClaims(claims);
 
         UserDomain UpdatedUser = userUseCase.changeEmail(userId, userChangeEmailRequest.getNewEmail());
 

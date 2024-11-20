@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+//@Setter
+@Getter
 public class BaseResponse<T> {
     private boolean success;
     private String message;

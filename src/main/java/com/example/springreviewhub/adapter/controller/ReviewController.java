@@ -1,12 +1,12 @@
 package com.example.springreviewhub.adapter.controller;
 
-import com.example.springreviewhub.adapter.mapper.MovieMapper;
 import com.example.springreviewhub.adapter.mapper.ReviewMapper;
 import com.example.springreviewhub.adapter.presenter.BaseResponse;
 import com.example.springreviewhub.adapter.presenter.review.ReviewRequest;
 import com.example.springreviewhub.adapter.presenter.review.ReviewResponse;
 import com.example.springreviewhub.core.domain.ReviewDomain;
 import com.example.springreviewhub.core.interfaces.usecases.IReviewUseCase;
+import com.example.springreviewhub.infrastructure.security.JwtService;
 import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class ReviewController {
             @RequestBody @Valid ReviewRequest reviewReq,
             @AuthenticationPrincipal Claims claims
     ) {
-        Long userId = ((Number) claims.get("id")).longValue();
+        Long userId = JwtService.extractIdFromClaims(claims);
 
         ReviewDomain reviewDomain = ReviewMapper.fromReviewRequestToDomain(reviewReq);
 
@@ -52,7 +52,7 @@ public class ReviewController {
             @RequestBody @Valid ReviewRequest reviewReq,
             @AuthenticationPrincipal Claims claims
     ) {
-        Long userId = ((Number) claims.get("id")).longValue();
+        Long userId = JwtService.extractIdFromClaims(claims);
 
         ReviewDomain reviewDomain = ReviewMapper.fromReviewRequestToDomain(reviewReq);
 
@@ -114,7 +114,7 @@ public class ReviewController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<Void>> deleteReview(@PathVariable Long id, @AuthenticationPrincipal Claims claims) {
-        Long userId = ((Number) claims.get("id")).longValue();
+        Long userId = JwtService.extractIdFromClaims(claims);
 
         reviewUseCase.deleteReview(id, userId);
 
