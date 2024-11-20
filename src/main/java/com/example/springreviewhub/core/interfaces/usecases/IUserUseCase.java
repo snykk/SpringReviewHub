@@ -100,4 +100,26 @@ public interface IUserUseCase {
      * @return the {@link UserDomain} object representing the user with the updated email
      */
     UserDomain changeEmail(Long userId, String newEmail);
+
+    /**
+     * Activates a user account.
+     * <p>
+     * This method enables a user account that was previously deactivated or disabled.
+     * It is typically used by administrators to restore access to a user.
+     * </p>
+     *
+     * @param userId the unique identifier of the user to be activated
+     */
+    void activateUser(Long userId);
+
+    /**
+     * Deactivates a user account.
+     * <p>
+     * This method disables a user account, preventing the user from accessing the system.
+     * It is commonly used for suspensions, account closures, or administrative actions.
+     * </p>
+     *
+     * @param userId the unique identifier of the user to be deactivated
+     */
+    void deactivateUser(Long userId);
 }

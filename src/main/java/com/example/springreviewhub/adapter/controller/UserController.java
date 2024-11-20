@@ -9,6 +9,8 @@ import com.example.springreviewhub.adapter.presenter.user.AdvanceUserResponse;
 import com.example.springreviewhub.adapter.presenter.user.UserLimitedResponse;
 import com.example.springreviewhub.core.domain.Role;
 import com.example.springreviewhub.core.domain.UserDomain;
+import com.example.springreviewhub.core.exception.PermissionIssueException;
+import com.example.springreviewhub.core.exception.UnauthorizedException;
 import com.example.springreviewhub.core.interfaces.usecases.IUserUseCase;
 import com.example.springreviewhub.infrastructure.security.JwtService;
 import io.jsonwebtoken.Claims;
@@ -141,4 +143,37 @@ public class UserController {
                 "email changed successfully",
                 UserMapper.fromDomainToAdvanceUserResponse(UpdatedUser)));
     }
+
+    @PostMapping("/{id}/activate")
+    public ResponseEntity<BaseResponse<String>> activateUser(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Claims claims
+    ) {
+        String role = JwtService.extractRoleFromClaims(claims);
+
+        if (!Role.Admin.name().equals(role)) {
+            throw new PermissionIssueException("Only admins can activate users");
+        }
+
+        userUseCase.activateUser(id);
+
+        return ResponseEntity.ok(BaseResponse.success("User activated successfully"));
+    }
+
+    @PostMapping("/{id}/deactivate")
+    public ResponseEntity<BaseResponse<String>> deactivateUser(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Claims claims
+    ) {
+        String role = JwtService.extractRoleFromClaims(claims);
+
+        if (!Role.Admin.name().equals(role)) {
+            throw new PermissionIssueException("Only admins can deactivate users");
+        }
+
+        userUseCase.deactivateUser(id);
+
+        return ResponseEntity.ok(BaseResponse.success("User deactivated successfully"));
+    }
+
 }

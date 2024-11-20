@@ -98,6 +98,12 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.failure(ex.getMessage()));
     }
 
+    @ExceptionHandler(PermissionIssueException.class)
+    public ResponseEntity<BaseResponse<Object>> handleEmailNotVerified(PermissionIssueException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(BaseResponse.failure(ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Object>> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

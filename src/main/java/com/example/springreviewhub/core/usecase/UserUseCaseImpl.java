@@ -114,5 +114,32 @@ public class UserUseCaseImpl implements IUserUseCase {
 
         return userRepository.save(existingUser);
     }
+
+    @Override
+    public void activateUser(Long userId) {
+        UserDomain user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (user.isActive()) {
+            throw new ConflictException("User is already active");
+        }
+
+        user.setIsActive(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void deactivateUser(Long userId) {
+        UserDomain user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (!user.isActive()) {
+            throw new ConflictException("User is already deactivated");
+        }
+
+        user.setIsActive(false);
+        userRepository.save(user);
+    }
+
 }
 
