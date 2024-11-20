@@ -38,7 +38,19 @@ public interface IMovieRepository {
      */
     Optional<MovieDomain> getMovieById(Long id);
 
+    /**
+     * Retrieves a movie by its unique identifier and role.
+     * <p>
+     * This method fetches a movie based on its ID and ensures it is associated with the specified role.
+     * Useful for scenarios where role-based access is required.
+     * </p>
+     *
+     * @param id   the unique identifier of the movie
+     * @param role the role to filter the movie by
+     * @return an Optional containing the movie if found and matches the role, or an empty Optional otherwise
+     */
     Optional<MovieDomain> getMovieByIdWithRole(Long id, String role);
+
     /**
      * Creates a new movie in the repository.
      * <p>
@@ -63,7 +75,15 @@ public interface IMovieRepository {
      */
     MovieDomain updateMovie(Long id, MovieDomain movieDomain);
 
-
+    /**
+     * Performs a soft delete on a movie.
+     * <p>
+     * This method marks a movie as deleted without physically removing it from the repository.
+     * Useful for maintaining historical data while preventing access to the movie in active lists.
+     * </p>
+     *
+     * @param id the unique identifier of the movie to be soft deleted
+     */
     void softDelete(Long id);
 
     /**
