@@ -28,7 +28,7 @@ public class AuthUseCaseImpl implements IAuthUseCase {
 
     @Override
     public UserDomain register(UserDomain user) {
-        Optional<UserDomain> existingUser = userRepository.findByUsername(user.getUsername());
+        Optional<UserDomain> existingUser = userRepository.findByUsername(user.getUsername(), false);
         if (existingUser.isPresent()) {
             throw new UsernameAlreadyTakenException("Username is already taken");
         }
@@ -39,7 +39,7 @@ public class AuthUseCaseImpl implements IAuthUseCase {
 
     @Override
     public String authenticate(UserDomain user) {
-        UserDomain userDomainFromDB = userRepository.findByUsername(user.getUsername())
+        UserDomain userDomainFromDB = userRepository.findByUsername(user.getUsername(), false)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
         if (!userDomainFromDB.isActive()) {
@@ -78,7 +78,7 @@ public class AuthUseCaseImpl implements IAuthUseCase {
 
     @Override
     public UserDomain getAuthenticatedUser(String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findByUsername(username, false)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 }

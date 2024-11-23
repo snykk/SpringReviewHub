@@ -36,29 +36,31 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<BaseResponse<AdvanceUserResponse>> me(
-            @AuthenticationPrincipal Claims claims
+            @AuthenticationPrincipal Claims claims,
+            @RequestParam(defaultValue = "false") boolean includeReviews
     ) {
-        UserDomain authenticatedUser = userUseCase.getAuthenticatedUser(claims.getSubject());
+        UserDomain authenticatedUser = userUseCase.getAuthenticatedUser(claims.getSubject(), includeReviews);
 
         return ResponseEntity.ok(BaseResponse.success(
                 "user data fetched successfully",
-                UserMapper.fromDomainToAdvanceUserResponse(authenticatedUser)));
+                UserMapper.fromDomainToAdvanceUserResponse(authenticatedUser, includeReviews)));
     }
 
     @GetMapping("")
     public ResponseEntity<BaseResponse<List<?>>> getAll(
-            @AuthenticationPrincipal Claims claims
+            @AuthenticationPrincipal Claims claims,
+            @RequestParam(defaultValue = "false") boolean includeReviews
     ) {
         String role = JwtService.extractRoleFromClaims(claims);
 
-        List<UserDomain> users = userUseCase.getAllUsersWithRole(role);
+        List<UserDomain> users = userUseCase.getAllUsersWithRole(role, includeReviews);
 
         if (Role.Admin.name().equals(role)) {
-            List<AdvanceUserResponse> adminResponses = UserMapper.fromDomainListToAdvanceUserResponseList(users);
+            List<AdvanceUserResponse> adminResponses = UserMapper.fromDomainListToAdvanceUserResponseList(users, includeReviews);
 
             return ResponseEntity.ok(BaseResponse.success("all users fetched successfully", adminResponses));
         } else {
-            List<UserLimitedResponse> userResponses = UserMapper.fromDomainListToUserLimitedResponseList(users);
+            List<UserLimitedResponse> userResponses = UserMapper.fromDomainListToUserLimitedResponseList(users, includeReviews);
 
             return ResponseEntity.ok(BaseResponse.success("all users fetched successfully", userResponses));
         }
@@ -67,7 +69,8 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<?>> getById(
             @PathVariable Long id,
-            @AuthenticationPrincipal Claims claims
+            @AuthenticationPrincipal Claims claims,
+            @RequestParam(defaultValue = "false") boolean includeReviews
     ) {
         String role = JwtService.extractRoleFromClaims(claims);
 
@@ -76,12 +79,12 @@ public class UserController {
         if (Role.Admin.name().equals(role)) {
             return ResponseEntity.ok(BaseResponse.success(
                     "user fetched successfully",
-                    UserMapper.fromDomainToAdvanceUserResponse(user))
+                    UserMapper.fromDomainToAdvanceUserResponse(user, includeReviews))
             );
         } else {
             return ResponseEntity.ok(BaseResponse.success(
                     "user fetched successfully",
-                    UserMapper.fromDomainToUserLimitedResponse(user))
+                    UserMapper.fromDomainToUserLimitedResponse(user, includeReviews))
             );
         }
     }
@@ -99,7 +102,7 @@ public class UserController {
 
         return ResponseEntity.ok(BaseResponse.success(
                         "user data updated successfully",
-                        UserMapper.fromDomainToAdvanceUserResponse(user))
+                        UserMapper.fromDomainToAdvanceUserResponse(user, false))
         );
     }
 
@@ -132,7 +135,8 @@ public class UserController {
     @PostMapping("/change-email")
     public ResponseEntity<BaseResponse<AdvanceUserResponse>> changeEmail(
             @AuthenticationPrincipal Claims claims,
-            @RequestBody @Valid UserChangeEmailRequest userChangeEmailRequest
+            @RequestBody @Valid UserChangeEmailRequest userChangeEmailRequest,
+            @RequestParam(defaultValue = "false") boolean includeReviews
     ) {
         Long userId = JwtService.extractIdFromClaims(claims);
 
@@ -140,7 +144,7 @@ public class UserController {
 
         return ResponseEntity.ok(BaseResponse.success(
                 "email changed successfully",
-                UserMapper.fromDomainToAdvanceUserResponse(UpdatedUser)));
+                UserMapper.fromDomainToAdvanceUserResponse(UpdatedUser, includeReviews)));
     }
 
     @PostMapping("/{id}/activate")

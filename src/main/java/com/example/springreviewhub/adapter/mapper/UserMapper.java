@@ -10,9 +10,8 @@ import java.util.stream.Collectors;
 
 public class UserMapper {
 
-
     /**
-     * Convert a `UserRequest` object to a `UserDomain` object.
+     * Convert a `UserUpdateRequest` object to a `UserDomain` object.
      *
      * @param userRequest the request object containing user data
      * @return a `UserDomain` object to be used in the core application logic
@@ -34,15 +33,16 @@ public class UserMapper {
     }
 
     /**
-     * Convert a `UserDomain` object to a `UserResponse` object.
+     * Convert a `UserDomain` object to an `AdvanceUserResponse` object.
      *
      * @param userDomain the domain object containing user data
-     * @return a `UserResponse` object to be sent as an API response
+     * @param isIncludeReviews whether to include reviews in the response
+     * @return an `AdvanceUserResponse` object to be sent as an API response
      *
-     * This method is used to convert domain models into response objects,
-     * which can be returned to the client via the Controller layer.
+     * This method is used to convert domain models into advanced response objects,
+     * which include additional user details and optionally reviews.
      */
-    public static AdvanceUserResponse fromDomainToAdvanceUserResponse(UserDomain userDomain) {
+    public static AdvanceUserResponse fromDomainToAdvanceUserResponse(UserDomain userDomain, boolean isIncludeReviews) {
         if (userDomain == null) {
             return null;
         }
@@ -61,25 +61,30 @@ public class UserMapper {
                 .setBio(userDomain.getBio())
                 .setCreatedAt(userDomain.getCreatedAt())
                 .setUpdatedAt(userDomain.getUpdatedAt())
-                .setDeletedAt(userDomain.getDeletedAt());
+                .setDeletedAt(userDomain.getDeletedAt())
+
+                .setReviews(isIncludeReviews ?
+                        ReviewMapper.fromDomainListToResponseList(userDomain.getReviews())
+                        : null);
     }
 
     /**
-     * Convert a list of `UserDomain` objects to a list of `UserResponse` objects.
+     * Convert a list of `UserDomain` objects to a list of `AdvanceUserResponse` objects.
      *
      * @param userDomains a list of domain-level user models
-     * @return a list of `UserResponse` objects to be sent as an API response
+     * @param isIncludeReviews whether to include reviews in the responses
+     * @return a list of `AdvanceUserResponse` objects to be sent as an API response
      *
-     * This method is useful for batch operations, such as returning a list of users
-     * in a paginated API response. It leverages streams for efficient mapping.
+     * This method is useful for batch operations, such as returning a list of advanced
+     * user details in a paginated API response.
      */
-    public static List<AdvanceUserResponse> fromDomainListToAdvanceUserResponseList(List<UserDomain> userDomains) {
+    public static List<AdvanceUserResponse> fromDomainListToAdvanceUserResponseList(List<UserDomain> userDomains, boolean isIncludeReviews) {
         if (userDomains == null || userDomains.isEmpty()) {
             return List.of();
         }
 
         return userDomains.stream()
-                .map(UserMapper::fromDomainToAdvanceUserResponse)
+                .map(userDomain -> UserMapper.fromDomainToAdvanceUserResponse(userDomain, isIncludeReviews))
                 .collect(Collectors.toList());
     }
 
@@ -87,12 +92,13 @@ public class UserMapper {
      * Convert a `UserDomain` object to a `UserLimitedResponse` object.
      *
      * @param userDomain the domain object containing user data
+     * @param isIncludeReviews whether to include reviews in the response
      * @return a `UserLimitedResponse` object to be sent as an API response
      *
-     * This method is used to convert domain models into response objects,
-     * which can be returned to the client via the Controller layer.
+     * This method is used to convert domain models into simplified response objects,
+     * suitable for scenarios where less user detail is required.
      */
-    public static UserLimitedResponse fromDomainToUserLimitedResponse(UserDomain userDomain) {
+    public static UserLimitedResponse fromDomainToUserLimitedResponse(UserDomain userDomain, boolean isIncludeReviews) {
         if (userDomain == null) {
             return null;
         }
@@ -106,25 +112,30 @@ public class UserMapper {
                 .setDateOfBirth(userDomain.getDateOfBirth())
                 .setBio(userDomain.getBio())
                 .setCreatedAt(userDomain.getCreatedAt())
-                .setUpdatedAt(userDomain.getUpdatedAt());
+                .setUpdatedAt(userDomain.getUpdatedAt())
+
+                .setReviews(isIncludeReviews ?
+                        ReviewMapper.fromDomainListToResponseList(userDomain.getReviews())
+                        : null);
     }
 
     /**
      * Convert a list of `UserDomain` objects to a list of `UserLimitedResponse` objects.
      *
      * @param userDomains a list of domain-level user models
+     * @param isIncludeReviews whether to include reviews in the responses
      * @return a list of `UserLimitedResponse` objects to be sent as an API response
      *
-     * This method is useful for batch operations, such as returning a list of users
-     * in a paginated API response. It leverages streams for efficient mapping.
+     * This method is useful for batch operations, such as returning a list of simplified
+     * user details in a paginated API response.
      */
-    public static List<UserLimitedResponse> fromDomainListToUserLimitedResponseList(List<UserDomain> userDomains) {
+    public static List<UserLimitedResponse> fromDomainListToUserLimitedResponseList(List<UserDomain> userDomains, boolean isIncludeReviews) {
         if (userDomains == null || userDomains.isEmpty()) {
             return List.of();
         }
 
         return userDomains.stream()
-                .map(UserMapper::fromDomainToUserLimitedResponse)
+                .map(userDomain -> UserMapper.fromDomainToUserLimitedResponse(userDomain, isIncludeReviews))
                 .collect(Collectors.toList());
     }
 }

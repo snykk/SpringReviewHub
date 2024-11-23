@@ -15,16 +15,17 @@ import java.util.Optional;
 public interface IUserRepository {
 
     /**
-     * Finds a user by their username.
+     * Finds a user by their username with an option to include reviews.
      * <p>
      * This method searches for a user based on their unique username. It returns an `Optional` containing the user
-     * if found, otherwise an empty `Optional`.
+     * if found, otherwise an empty `Optional`. Associated reviews can also be included in the result if specified.
      * </p>
      *
-     * @param username the username of the user to search for
+     * @param username      the username of the user to search for
+     * @param includeReviews whether to include associated reviews
      * @return an `Optional` containing the user if found, otherwise `Optional.empty()`
      */
-    Optional<UserDomain> findByUsername(String username);
+    Optional<UserDomain> findByUsername(String username, boolean includeReviews);
 
     /**
      * Finds a user by their unique identifier (ID).
@@ -65,15 +66,17 @@ public interface IUserRepository {
     Optional<UserDomain> findByEmail(String email);
 
     /**
-     * Finds all users that have a specific role.
+     * Finds all users that have a specific role with an option to include reviews.
      * <p>
      * This method retrieves all users who have the specified role. It returns a list of users with the given role.
+     * Reviews associated with the users can also be included if specified.
      * </p>
      *
-     * @param role the role of the users to retrieve (e.g., 'Admin')
+     * @param role           the role of the users to retrieve (e.g., 'Admin')
+     * @param includeReviews whether to include associated reviews
      * @return a list of users who have the specified role
      */
-    List<UserDomain> findAllWithRole(String role);
+    List<UserDomain> findAllWithRole(String role, boolean includeReviews);
 
     /**
      * Saves a new user or updates an existing user in the repository.

@@ -31,14 +31,14 @@ public class UserUseCaseImpl implements IUserUseCase {
     }
 
     @Override
-    public UserDomain getAuthenticatedUser(String username) {
-        return userRepository.findByUsername(username)
+    public UserDomain getAuthenticatedUser(String username, boolean includeReviews) {
+        return userRepository.findByUsername(username, includeReviews)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
-    public List<UserDomain> getAllUsersWithRole(String role) {
-        return userRepository.findAllWithRole(role);
+    public List<UserDomain> getAllUsersWithRole(String role, boolean includeReviews) {
+        return userRepository.findAllWithRole(role, includeReviews);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class UserUseCaseImpl implements IUserUseCase {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (updatedUser.getUsername() != null) {
-            if (userRepository.findByUsername(updatedUser.getUsername())
+            if (userRepository.findByUsername(updatedUser.getUsername(), false)
                     .filter(user -> !user.getId().equals(existingUser.getId()))
                     .isPresent()) {
                 throw new ConflictException("Username already exists");

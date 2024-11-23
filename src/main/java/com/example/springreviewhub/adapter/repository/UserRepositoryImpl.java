@@ -20,9 +20,9 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public Optional<UserDomain> findByUsername(String username) {
+    public Optional<UserDomain> findByUsername(String username, boolean includeReviews) {
         return userJpaRepository.findByUsername(username)
-                .map(user -> UserMapper.fromEntityToDomain(user, false));
+                .map(user -> UserMapper.fromEntityToDomain(user, includeReviews));
     }
 
     @Override
@@ -38,17 +38,10 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public List<UserDomain> findAllWithRole(String role) {
-        System.out.println("masih jalan kah");
-        List<User> user = userJpaRepository.findAll();
-
-        System.out.println(user);
+    public List<UserDomain> findAllWithRole(String role, boolean includeReviews) {
         List<User> userEntity = userJpaRepository.findAllWithRole(role);
 
-        System.out.println("ini user entity");
-        System.out.println(userEntity);
-
-        return UserMapper.fromEntityListToDomList(userEntity, false);
+        return UserMapper.fromEntityListToDomList(userEntity, includeReviews);
     }
 
     @Override

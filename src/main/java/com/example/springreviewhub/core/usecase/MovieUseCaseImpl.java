@@ -22,19 +22,19 @@ public class MovieUseCaseImpl implements IMovieUseCase {
     }
 
     @Override
-    public List<MovieDomain> getAllMoviesWithRole(String role) {
-        return movieRepository.getAllMoviesWithRole(role);
+    public List<MovieDomain> getAllMoviesWithRole(String role, boolean includeReviews) {
+        return movieRepository.getAllMoviesWithRole(role, includeReviews);
     }
 
     @Override
-    public MovieDomain getMovieById(Long id) {
-        return movieRepository.getMovieById(id)
+    public MovieDomain getMovieById(Long id, boolean includeReviews) {
+        return movieRepository.getMovieById(id, includeReviews)
                 .orElseThrow(() -> new MovieNotFoundException(id));
     }
 
     @Override
-    public MovieDomain getMovieByIdWithRole(Long id, String role) {
-        return movieRepository.getMovieByIdWithRole(id, role)
+    public MovieDomain getMovieByIdWithRole(Long id, String role, boolean includeReviews) {
+        return movieRepository.getMovieByIdWithRole(id, role, includeReviews)
                 .orElseThrow(() -> new MovieNotFoundException(id));
     }
 
@@ -45,7 +45,7 @@ public class MovieUseCaseImpl implements IMovieUseCase {
 
     @Override
     public MovieDomain updateMovie(Long id, MovieDomain movieDomain) {
-        movieRepository.getMovieById(id)
+        movieRepository.getMovieById(id, false)
                 .orElseThrow(() -> new MovieNotFoundException(id));
 
         return movieRepository.updateMovie(id, movieDomain);
@@ -53,14 +53,14 @@ public class MovieUseCaseImpl implements IMovieUseCase {
 
     @Override
     public void deleteMovie(Long id) {
-        movieRepository.getMovieById(id)
+        movieRepository.getMovieById(id, false)
                 .orElseThrow(() -> new MovieNotFoundException(id));
 
         movieRepository.softDelete(id);
     }
 
     @Override
-    public List<MovieDomain> searchMovies(String title, String genre, BigDecimal minRating, LocalDate startDate, LocalDate endDate) {
-        return movieRepository.searchMovies(title, genre, minRating, startDate, endDate);
+    public List<MovieDomain> searchMovies(String title, String genre, BigDecimal minRating, LocalDate startDate, LocalDate endDate, boolean includeReviews) {
+        return movieRepository.searchMovies(title, genre, minRating, startDate, endDate, includeReviews);
     }
 }

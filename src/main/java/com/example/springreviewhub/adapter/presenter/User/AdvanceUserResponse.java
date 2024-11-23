@@ -1,9 +1,12 @@
 package com.example.springreviewhub.adapter.presenter.user;
 
+import com.example.springreviewhub.adapter.presenter.review.ReviewResponse;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class AdvanceUserResponse {
@@ -23,6 +26,9 @@ public class AdvanceUserResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<ReviewResponse> reviews;
 
     // Chaining setter methods
     public AdvanceUserResponse setId(Long id) {
@@ -97,6 +103,11 @@ public class AdvanceUserResponse {
 
     public AdvanceUserResponse setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+        return this;
+    }
+
+    public AdvanceUserResponse setReviews(List<ReviewResponse> reviews) {
+        this.reviews = reviews;
         return this;
     }
 }

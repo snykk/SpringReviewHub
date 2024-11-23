@@ -33,12 +33,13 @@ public class MovieController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<List<MovieResponse>>> getAllMovies(
-            @AuthenticationPrincipal Claims claims
+            @AuthenticationPrincipal Claims claims,
+            @RequestParam(defaultValue = "false") boolean includeReviews
     ) {
         String role = JwtService.extractRoleFromClaims(claims);
-        List<MovieDomain> movies = movieUseCase.getAllMoviesWithRole(role);
+        List<MovieDomain> movies = movieUseCase.getAllMoviesWithRole(role, includeReviews);
 
-        List<MovieResponse> responses = MovieMapper.fromDomainListToResponseList(movies, role);
+        List<MovieResponse> responses = MovieMapper.fromDomainListToResponseList(movies, role, includeReviews);
 
         return ResponseEntity.ok(BaseResponse.success(
                 "movies data fetched successfully",
@@ -48,13 +49,14 @@ public class MovieController {
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<MovieResponse>> getMovieById(
             @PathVariable Long id,
-            @AuthenticationPrincipal Claims claims
+            @AuthenticationPrincipal Claims claims,
+            @RequestParam(defaultValue = "false") boolean includeReviews
     ) {
         String role = JwtService.extractRoleFromClaims(claims);
 
-        MovieDomain movie = movieUseCase.getMovieByIdWithRole(id, role);
+        MovieDomain movie = movieUseCase.getMovieByIdWithRole(id, role, includeReviews);
 
-        MovieResponse movieResponse = MovieMapper.fromDomainToMovieResponse(movie, role);
+        MovieResponse movieResponse = MovieMapper.fromDomainToMovieResponse(movie, role, includeReviews);
 
         return ResponseEntity.ok(BaseResponse.success(
                 String.format("Movie data with id %d fetched successfully", id),
@@ -75,7 +77,7 @@ public class MovieController {
 
         return ResponseEntity.status(201).body(BaseResponse.success(
                 "movie data create successfully",
-                MovieMapper.fromDomainToMovieResponse(createdMovie, role))
+                MovieMapper.fromDomainToMovieResponse(createdMovie, role, false))
         );
     }
 
@@ -93,7 +95,7 @@ public class MovieController {
 
         return ResponseEntity.ok(BaseResponse.success(
                 String.format("Movie with id %d has been successfully updated", id),
-                MovieMapper.fromDomainToMovieResponse(updatedMovie, role)
+                MovieMapper.fromDomainToMovieResponse(updatedMovie, role, false)
         ));
     }
 
@@ -113,7 +115,8 @@ public class MovieController {
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) BigDecimal minRating,
             @RequestParam(required = false) LocalDate startDate,
-            @RequestParam(required = false) LocalDate endDate
+            @RequestParam(required = false) LocalDate endDate,
+            @RequestParam(defaultValue = "false") boolean includeReviews
     ) {
         String role = JwtService.extractRoleFromClaims(claims);
 
@@ -121,9 +124,9 @@ public class MovieController {
             throw new IllegalArgumentException("minRating must be between 1.0 and 10.0");
         }
 
-        List<MovieDomain> movies = movieUseCase.searchMovies(title, genre, minRating, startDate, endDate);
+        List<MovieDomain> movies = movieUseCase.searchMovies(title, genre, minRating, startDate, endDate, includeReviews);
 
-        List<MovieResponse> movieResponses = MovieMapper.fromDomainListToResponseList(movies, role);
+        List<MovieResponse> movieResponses = MovieMapper.fromDomainListToResponseList(movies, role, includeReviews);
 
         return ResponseEntity.ok(
                 BaseResponse.success("Movies fetched successfully", movieResponses)

@@ -1,11 +1,13 @@
 package com.example.springreviewhub.adapter.presenter.movie;
 
-import com.example.springreviewhub.adapter.presenter.user.AdvanceUserResponse;
+import com.example.springreviewhub.adapter.presenter.review.ReviewResponse;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class MovieResponse {
@@ -19,6 +21,9 @@ public class MovieResponse {
     private BigDecimal rating;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<ReviewResponse> reviews;
 
     // Chaining setters
     public MovieResponse setId(Long id) {
@@ -68,6 +73,11 @@ public class MovieResponse {
 
     public MovieResponse setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+        return this;
+    }
+
+    public MovieResponse setReviews(List<ReviewResponse> reviews) {
+        this.reviews = reviews;
         return this;
     }
 }

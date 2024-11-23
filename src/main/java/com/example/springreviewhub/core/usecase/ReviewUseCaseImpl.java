@@ -36,7 +36,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
                 .orElseThrow(() -> new UserNotFoundException("user not found"));
         reviewDomain.setUser(user);
 
-        MovieDomain movie = movieRepository.getMovieById(reviewDomain.getMovieId())
+        MovieDomain movie = movieRepository.getMovieById(reviewDomain.getMovieId(), false)
                 .orElseThrow(() -> new MovieNotFoundException("movie not found"));
         reviewDomain.setMovie(movie);
 

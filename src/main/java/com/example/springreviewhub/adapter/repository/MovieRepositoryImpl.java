@@ -24,24 +24,24 @@ public class MovieRepositoryImpl implements IMovieRepository {
     }
 
     @Override
-    public List<MovieDomain> getAllMoviesWithRole(String role) {
+    public List<MovieDomain> getAllMoviesWithRole(String role, boolean includeReviews) {
         List<Movie> movieEntities = movieJpaRepository.findAllWithRole(role);
 
-        return MovieMapper.fromEntityListToDomList(movieEntities, false);
+        return MovieMapper.fromEntityListToDomList(movieEntities, includeReviews);
     }
 
     @Override
-    public Optional<MovieDomain> getMovieById(Long id) {
+    public Optional<MovieDomain> getMovieById(Long id, boolean includeReviews) {
         Optional<Movie> movieEntity = movieJpaRepository.findById(id);
 
-        return movieEntity.map(movie ->  MovieMapper.fromEntityToDomain(movie, false));
+        return movieEntity.map(movie ->  MovieMapper.fromEntityToDomain(movie, includeReviews));
     }
 
     @Override
-    public Optional<MovieDomain> getMovieByIdWithRole(Long id, String role) {
+    public Optional<MovieDomain> getMovieByIdWithRole(Long id, String role, boolean includeReviews) {
         Optional<Movie> movieEntity = movieJpaRepository.findByIdWithRole(id, role);
 
-        return movieEntity.map(movie -> MovieMapper.fromEntityToDomain(movie, false));
+        return movieEntity.map(movie -> MovieMapper.fromEntityToDomain(movie, includeReviews));
     }
 
     @Override
@@ -86,10 +86,11 @@ public class MovieRepositoryImpl implements IMovieRepository {
             String genre,
             BigDecimal minRating,
             LocalDate startDate,
-            LocalDate endDate
+            LocalDate endDate,
+            boolean includeReviews
     ) {
         List<Movie> movieEntities = movieJpaRepository.advancedSearch(title, genre, minRating, startDate, endDate);
 
-        return MovieMapper.fromEntityListToDomList(movieEntities, false);
+        return MovieMapper.fromEntityListToDomList(movieEntities, includeReviews);
     }
 }
