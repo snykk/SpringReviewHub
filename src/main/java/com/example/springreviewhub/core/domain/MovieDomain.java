@@ -158,6 +158,12 @@ public class MovieDomain {
         return this;
     }
 
+    /**
+     * Sets the list of reviews for the movie.
+     *
+     * @param reviews the list of {@link ReviewDomain} objects representing the reviews for the movie
+     * @return the current instance of {@link MovieDomain} for method chaining
+     */
     public MovieDomain setReviews(List<ReviewDomain> reviews) {
         this.reviews = reviews;
         return this;

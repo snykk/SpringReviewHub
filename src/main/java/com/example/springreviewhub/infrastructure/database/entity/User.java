@@ -107,7 +107,15 @@ public class User {
     @Column(length = 500)
     private String bio; // Nullable
 
-        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    /**
+     * The list of reviews written by the user.
+     * <p>
+     * This field holds a collection of {@link Review} objects, each representing a review
+     * created by the user. The reviews are lazily loaded and associated with the user
+     * via a one-to-many relationship.
+     * </p>
+     */
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
     /**
@@ -314,7 +322,6 @@ public class User {
         this.reviews.add(review);
         return this;
     }
-
 
     /**
      * Sets the creation timestamp of the user.

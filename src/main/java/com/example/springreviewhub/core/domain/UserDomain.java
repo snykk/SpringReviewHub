@@ -258,7 +258,12 @@ public class UserDomain {
         this.deletedAt = deletedAt;
         return this;
     }
-
+    /**
+     * Sets the list of reviews for the user.
+     *
+     * @param reviews the list of {@link ReviewDomain} objects representing the reviews for the user
+     * @return the current instance of {@link UserDomain} for method chaining
+     */
     public UserDomain setReviews(List<ReviewDomain> reviews) {
         this.reviews = reviews;
         return this;

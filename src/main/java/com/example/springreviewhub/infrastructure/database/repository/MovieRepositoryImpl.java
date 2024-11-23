@@ -1,4 +1,4 @@
-package com.example.springreviewhub.adapter.repository;
+package com.example.springreviewhub.infrastructure.database.repository;
 
 import com.example.springreviewhub.core.domain.MovieDomain;
 import com.example.springreviewhub.core.interfaces.repositories.IMovieRepository;

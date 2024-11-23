@@ -45,7 +45,7 @@ public class Review {
 
     /**
      * The movie associated with the review.
-     * This is a lazy-loaded relationship to the Movie entity.
+     * This is a eager-loaded relationship to the Movie entity.
      */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "movie_id", referencedColumnName = "id")
@@ -54,7 +54,7 @@ public class Review {
 
     /**
      * The user associated with the review.
-     * This is a lazy-loaded relationship to the User entity.
+     * This is a eager-loaded relationship to the User entity.
      */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

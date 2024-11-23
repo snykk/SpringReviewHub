@@ -1,4 +1,4 @@
-package com.example.springreviewhub.adapter.repository;
+package com.example.springreviewhub.infrastructure.database.repository;
 
 import com.example.springreviewhub.core.exception.TransactionOperationException;
 import com.example.springreviewhub.core.domain.ReviewDomain;

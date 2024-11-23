@@ -77,6 +77,14 @@ public class Movie {
     @DecimalMax(value = "10.0", inclusive = true)
     private BigDecimal rating;
 
+    /**
+     * The list of reviews associated with the movie.
+     * <p>
+     * This field holds a collection of {@link Review} objects, each representing a review
+     * written for the movie. The reviews are lazily loaded and associated with the movie
+     * via a one-to-many relationship.
+     * </p>
+     */
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
