@@ -1,10 +1,12 @@
 package com.example.springreviewhub.core.usecase;
 
+import com.example.springreviewhub.core.domain.MovieDomain;
 import com.example.springreviewhub.core.domain.ReviewDomain;
-import com.example.springreviewhub.core.exception.DuplicateReviewException;
-import com.example.springreviewhub.core.exception.PermissionIssueException;
-import com.example.springreviewhub.core.exception.ReviewNotFoundException;
+import com.example.springreviewhub.core.domain.UserDomain;
+import com.example.springreviewhub.core.exception.*;
+import com.example.springreviewhub.core.interfaces.repositories.IMovieRepository;
 import com.example.springreviewhub.core.interfaces.repositories.IReviewRepository;
+import com.example.springreviewhub.core.interfaces.repositories.IUserRepository;
 import com.example.springreviewhub.core.interfaces.usecases.IReviewUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +19,26 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
 
     private final IReviewRepository reviewRepository;
 
+    private final IUserRepository userRepository;
+
+    private final IMovieRepository movieRepository;
+
     @Autowired
-    public ReviewUseCaseImpl(IReviewRepository reviewRepository) {
+    public ReviewUseCaseImpl(IReviewRepository reviewRepository, IUserRepository userRepository, IMovieRepository movieRepository) {
         this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
+        this.movieRepository = movieRepository;
     }
 
     @Override
     public ReviewDomain createReview(Long userId, ReviewDomain reviewDomain) {
-        reviewDomain.setUserId(userId);
+        UserDomain user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
+        reviewDomain.setUser(user);
+
+        MovieDomain movie = movieRepository.getMovieById(reviewDomain.getMovieId())
+                .orElseThrow(() -> new MovieNotFoundException("movie not found"));
+        reviewDomain.setMovie(movie);
 
         boolean reviewExists = reviewRepository.existsByUserIdAndMovieId(userId, reviewDomain.getMovieId());
         if (reviewExists) {
@@ -36,16 +50,14 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
 
     @Override
     public ReviewDomain updateReview(Long reviewId, Long userId, ReviewDomain reviewDomain) {
-        reviewDomain.setUserId(userId);
-        reviewDomain.setId(reviewId);
 
-        Optional<ReviewDomain> existingReviewOpt = reviewRepository.findById(reviewDomain.getId());
+        Optional<ReviewDomain> existingReviewOpt = reviewRepository.findById(reviewId);
         if (existingReviewOpt.isEmpty()) {
             throw new ReviewNotFoundException(String.format("Review with id %s does not exist.", reviewId));
         }
         ReviewDomain existingReview = existingReviewOpt.get();
 
-        if (!existingReview.getUserId().equals(reviewDomain.getUserId())) {
+        if (!existingReview.getUserId().equals(userId)) {
             throw new PermissionIssueException("You don't have permission to update this review");
         }
 

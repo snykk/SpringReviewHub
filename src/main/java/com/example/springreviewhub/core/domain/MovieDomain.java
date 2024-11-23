@@ -1,6 +1,7 @@
 package com.example.springreviewhub.core.domain;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import java.util.Objects;
  * </p>
  */
 @Getter
+@ToString
 public class MovieDomain {
     private Long id;
     private String title;
@@ -151,64 +153,5 @@ public class MovieDomain {
     public MovieDomain setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
         return this;
-    }
-
-    /**
-     * Compares this MovieDomain object to another object for equality.
-     * The comparison is based on the values of the attributes in both objects.
-     *
-     * @param o the object to compare with
-     * @return true if the objects are equal, false otherwise
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MovieDomain movie = (MovieDomain) o;
-
-        return Objects.equals(id, movie.id) &&
-                Objects.equals(title, movie.title) &&
-                Objects.equals(description, movie.description) &&
-                Objects.equals(releaseDate, movie.releaseDate) &&
-                Objects.equals(rating, movie.rating) &&
-                Objects.equals(duration, movie.duration) &&
-                Objects.equals(genre, movie.genre) &&
-                Objects.equals(director, movie.director) &&
-                Objects.equals(createdAt, movie.createdAt) &&
-                Objects.equals(updatedAt, movie.updatedAt);
-    }
-
-    /**
-     * Generates a hash code for the MovieDomain object based on its attributes.
-     * This hash code is used in hash-based collections like HashMap and HashSet.
-     *
-     * @return an integer representing the hash code of the object
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, description, releaseDate, rating, duration, genre, director, createdAt, updatedAt);
-    }
-
-    /**
-     * Provides a string representation of the MovieDomain object.
-     * This is useful for debugging and logging.
-     *
-     * @return a string representing the MovieDomain object
-     */
-    @Override
-    public String toString() {
-        return "MovieDomain{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", releaseDate=" + releaseDate +
-                ", rating=" + rating +
-                ", duration=" + duration +
-                ", genre='" + genre + '\'' +
-                ", director='" + director + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", deletedAt=" + deletedAt +
-                '}';
     }
 }

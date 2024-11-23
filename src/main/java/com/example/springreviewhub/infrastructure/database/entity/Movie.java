@@ -9,6 +9,8 @@ import org.hibernate.annotations.Check;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a Movie entity in the database.
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 @Table(name = "movies")
 @Getter
 @Check(constraints = "rating >= 1.0 AND rating <= 10.0") // Ensures the rating is within a valid range
+@ToString
 public class Movie {
 
     /**
@@ -74,11 +77,13 @@ public class Movie {
     @DecimalMax(value = "10.0", inclusive = true)
     private BigDecimal rating;
 
+    @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
+
     /**
      * The timestamp when the movie was created. Automatically set on persist and cannot be updated.
      */
     @Column(nullable = false, updatable = false)
-    // @Setter(AccessLevel.NONE) // Prevent modification from outside
     private LocalDateTime createdAt = LocalDateTime.now();
 
     /**
@@ -205,6 +210,28 @@ public class Movie {
     }
 
     /**
+     * Sets the reviews associated with the movie.
+     *
+     * @param reviews the list of reviews to set
+     * @return the current instance of the Movie object
+     */
+    public Movie setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+        return this;
+    }
+
+    /**
+     * Adds a review to the movie's list of reviews.
+     *
+     * @param review the review to add
+     * @return the current instance of the Movie object
+     */
+    public Movie addReview(Review review) {
+        this.reviews.add(review);
+        return this;
+    }
+
+    /**
      * Sets the creation timestamp of the movie.
      *
      * @param createdAt the creation timestamp to set
@@ -239,28 +266,5 @@ public class Movie {
     public Movie setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
         return this;
-    }
-
-    /**
-     * Returns a string representation of the movie entity.
-     * This includes all attributes of the movie for easy debugging and logging.
-     *
-     * @return a string containing all movie details
-     */
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", releaseDate=" + releaseDate +
-                ", duration=" + duration +
-                ", genre='" + genre + '\'' +
-                ", director='" + director + '\'' +
-                ", rating=" + rating +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", deletedAt=" + deletedAt +
-                '}';
     }
 }

@@ -45,7 +45,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
             reviewJpaRepository.save(reviewEntity);
 
             TypedQuery<Double> ratingQuery = entityManager.createQuery(
-                    "SELECT AVG(r.rating) FROM Review r WHERE r.movieId = :movieId", Double.class);
+                    "SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId", Double.class);
             ratingQuery.setParameter("movieId", reviewDomain.getMovieId());
 
             Double avgRating = ratingQuery.getSingleResult();
@@ -76,7 +76,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     @Override
     public boolean existsByUserIdAndMovieId(Long userId, Long movieId) {
         TypedQuery<Long> query = entityManager.createQuery(
-                "SELECT COUNT(r) FROM Review r WHERE r.userId = :userId AND r.movieId = :movieId", Long.class);
+                "SELECT COUNT(r) FROM Review r WHERE r.user.id = :userId AND r.movie.id = :movieId", Long.class);
         query.setParameter("userId", userId);
         query.setParameter("movieId", movieId);
 
@@ -87,7 +87,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     @Override
     public Optional<ReviewDomain> findByUserIdAndMovieId(Long userId, Long movieId) {
         TypedQuery<Review> query = entityManager.createQuery(
-                "SELECT r FROM Review r WHERE r.userId = :userId AND r.movieId = :movieId", Review.class);
+                "SELECT r FROM Review r WHERE r.user.id = :userId AND r.movie.id = :movieId", Review.class);
         query.setParameter("userId", userId);
         query.setParameter("movieId", movieId);
 
@@ -115,7 +115,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
             reviewJpaRepository.save(existingReview);
 
             TypedQuery<Double> ratingQuery = entityManager.createQuery(
-                    "SELECT AVG(r.rating) FROM Review r WHERE r.movieId = :movieId", Double.class);
+                    "SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId", Double.class);
             ratingQuery.setParameter("movieId", reviewDomain.getMovieId());
 
             Double avgRating = ratingQuery.getSingleResult();
@@ -161,7 +161,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     @Override
     public List<ReviewDomain> findByMovieId(Long movieId) {
         TypedQuery<Review> query = entityManager.createQuery(
-                "SELECT r FROM Review r WHERE r.movieId = :movieId", Review.class);
+                "SELECT r FROM Review r WHERE r.movie.id = :movieId", Review.class);
         query.setParameter("movieId", movieId);
 
         return query.getResultList().stream()
@@ -172,7 +172,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     @Override
     public List<ReviewDomain> findByUserId(Long userId) {
         TypedQuery<Review> query = entityManager.createQuery(
-                "SELECT r FROM Review r WHERE r.userId = :userId", Review.class);
+                "SELECT r FROM Review r WHERE r.user.id = :userId", Review.class);
         query.setParameter("userId", userId);
 
         return query.getResultList().stream()

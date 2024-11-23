@@ -1,6 +1,7 @@
 package com.example.springreviewhub.core.domain;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.Objects;
  * </p>
  */
 @Getter
+@ToString
 public class UserDomain {
 
     private Long id;
@@ -252,76 +254,5 @@ public class UserDomain {
     public UserDomain setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
         return this;
-    }
-
-    /**
-     * Compares this UserDomain object to another object for equality.
-     * The comparison is based on the values of the attributes in both objects.
-     *
-     * @param o the object to compare with
-     * @return true if the objects are equal, false otherwise
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserDomain user = (UserDomain) o;
-
-        return isActive == user.isActive &&
-                failedLoginAttempts == user.failedLoginAttempts &&
-                emailVerified == user.emailVerified &&
-                Objects.equals(id, user.id) &&
-                Objects.equals(username, user.username) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(password, user.password) &&
-                role == user.role &&
-                Objects.equals(createdAt, user.createdAt) &&
-                Objects.equals(updatedAt, user.updatedAt) &&
-                Objects.equals(lastLoginAt, user.lastLoginAt) &&
-                Objects.equals(phoneNumber, user.phoneNumber) &&
-                Objects.equals(address, user.address) &&
-                Objects.equals(dateOfBirth, user.dateOfBirth) &&
-                Objects.equals(bio, user.bio) &&
-                Objects.equals(deletedAt, user.deletedAt);
-    }
-
-    /**
-     * Generates a hash code for the UserDomain object based on its attributes.
-     * This hash code is used in hash-based collections like HashMap and HashSet.
-     *
-     * @return an integer representing the hash code of the object
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, email, password, role, createdAt, updatedAt, isActive, lastLoginAt,
-                failedLoginAttempts, phoneNumber, address, dateOfBirth, emailVerified, bio, deletedAt);
-    }
-
-    /**
-     * Provides a string representation of the UserDomain object.
-     * This is useful for debugging and logging.
-     *
-     * @return a string representing the UserDomain object
-     */
-    @Override
-    public String toString() {
-        return "UserDomain{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", isActive=" + isActive +
-                ", lastLoginAt=" + lastLoginAt +
-                ", failedLoginAttempts=" + failedLoginAttempts +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", address='" + address + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", emailVerified=" + emailVerified +
-                ", bio='" + bio + '\'' +
-                ", deletedAt=" + deletedAt +
-                '}';
     }
 }

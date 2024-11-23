@@ -8,6 +8,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a User entity in the database.
@@ -19,7 +21,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Getter
-@ToString
+@ToString(exclude = "password")
 @Table(name = "users")
 public class User {
 
@@ -105,11 +107,13 @@ public class User {
     @Column(length = 500)
     private String bio; // Nullable
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
+
     /**
      * The timestamp when the user record was created. This cannot be updated once set.
      */
     @Column(nullable = false, updatable = false)
-    // @Setter(AccessLevel.NONE) // Prevent modification from outside
     private LocalDateTime createdAt;
 
     /**
@@ -288,6 +292,29 @@ public class User {
         this.bio = bio;
         return this;
     }
+
+    /**
+     * Sets the reviews associated with the user.
+     *
+     * @param reviews the list of reviews to set
+     * @return the current instance of the User object
+     */
+    public User setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+        return this;
+    }
+
+    /**
+     * Adds a review to the user's list of reviews.
+     *
+     * @param review the review to add
+     * @return the current instance of the User object
+     */
+    public User addReview(Review review) {
+        this.reviews.add(review);
+        return this;
+    }
+
 
     /**
      * Sets the creation timestamp of the user.

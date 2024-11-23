@@ -26,8 +26,10 @@ public class ReviewMapper {
                 .setId(review.getId())
                 .setText(review.getText())
                 .setRating(review.getRating())
-                .setMovieId(review.getMovieId())
-                .setUserId(review.getUserId())
+                .setMovieId(review.getMovie().getId())
+                .setMovie(MovieMapper.fromEntityToDomain(review.getMovie()))
+                .setUserId(review.getUser().getId())
+                .setUser(UserMapper.toDomain(review.getUser()))
                 .setCreatedAt(review.getCreatedAt())
                 .setUpdatedAt(review.getUpdatedAt());
     }
@@ -50,8 +52,8 @@ public class ReviewMapper {
                 .setId(reviewDomain.getId())
                 .setText(reviewDomain.getText())
                 .setRating(reviewDomain.getRating())
-                .setMovieId(reviewDomain.getMovieId())
-                .setUserId(reviewDomain.getUserId())
+                .setMovie(MovieMapper.fromDomainToEntity(reviewDomain.getMovie()))
+                .setUser(UserMapper.fromDomain(reviewDomain.getUser()))
                 .setCreatedAt(reviewDomain.getCreatedAt())
                 .setUpdatedAt(reviewDomain.getUpdatedAt());
     }

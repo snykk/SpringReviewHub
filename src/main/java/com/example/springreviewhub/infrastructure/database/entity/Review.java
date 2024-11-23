@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "reviews")
 @Getter
+@ToString
 public class Review {
 
     /**
@@ -43,32 +44,20 @@ public class Review {
     private Integer rating;
 
     /**
-     * The ID of the movie being reviewed.
-     */
-    @Column(name = "movie_id", nullable = false)
-    private Long movieId;
-
-    /**
      * The movie associated with the review.
      * This is a lazy-loaded relationship to the Movie entity.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "movie_id", referencedColumnName = "id")
     @ToString.Exclude
     private Movie movie;
-
-    /**
-     * The ID of the user who wrote the review.
-     */
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
 
     /**
      * The user associated with the review.
      * This is a lazy-loaded relationship to the User entity.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
     private User user;
 
@@ -76,14 +65,12 @@ public class Review {
      * The timestamp when the review was created. Automatically set on persist and cannot be updated.
      */
     @Column(name = "created_at", nullable = false, updatable = false)
-    @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     /**
      * The timestamp when the review was last updated. Automatically set on update.
      */
     @Column(name = "updated_at")
-    @Setter(AccessLevel.NONE)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     /**
@@ -139,17 +126,6 @@ public class Review {
     }
 
     /**
-     * Sets the movie ID associated with the review.
-     *
-     * @param movieId the movie ID to set
-     * @return the current instance of the Review object
-     */
-    public Review setMovieId(Long movieId) {
-        this.movieId = movieId;
-        return this;
-    }
-
-    /**
      * Sets the movie associated with the review.
      *
      * @param movie the movie to set
@@ -157,17 +133,6 @@ public class Review {
      */
     public Review setMovie(Movie movie) {
         this.movie = movie;
-        return this;
-    }
-
-    /**
-     * Sets the user ID of the reviewer.
-     *
-     * @param userId the user ID to set
-     * @return the current instance of the Review object
-     */
-    public Review setUserId(Long userId) {
-        this.userId = userId;
         return this;
     }
 
@@ -202,26 +167,5 @@ public class Review {
     public Review setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
         return this;
-    }
-
-    /**
-     * Returns a string representation of the review entity.
-     * This includes all attributes of the review for easy debugging and logging.
-     *
-     * @return a string containing all review details
-     */
-    @Override
-    public String toString() {
-        return "Review{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                ", rating=" + rating +
-                ", movieId=" + movieId +
-                ", movie=" + movie +
-                ", userId=" + userId +
-                ", user=" + user +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }
