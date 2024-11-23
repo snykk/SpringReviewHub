@@ -1,11 +1,10 @@
 package com.example.springreviewhub.core.usecase;
 
-import com.example.springreviewhub.core.domain.Role;
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.exception.BadRequestException;
 import com.example.springreviewhub.core.exception.ConflictException;
 import com.example.springreviewhub.core.exception.InvalidOldPasswordException;
-import com.example.springreviewhub.core.exception.UserNotFoundException;
+import com.example.springreviewhub.core.exception.NotFoundException;
 import com.example.springreviewhub.core.interfaces.repositories.IUserRepository;
 import com.example.springreviewhub.core.interfaces.usecases.IUserUseCase;
 import com.example.springreviewhub.core.util.UpdateUtils;
@@ -44,13 +43,13 @@ public class UserUseCaseImpl implements IUserUseCase {
     @Override
     public UserDomain getUserByIdWithRole(Long id, String role) {
         return userRepository.findByIdWithRole(id, role)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", id)));
     }
 
     @Override
     public UserDomain updateUser(Long userId, UserDomain updatedUser) {
         UserDomain existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         if (updatedUser.getUsername() != null) {
             if (userRepository.findByUsername(updatedUser.getUsername(), false)
@@ -72,7 +71,7 @@ public class UserUseCaseImpl implements IUserUseCase {
     @Override
     public void deleteUser(Long userId) {
         userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         userRepository.softDelete(userId);
     }
@@ -84,7 +83,7 @@ public class UserUseCaseImpl implements IUserUseCase {
         }
 
         UserDomain user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new InvalidOldPasswordException("Old password is incorrect");
@@ -98,7 +97,7 @@ public class UserUseCaseImpl implements IUserUseCase {
     @Override
     public UserDomain changeEmail(Long userId, String newEmail) {
         UserDomain existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         if (existingUser.getEmail().equals(newEmail)) {
             throw new ConflictException("Email did not change");
@@ -118,7 +117,7 @@ public class UserUseCaseImpl implements IUserUseCase {
     @Override
     public void activateUser(Long userId) {
         UserDomain user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         if (user.isActive()) {
             throw new ConflictException("User is already active");
@@ -131,7 +130,7 @@ public class UserUseCaseImpl implements IUserUseCase {
     @Override
     public void deactivateUser(Long userId) {
         UserDomain user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         if (!user.isActive()) {
             throw new ConflictException("User is already deactivated");

@@ -1,7 +1,7 @@
 package com.example.springreviewhub.core.usecase;
 
 import com.example.springreviewhub.core.domain.MovieDomain;
-import com.example.springreviewhub.core.exception.MovieNotFoundException;
+import com.example.springreviewhub.core.exception.NotFoundException;
 import com.example.springreviewhub.core.interfaces.repositories.IMovieRepository;
 import com.example.springreviewhub.core.interfaces.usecases.IMovieUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +29,13 @@ public class MovieUseCaseImpl implements IMovieUseCase {
     @Override
     public MovieDomain getMovieById(Long id, boolean includeReviews) {
         return movieRepository.getMovieById(id, includeReviews)
-                .orElseThrow(() -> new MovieNotFoundException(id));
+                .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
     }
 
     @Override
     public MovieDomain getMovieByIdWithRole(Long id, String role, boolean includeReviews) {
         return movieRepository.getMovieByIdWithRole(id, role, includeReviews)
-                .orElseThrow(() -> new MovieNotFoundException(id));
+                .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class MovieUseCaseImpl implements IMovieUseCase {
     @Override
     public MovieDomain updateMovie(Long id, MovieDomain movieDomain) {
         movieRepository.getMovieById(id, false)
-                .orElseThrow(() -> new MovieNotFoundException(id));
+                .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
 
         return movieRepository.updateMovie(id, movieDomain);
     }
@@ -54,13 +54,20 @@ public class MovieUseCaseImpl implements IMovieUseCase {
     @Override
     public void deleteMovie(Long id) {
         movieRepository.getMovieById(id, false)
-                .orElseThrow(() -> new MovieNotFoundException(id));
+
+                .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
 
         movieRepository.softDelete(id);
     }
 
     @Override
-    public List<MovieDomain> searchMovies(String title, String genre, BigDecimal minRating, LocalDate startDate, LocalDate endDate, boolean includeReviews) {
+    public List<MovieDomain> searchMovies(
+            String title,
+            String genre,
+            BigDecimal minRating,
+            LocalDate startDate,
+            LocalDate endDate,
+            boolean includeReviews) {
         return movieRepository.searchMovies(title, genre, minRating, startDate, endDate, includeReviews);
     }
 }

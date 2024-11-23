@@ -33,11 +33,11 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
     @Override
     public ReviewDomain createReview(Long userId, ReviewDomain reviewDomain) {
         UserDomain user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("user not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
         reviewDomain.setUser(user);
 
         MovieDomain movie = movieRepository.getMovieById(reviewDomain.getMovieId(), false)
-                .orElseThrow(() -> new MovieNotFoundException("movie not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("Review with ID %d not found.", reviewDomain.getMovieId())));
         reviewDomain.setMovie(movie);
 
         boolean reviewExists = reviewRepository.existsByUserIdAndMovieId(userId, reviewDomain.getMovieId());
@@ -53,7 +53,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
 
         Optional<ReviewDomain> existingReviewOpt = reviewRepository.findById(reviewId);
         if (existingReviewOpt.isEmpty()) {
-            throw new ReviewNotFoundException(String.format("Review with id %s does not exist.", reviewId));
+            throw new NotFoundException(String.format("Review with ID %d not found.", reviewId));
         }
         ReviewDomain existingReview = existingReviewOpt.get();
 
@@ -72,7 +72,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
     @Override
     public ReviewDomain getReviewById(Long id) {
         return reviewRepository.findById(id)
-                .orElseThrow(() -> new ReviewNotFoundException("Review with ID " + id + " not found."));
+                .orElseThrow(() -> new NotFoundException(String.format("Review with ID %d not found.", id)));
     }
 
     @Override
@@ -89,7 +89,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
     public void deleteReview(Long reviewId, Long userId) {
         Optional<ReviewDomain> reviewOpt = reviewRepository.findById(reviewId);
         if (reviewOpt.isEmpty()) {
-            throw new ReviewNotFoundException("Review with ID " + reviewId + " not found.");
+            throw new NotFoundException(String.format("Review with ID %d not found.", reviewId));
         }
 
         ReviewDomain review = reviewOpt.get();

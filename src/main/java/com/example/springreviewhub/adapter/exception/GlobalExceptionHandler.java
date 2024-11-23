@@ -18,19 +18,14 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MovieNotFoundException.class)
-    public ResponseEntity<BaseResponse<Object>> handleMovieNotFoundException(MovieNotFoundException ex) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<BaseResponse<Object>> handleMovieNotFoundException(NotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponse.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(UsernameAlreadyTakenException.class)
     public ResponseEntity<BaseResponse<Object>> handleUsernameAlreadyTakenException(UsernameAlreadyTakenException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.failure(ex.getMessage()));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<BaseResponse<Object>> handleUserNotFoundException(UserNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponse.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -59,11 +54,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateReviewException.class)
     public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(DuplicateReviewException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(BaseResponse.failure(ex.getMessage()));
-    }
-
-    @ExceptionHandler(ReviewNotFoundException.class)
-    public ResponseEntity<BaseResponse<Object>> handleDuplicateReviewException(ReviewNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(BaseResponse.failure(ex.getMessage()));
     }
 
     @ExceptionHandler(BadRequestException.class)

@@ -79,6 +79,6 @@ public class AuthUseCaseImpl implements IAuthUseCase {
     @Override
     public UserDomain getAuthenticatedUser(String username) {
         return userRepository.findByUsername(username, false)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with 'Username' %s not found.", username)));
     }
 }
