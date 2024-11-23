@@ -27,21 +27,21 @@ public class MovieRepositoryImpl implements IMovieRepository {
     public List<MovieDomain> getAllMoviesWithRole(String role) {
         List<Movie> movieEntities = movieJpaRepository.findAllWithRole(role);
 
-        return MovieMapper.fromEntityListToDomList(movieEntities);
+        return MovieMapper.fromEntityListToDomList(movieEntities, false);
     }
 
     @Override
     public Optional<MovieDomain> getMovieById(Long id) {
         Optional<Movie> movieEntity = movieJpaRepository.findById(id);
 
-        return movieEntity.map(MovieMapper::fromEntityToDomain);
+        return movieEntity.map(movie ->  MovieMapper.fromEntityToDomain(movie, false));
     }
 
     @Override
     public Optional<MovieDomain> getMovieByIdWithRole(Long id, String role) {
         Optional<Movie> movieEntity = movieJpaRepository.findByIdWithRole(id, role);
 
-        return movieEntity.map(MovieMapper::fromEntityToDomain);
+        return movieEntity.map(movie -> MovieMapper.fromEntityToDomain(movie, false));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class MovieRepositoryImpl implements IMovieRepository {
 
         Movie savedMovie = movieJpaRepository.save(movie);
 
-        return MovieMapper.fromEntityToDomain(savedMovie);
+        return MovieMapper.fromEntityToDomain(savedMovie, false);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class MovieRepositoryImpl implements IMovieRepository {
 
             Movie updatedMovie = movieJpaRepository.save(movie);
 
-            return MovieMapper.fromEntityToDomain(updatedMovie);
+            return MovieMapper.fromEntityToDomain(updatedMovie, false);
         } else {
             throw new RuntimeException("Movie not found with id: " + id);
         }
@@ -90,6 +90,6 @@ public class MovieRepositoryImpl implements IMovieRepository {
     ) {
         List<Movie> movieEntities = movieJpaRepository.advancedSearch(title, genre, minRating, startDate, endDate);
 
-        return MovieMapper.fromEntityListToDomList(movieEntities);
+        return MovieMapper.fromEntityListToDomList(movieEntities, false);
     }
 }

@@ -65,7 +65,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
                 throw new TransactionOperationException("movie not found for updating rating.");
             }
 
-            return ReviewMapper.fromEntityToDomain(reviewEntity);
+            return ReviewMapper.fromEntityToDomain(reviewEntity, true, true);
         } catch (Exception e) {
             // if anything goes wrong, transaction will be rolled back automatically
             System.out.println(e.getMessage());
@@ -98,7 +98,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
             return Optional.empty();
         }
 
-        return Optional.of(ReviewMapper.fromEntityToDomain(review));
+        return Optional.of(ReviewMapper.fromEntityToDomain(review, true, true));
     }
 
     @Override
@@ -135,7 +135,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
                 throw new TransactionOperationException("movie not found for updating rating.");
             }
 
-            return ReviewMapper.fromEntityToDomain(existingReview);
+            return ReviewMapper.fromEntityToDomain(existingReview, true, true);
 
         } catch (Exception e) {
             // Handle exceptions and ensure the transaction is rolled back automatically
@@ -147,14 +147,14 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     @Override
     public Optional<ReviewDomain> findById(Long reviewId) {
         return reviewJpaRepository.findById(reviewId)
-                .map(ReviewMapper::fromEntityToDomain);
+                .map(review -> ReviewMapper.fromEntityToDomain(review, true, true));
     }
 
 
     @Override
     public List<ReviewDomain> findAll() {
         return reviewJpaRepository.findAll().stream()
-                .map(ReviewMapper::fromEntityToDomain)
+                .map(review -> ReviewMapper.fromEntityToDomain(review, true, true))
                 .toList();
     }
 
@@ -165,7 +165,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
         query.setParameter("movieId", movieId);
 
         return query.getResultList().stream()
-                .map(ReviewMapper::fromEntityToDomain)
+                .map(review -> ReviewMapper.fromEntityToDomain(review,true, true))
                 .toList();
     }
 
@@ -176,7 +176,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
         query.setParameter("userId", userId);
 
         return query.getResultList().stream()
-                .map(ReviewMapper::fromEntityToDomain)
+                .map(review -> ReviewMapper.fromEntityToDomain(review, true, true))
                 .toList();
     }
 

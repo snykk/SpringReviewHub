@@ -3,6 +3,9 @@ package com.example.springreviewhub.infrastructure.database.entity.mapper;
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.infrastructure.database.entity.User;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class UserMapper {
 
     /**
@@ -15,7 +18,7 @@ public class UserMapper {
      * which are utilized within the core application logic. It maps all
      * relevant fields from the entity to the domain.
      */
-    public static UserDomain toDomain(User user) {
+    public static UserDomain fromEntityToDomain(User user, boolean isPopulateReview) {
         if (user == null) {
             return null;
         }
@@ -35,7 +38,11 @@ public class UserMapper {
                 .setDateOfBirth(user.getDateOfBirth())
                 .setEmailVerified(user.isEmailVerified())
                 .setBio(user.getBio())
-                .setDeletedAt(user.getDeletedAt());
+                .setDeletedAt(user.getDeletedAt())
+
+                .setReviews(isPopulateReview ?
+                                ReviewMapper.fromEntityListToDomList(user.getReviews(), false, false)
+                                : null);
     }
 
     /**
@@ -48,7 +55,7 @@ public class UserMapper {
      * It is typically used in persistence operations like saving or updating
      * user records in the database.
      */
-    public static User fromDomain(UserDomain userDomain) {
+    public static User fromDomainToEntity(UserDomain userDomain) {
         if (userDomain == null) {
             return null;
         }
@@ -69,5 +76,11 @@ public class UserMapper {
                 .setEmailVerified(userDomain.isEmailVerified())
                 .setBio(userDomain.getBio())
                 .setDeletedAt(userDomain.getDeletedAt());
+    }
+
+    public static List<UserDomain> fromEntityListToDomList(List<User> users, boolean isPopulateReview) {
+        return users.stream()
+                .map(user -> UserMapper.fromEntityToDomain(user, isPopulateReview))
+                .collect(Collectors.toList());
     }
 }

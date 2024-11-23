@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
@@ -23,33 +22,40 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     public Optional<UserDomain> findByUsername(String username) {
         return userJpaRepository.findByUsername(username)
-                .map(UserMapper::toDomain);
+                .map(user -> UserMapper.fromEntityToDomain(user, false));
     }
 
     @Override
     public Optional<UserDomain> findById(Long id) {
         return userJpaRepository.findById(id)
-                .map(UserMapper::toDomain);
+                .map(user -> UserMapper.fromEntityToDomain(user, false));
     }
 
     @Override
     public Optional<UserDomain> findByIdWithRole(Long id, String role) {
         return userJpaRepository.findByIdWithRole(id, role)
-                .map(UserMapper::toDomain);
+                .map(user -> UserMapper.fromEntityToDomain(user, false));
     }
 
     @Override
     public List<UserDomain> findAllWithRole(String role) {
+        System.out.println("masih jalan kah");
+        List<User> user = userJpaRepository.findAll();
 
-        return userJpaRepository.findAllWithRole(role).stream()
-                .map(UserMapper::toDomain).collect(Collectors.toList());
+        System.out.println(user);
+        List<User> userEntity = userJpaRepository.findAllWithRole(role);
+
+        System.out.println("ini user entity");
+        System.out.println(userEntity);
+
+        return UserMapper.fromEntityListToDomList(userEntity, false);
     }
 
     @Override
     public UserDomain save(UserDomain user) {
-        User userEntity = UserMapper.fromDomain(user);
+        User userEntity = UserMapper.fromDomainToEntity(user);
         User savedEntity = userJpaRepository.save(userEntity);
-        return UserMapper.toDomain(savedEntity);
+        return UserMapper.fromEntityToDomain(savedEntity, false);
     }
 
     @Override
@@ -59,6 +65,6 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public Optional<UserDomain> findByEmail(String email) {
-        return userJpaRepository.findByEmail(email).map(UserMapper::toDomain);
+        return userJpaRepository.findByEmail(email).map(user -> UserMapper.fromEntityToDomain(user, false));
     }
 }

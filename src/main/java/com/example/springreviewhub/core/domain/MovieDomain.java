@@ -6,6 +6,7 @@ import lombok.ToString;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -30,6 +31,8 @@ public class MovieDomain {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+
+    private List<ReviewDomain> reviews;
 
     //=========== Chaining Setters ============
     // Each setter returns the current object to allow for method chaining.
@@ -152,6 +155,11 @@ public class MovieDomain {
      */
     public MovieDomain setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+        return this;
+    }
+
+    public MovieDomain setReviews(List<ReviewDomain> reviews) {
+        this.reviews = reviews;
         return this;
     }
 }

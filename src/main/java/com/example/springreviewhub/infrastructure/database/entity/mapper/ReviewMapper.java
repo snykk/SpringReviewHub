@@ -18,7 +18,7 @@ public class ReviewMapper {
      * into a `ReviewDomain` object that is used in the application core layer.
      * The conversion process ensures that the domain layer operates with the appropriate business model.
      */
-    public static ReviewDomain fromEntityToDomain(Review review) {
+    public static ReviewDomain fromEntityToDomain(Review review, boolean isPopulateUser, boolean isPopulateMovie) {
         if (review == null) {
             return null;
         }
@@ -27,11 +27,17 @@ public class ReviewMapper {
                 .setText(review.getText())
                 .setRating(review.getRating())
                 .setMovieId(review.getMovie().getId())
-                .setMovie(MovieMapper.fromEntityToDomain(review.getMovie()))
                 .setUserId(review.getUser().getId())
-                .setUser(UserMapper.toDomain(review.getUser()))
                 .setCreatedAt(review.getCreatedAt())
-                .setUpdatedAt(review.getUpdatedAt());
+                .setUpdatedAt(review.getUpdatedAt())
+
+                .setUser(isPopulateUser ?
+                        UserMapper.fromEntityToDomain(review.getUser(), false)
+                        : null)
+                .setMovie(isPopulateMovie ?
+                        MovieMapper.fromEntityToDomain(review.getMovie(), false)
+                        : null);
+
     }
 
     /**
@@ -53,7 +59,7 @@ public class ReviewMapper {
                 .setText(reviewDomain.getText())
                 .setRating(reviewDomain.getRating())
                 .setMovie(MovieMapper.fromDomainToEntity(reviewDomain.getMovie()))
-                .setUser(UserMapper.fromDomain(reviewDomain.getUser()))
+                .setUser(UserMapper.fromDomainToEntity(reviewDomain.getUser()))
                 .setCreatedAt(reviewDomain.getCreatedAt())
                 .setUpdatedAt(reviewDomain.getUpdatedAt());
     }
@@ -68,9 +74,10 @@ public class ReviewMapper {
      * to a `ReviewDomain` object. It uses Java Streams to iterate over the list and convert
      * each element, collecting the results into a new list.
      */
-    public static List<ReviewDomain> fromEntityListToDomList(List<Review> reviews) {
+    public static List<ReviewDomain> fromEntityListToDomList(List<Review> reviews, boolean isPopulateUser, boolean isPopulateMovie) {
         return reviews.stream()
-                .map(ReviewMapper::fromEntityToDomain)
+                .map(review -> ReviewMapper.fromEntityToDomain(review, isPopulateUser, isPopulateMovie))
                 .collect(Collectors.toList());
     }
+
 }

@@ -18,7 +18,7 @@ public class MovieMapper {
      * into a `MovieDomain` object that is used in the application core layer.
      * The conversion process ensures that the domain layer operates with the appropriate business model.
      */
-    public static MovieDomain fromEntityToDomain(Movie movie) {
+    public static MovieDomain fromEntityToDomain(Movie movie, boolean isPopulateReview) {
         if (movie == null) {
             return null;
         }
@@ -33,7 +33,11 @@ public class MovieMapper {
                 .setRating(movie.getRating())
                 .setCreatedAt(movie.getCreatedAt())
                 .setUpdatedAt(movie.getUpdatedAt())
-                .setDeletedAt(movie.getDeletedAt());
+                .setDeletedAt(movie.getDeletedAt())
+
+                .setReviews(isPopulateReview ?
+                        ReviewMapper.fromEntityListToDomList(movie.getReviews(), false, false)
+                        : null);
     }
 
     /**
@@ -74,9 +78,9 @@ public class MovieMapper {
      * to a `MovieDomain` object. It uses Java Streams to iterate over the list and convert
      * each element, collecting the results into a new list.
      */
-    public static List<MovieDomain> fromEntityListToDomList(List<Movie> movies) {
+    public static List<MovieDomain> fromEntityListToDomList(List<Movie> movies, boolean isPopulateReview) {
         return movies.stream()
-                .map(MovieMapper::fromEntityToDomain)
+                .map(movie -> MovieMapper.fromEntityToDomain(movie, isPopulateReview))
                 .collect(Collectors.toList());
     }
 }

@@ -5,6 +5,7 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,6 +36,8 @@ public class UserDomain {
     private boolean emailVerified;
     private String bio;
     private LocalDateTime deletedAt;
+
+    private List<ReviewDomain> reviews;
 
     /**
      * Checks if the user has admin privileges.
@@ -253,6 +256,11 @@ public class UserDomain {
      */
     public UserDomain setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
+        return this;
+    }
+
+    public UserDomain setReviews(List<ReviewDomain> reviews) {
+        this.reviews = reviews;
         return this;
     }
 }
