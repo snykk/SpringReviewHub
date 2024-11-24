@@ -112,7 +112,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
      * @return true if the URI is excluded, false otherwise
      */
     private boolean isExcludedFromAuth(String uri) {
-        return uri.startsWith("/api/auth/login") || uri.startsWith("/api/auth/register");
+        return uri.startsWith("/api/auth/login") ||
+                uri.startsWith("/api/auth/register") ||
+                uri.startsWith("/api/auth/send-otp") ||
+                uri.startsWith("/api/auth/verify-otp");
     }
 
     /**

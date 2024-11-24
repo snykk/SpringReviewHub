@@ -47,4 +47,27 @@ public interface IAuthUseCase {
      * @return the authenticated user's details as a {@link UserDomain} object
      */
     UserDomain getAuthenticatedUser(String username);
+
+    /**
+     * Sends an OTP (One-Time Password) to the user's email address.
+     * <p>
+     * This method generates and sends an OTP to the specified email address. The OTP is typically
+     * used for user verification or password reset processes.
+     * </p>
+     *
+     * @param email the email address to which the OTP will be sent
+     */
+    void sendOTP(String email);
+
+    /**
+     * Verifies the OTP entered by the user.
+     * <p>
+     * This method checks whether the provided OTP matches the one sent to the user's email address.
+     * It is used as part of the authentication or verification process, often during login or account recovery.
+     * </p>
+     *
+     * @param email the email address associated with the OTP
+     * @param otp   the OTP entered by the user for verification
+     */
+    void verifyOTP(String email, String otp);
 }

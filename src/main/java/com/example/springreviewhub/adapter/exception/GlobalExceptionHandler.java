@@ -94,6 +94,18 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.failure(ex.getMessage()));
     }
 
+    @ExceptionHandler(EmailAlreadyVerifiedException.class)
+    public ResponseEntity<BaseResponse<Object>> handleEmailNotVerified(EmailAlreadyVerifiedException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.failure(ex.getMessage()));
+    }
+
+    @ExceptionHandler(OTPIssueException.class)
+    public ResponseEntity<BaseResponse<Object>> handleEmailNotVerified(OTPIssueException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(BaseResponse.failure(ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BaseResponse<Object>> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
