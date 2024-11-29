@@ -1,6 +1,8 @@
 package com.example.springreviewhub.core.usecase;
 
 import com.example.springreviewhub.core.domain.MovieDomain;
+import com.example.springreviewhub.core.domain.ReviewDomain;
+import com.example.springreviewhub.core.domain.Role;
 import com.example.springreviewhub.core.exception.NotFoundException;
 import com.example.springreviewhub.core.interfaces.repositories.IMovieRepository;
 import com.example.springreviewhub.core.interfaces.usecases.IMovieUseCase;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieUseCaseImpl implements IMovieUseCase {
@@ -23,8 +26,20 @@ public class MovieUseCaseImpl implements IMovieUseCase {
 
     @Override
     public List<MovieDomain> getAllMoviesWithRole(String role, boolean includeReviews) {
-        return movieRepository.getAllMoviesWithRole(role, includeReviews);
+        List<MovieDomain> movieDomains = movieRepository.getAllMoviesWithRole(role, includeReviews);
+
+        if (Role.Reviewer.name().equalsIgnoreCase(role)) {
+            movieDomains.forEach(movie -> {
+                List<ReviewDomain> filteredReviews = movie.getReviews().stream()
+                        .filter(review -> review.getDeletedAt() == null)
+                        .collect(Collectors.toList());
+                movie.setReviews(filteredReviews);
+            });
+        }
+
+        return movieDomains;
     }
+
 
     @Override
     public MovieDomain getMovieById(Long id, boolean includeReviews) {
@@ -34,8 +49,17 @@ public class MovieUseCaseImpl implements IMovieUseCase {
 
     @Override
     public MovieDomain getMovieByIdWithRole(Long id, String role, boolean includeReviews) {
-        return movieRepository.getMovieByIdWithRole(id, role, includeReviews)
+        MovieDomain movieDomain = movieRepository.getMovieByIdWithRole(id, role, includeReviews)
                 .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
+
+        if (Role.Reviewer.name().equalsIgnoreCase(role)) {
+            List<ReviewDomain> filteredReviews = movieDomain.getReviews().stream()
+                    .filter(review -> review.getDeletedAt() == null)
+                    .collect(Collectors.toList());
+            movieDomain.setReviews(filteredReviews);
+        };
+
+        return movieDomain;
     }
 
     @Override

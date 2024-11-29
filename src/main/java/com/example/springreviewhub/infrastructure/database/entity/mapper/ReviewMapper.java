@@ -63,7 +63,7 @@ public class ReviewMapper {
                 .setUser(UserMapper.fromDomainToEntity(reviewDomain.getUser()))
                 .setCreatedAt(reviewDomain.getCreatedAt())
                 .setUpdatedAt(reviewDomain.getUpdatedAt())
-                .setDeletedAt(reviewDomain.getDeleteddAt());
+                .setDeletedAt(reviewDomain.getDeletedAt());
     }
 
     /**

@@ -26,7 +26,7 @@ public class ReviewDomain {
     private UserDomain user;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private LocalDateTime deleteddAt;
+    private LocalDateTime deletedAt;
 
     //=========== Chaining Setters =============
 
@@ -124,7 +124,7 @@ public class ReviewDomain {
      * @return the current instance for method chaining
      */
     public ReviewDomain setDeletedAt(LocalDateTime deletedAt) {
-        this.deleteddAt = deletedAt;
+        this.deletedAt = deletedAt;
         return this;
     }
 }

@@ -60,7 +60,7 @@ public class ReviewMapper {
 
         // Map Admin-specific properties
         if (response instanceof ReviewExtendedResponse) {
-            ((ReviewExtendedResponse) response).setDeletedAt(reviewDomain.getDeleteddAt());
+            ((ReviewExtendedResponse) response).setDeletedAt(reviewDomain.getDeletedAt());
         }
 
         return response;
