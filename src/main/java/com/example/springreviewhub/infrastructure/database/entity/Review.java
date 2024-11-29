@@ -49,7 +49,7 @@ public class Review {
      */
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "movie_id", referencedColumnName = "id")
-    @ToString.Exclude
+//    @ToString.Exclude
     private Movie movie;
 
     /**
@@ -58,7 +58,7 @@ public class Review {
      */
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ToString.Exclude
+//    @ToString.Exclude
     private User user;
 
     /**

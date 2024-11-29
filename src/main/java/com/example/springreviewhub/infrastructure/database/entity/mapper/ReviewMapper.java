@@ -30,7 +30,7 @@ public class ReviewMapper {
                 .setUserId(review.getUser().getId())
                 .setCreatedAt(review.getCreatedAt())
                 .setUpdatedAt(review.getUpdatedAt())
-                .setdeletedAt(review.getDeletedAt())
+                .setDeletedAt(review.getDeletedAt())
 
                 .setUser(isPopulateUser ?
                         UserMapper.fromEntityToDomain(review.getUser(), false)

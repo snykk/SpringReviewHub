@@ -15,16 +15,17 @@ import java.util.Optional;
 public interface IReviewRepository {
 
     /**
-     * Stores a new review and updates the associated movie's rating.
+     * Saves or updates an existing review in the database.
      * <p>
-     * This method saves a new review to the repository and concurrently updates the movie's rating
-     * based on the review provided. The updated review is returned.
+     * This method maps the provided domain model to an entity, handles any necessary
+     * persistence operations (such as managing detached entities), and saves the review record.
+     * After saving, the method maps the saved entity back to a domain model for the return value.
      * </p>
      *
-     * @param reviewDomain the review to be stored
-     * @return the stored review with updated movie rating
+     * @param reviewDomain the review domain object containing review data to be saved or updated
+     * @return ReviewDomain the saved or updated review as a domain object
      */
-    ReviewDomain storeReviewAndUpdateMovieRating(ReviewDomain reviewDomain);
+    ReviewDomain saveReview(ReviewDomain reviewDomain);
 
     /**
      * Checks if a review already exists for a specific user and movie.
@@ -51,18 +52,6 @@ public interface IReviewRepository {
      * @return an `Optional` containing the review if found, otherwise `Optional.empty()`
      */
     Optional<ReviewDomain> findByUserIdAndMovieId(Long userId, Long movieId);
-
-    /**
-     * Updates an existing review and updates the associated movie's rating.
-     * <p>
-     * This method updates an existing review in the repository and concurrently updates the movie's rating
-     * based on the new review content. The updated review is returned.
-     * </p>
-     *
-     * @param reviewDomain the review with updated data
-     * @return the updated review with the new movie rating
-     */
-    ReviewDomain updateReviewAndUpdateMovieRating(ReviewDomain reviewDomain);
 
     /**
      * Finds a review by its unique identifier.
@@ -117,4 +106,28 @@ public interface IReviewRepository {
      * @param reviewId the unique identifier of the review to be deleted
      */
     void deleteById(Long reviewId);
+
+    /**
+     * Retrieves the average rating for a specific movie based on its reviews.
+     * <p>
+     * This method calculates the average rating by querying the database for all reviews
+     * associated with the given movie ID and averaging their rating values.
+     * If no reviews exist for the movie, the method may return null or a default value.
+     * </p>
+     *
+     * @param movieId the unique identifier of the movie for which the average rating is requested
+     * @return Double the calculated average rating for the movie, or null if no ratings are available
+     */
+    Double getAverageRatingByMovieId(Long movieId);
+
+    /**
+     * Performs a soft delete on a review.
+     * <p>
+     * This method marks a review as deleted without physically removing it from the repository.
+     * Useful for maintaining historical data while preventing access to the review in active queries.
+     * </p>
+     *
+     * @param id the unique identifier of the review to be soft deleted
+     */
+    void softDelete(Long id);
 }

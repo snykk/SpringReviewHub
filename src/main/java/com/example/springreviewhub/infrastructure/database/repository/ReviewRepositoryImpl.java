@@ -1,10 +1,10 @@
 package com.example.springreviewhub.infrastructure.database.repository;
 
-import com.example.springreviewhub.core.exception.TransactionOperationException;
 import com.example.springreviewhub.core.domain.ReviewDomain;
 import com.example.springreviewhub.core.interfaces.repositories.IReviewRepository;
 import com.example.springreviewhub.infrastructure.database.entity.Movie;
 import com.example.springreviewhub.infrastructure.database.entity.Review;
+import com.example.springreviewhub.infrastructure.database.entity.User;
 import com.example.springreviewhub.infrastructure.database.entity.mapper.ReviewMapper;
 import com.example.springreviewhub.infrastructure.database.jpa.MovieJpaRepository;
 import com.example.springreviewhub.infrastructure.database.jpa.ReviewJpaRepository;
@@ -13,7 +13,6 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -37,40 +36,18 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED) // start db tx using @Transactional
-    public ReviewDomain storeReviewAndUpdateMovieRating(ReviewDomain reviewDomain) {
-        try {
-            Review reviewEntity = ReviewMapper.fromDomainToEntity(reviewDomain);
+    public ReviewDomain saveReview(ReviewDomain reviewDomain) {
+        Review review = ReviewMapper.fromDomainToEntity(reviewDomain);
 
-            reviewJpaRepository.save(reviewEntity);
+        Movie managedMovie = entityManager.merge(review.getMovie());
+        review.setMovie(managedMovie);
 
-            TypedQuery<Double> ratingQuery = entityManager.createQuery(
-                    "SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId", Double.class);
-            ratingQuery.setParameter("movieId", reviewDomain.getMovieId());
+        User managedUser = entityManager.merge(review.getUser());
+        review.setUser(managedUser);
 
-            Double avgRating = ratingQuery.getSingleResult();
-            if (avgRating == null) {
-                avgRating = 0.0;
-            }
+        Review savedReview = reviewJpaRepository.save(review);
 
-            BigDecimal avgRatingBigDecimal = BigDecimal.valueOf(avgRating);
-
-            Optional<Movie> movieOpt = movieJpaRepository.findById(reviewDomain.getMovieId());
-            if (movieOpt.isPresent()) {
-                Movie movie = movieOpt.get();
-                movie.setRating(avgRatingBigDecimal);
-
-                movieJpaRepository.save(movie);
-            } else {
-                throw new TransactionOperationException("movie not found for updating rating.");
-            }
-
-            return ReviewMapper.fromEntityToDomain(reviewEntity, true, true);
-        } catch (Exception e) {
-            // if anything goes wrong, transaction will be rolled back automatically
-            System.out.println(e.getMessage());
-            throw new TransactionOperationException("failed to complete the database transaction.", e);
-        }
+        return ReviewMapper.fromEntityToDomain(savedReview, false, false);
     }
 
     @Override
@@ -99,49 +76,6 @@ public class ReviewRepositoryImpl implements IReviewRepository {
         }
 
         return Optional.of(ReviewMapper.fromEntityToDomain(review, true, true));
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public ReviewDomain updateReviewAndUpdateMovieRating(ReviewDomain reviewDomain) {
-        try {
-            Optional<Review> existingReviewOpt = reviewJpaRepository.findById(reviewDomain.getId());
-            if (existingReviewOpt.isEmpty()) {
-                throw new TransactionOperationException("review not found for ID: " + reviewDomain.getId());
-            }
-
-            Review existingReview = existingReviewOpt.get();
-            existingReview.setText(reviewDomain.getText()).setRating(reviewDomain.getRating());
-            reviewJpaRepository.save(existingReview);
-
-            TypedQuery<Double> ratingQuery = entityManager.createQuery(
-                    "SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId", Double.class);
-            ratingQuery.setParameter("movieId", reviewDomain.getMovieId());
-
-            Double avgRating = ratingQuery.getSingleResult();
-            if (avgRating == null) {
-                avgRating = 0.0;
-            }
-
-            BigDecimal avgRatingBigDecimal = BigDecimal.valueOf(avgRating);
-
-            Optional<Movie> movieOpt = movieJpaRepository.findById(reviewDomain.getMovieId());
-            if (movieOpt.isPresent()) {
-                Movie movie = movieOpt.get()
-                        .setRating(avgRatingBigDecimal);
-
-                movieJpaRepository.save(movie);
-            } else {
-                throw new TransactionOperationException("movie not found for updating rating.");
-            }
-
-            return ReviewMapper.fromEntityToDomain(existingReview, true, true);
-
-        } catch (Exception e) {
-            // Handle exceptions and ensure the transaction is rolled back automatically
-            System.out.println(e.getMessage());
-            throw new TransactionOperationException("failed to update review and movie rating.", e);
-        }
     }
 
     @Override
@@ -184,5 +118,18 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     @Transactional
     public void deleteById(Long reviewId) {
         reviewJpaRepository.deleteById(reviewId);
+    }
+
+    @Override
+    public Double getAverageRatingByMovieId(Long movieId) {
+        TypedQuery<Double> query = entityManager.createQuery(
+                "SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId", Double.class);
+        query.setParameter("movieId", movieId);
+        return query.getSingleResult();
+    }
+
+    @Override
+    public void softDelete(Long id) {
+        reviewJpaRepository.softDeleteMovie(id);
     }
 }

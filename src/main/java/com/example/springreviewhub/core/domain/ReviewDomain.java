@@ -123,7 +123,7 @@ public class ReviewDomain {
      * @param deletedAt the timestamp when the review was deleted
      * @return the current instance for method chaining
      */
-    public ReviewDomain setdeletedAt(LocalDateTime deletedAt) {
+    public ReviewDomain setDeletedAt(LocalDateTime deletedAt) {
         this.deleteddAt = deletedAt;
         return this;
     }
