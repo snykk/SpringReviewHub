@@ -42,7 +42,7 @@ public interface ReviewJpaRepository extends JpaRepository<Review, Long> {
      * @param movieId the ID of the movie
      * @return true if a matching Review exists, false otherwise
      */
-    @Query("SELECT COUNT(r) > 0 FROM Review r WHERE r.user.id = :userId AND r.movie.id = :movieId")
+    @Query("SELECT COUNT(r) > 0 FROM Review r WHERE r.user.id = :userId AND r.movie.id = :movieId AND r.deletedAt IS NULL")
     boolean existsByUserIdAndMovieId(@Param("userId") Long userId, @Param("movieId") Long movieId);
 
     /**
