@@ -1,5 +1,6 @@
 package com.example.springreviewhub.core.interfaces.repositories;
 
+import com.example.springreviewhub.core.domain.MovieDomain;
 import com.example.springreviewhub.core.domain.ReviewDomain;
 
 import java.util.List;
@@ -13,6 +14,27 @@ import java.util.Optional;
  * </p>
  */
 public interface IReviewRepository {
+
+    /**
+     * Retrieves all reviews from the repository.
+     * <p>
+     * This method fetches a list of all reviews stored in the repository.
+     * </p>
+     *
+     * @return a list of all reviews
+     */
+    List<ReviewDomain> findAll();
+
+    /**
+     * Retrieves all reviews with a specified role.
+     * <p>
+     * This method fetches a list of all review records filtered by the specified role.
+     * </p>
+     *
+     * @param role           the role to filter reviews by
+     * @return a list of all reviews filtered by role
+     */
+    List<ReviewDomain> findAllReviewsWithRole(String role);
 
     /**
      * Saves or updates an existing review in the database.
@@ -66,36 +88,44 @@ public interface IReviewRepository {
     Optional<ReviewDomain> findById(Long reviewId);
 
     /**
-     * Retrieves all reviews from the repository.
+     * Retrieves a review by its unique identifier and role.
      * <p>
-     * This method fetches a list of all reviews stored in the repository.
+     * This method fetches a review based on its ID and ensures it is filtered with the
+     * specified role for role-based access scenarios.
      * </p>
      *
-     * @return a list of all reviews
+     * @param id             the unique identifier of the review
+     * @param role           the role to filter the review by
+     * @return an Optional containing the review if found and matches the role, or an empty Optional otherwise
      */
-    List<ReviewDomain> findAll();
+    Optional<ReviewDomain> findByIdWithRole(Long id, String role);
+
 
     /**
-     * Retrieves all reviews for a specific movie.
+     * Retrieves all reviews for a specific movie and filtered by role.
      * <p>
-     * This method fetches a list of reviews associated with a particular movie ID.
+     * This method fetches a list of reviews associated with a particular movie ID and ensures it is filtered with the
+     * specified role for role-based access scenarios.
      * </p>
      *
      * @param movieId the ID of the movie
+     * @param role the role used to filter the reviews (e.g., 'Admin', 'User')
      * @return a list of reviews for the specified movie
      */
-    List<ReviewDomain> findByMovieId(Long movieId);
+    List<ReviewDomain> findByMovieIdWithRole(Long movieId, String role);
 
     /**
-     * Retrieves all reviews by a specific user.
+     * Retrieves all reviews by a specific user and filtered by role.
      * <p>
-     * This method fetches a list of reviews written by a particular user.
+     * This method fetches a list of reviews written by a particular user ID and ensures it is filtered with the
+     * specified role for role-based access scenarios.
      * </p>
      *
      * @param userId the ID of the user
+     * @param role the role used to filter the reviews (e.g., 'Admin', 'User')
      * @return a list of reviews written by the specified user
      */
-    List<ReviewDomain> findByUserId(Long userId);
+    List<ReviewDomain> findByUserIdWithRole(Long userId, String role);
 
     /**
      * Deletes a review by its unique identifier.

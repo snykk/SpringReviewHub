@@ -3,6 +3,7 @@ package com.example.springreviewhub.adapter.mapper;
 import com.example.springreviewhub.adapter.presenter.user.UserLimitedResponse;
 import com.example.springreviewhub.adapter.presenter.user.UserUpdateRequest;
 import com.example.springreviewhub.adapter.presenter.user.AdvanceUserResponse;
+import com.example.springreviewhub.core.domain.Role;
 import com.example.springreviewhub.core.domain.UserDomain;
 
 import java.util.List;
@@ -64,7 +65,7 @@ public class UserMapper {
                 .setDeletedAt(userDomain.getDeletedAt())
 
                 .setReviews(isIncludeReviews ?
-                        ReviewMapper.fromDomainListToResponseList(userDomain.getReviews())
+                        ReviewMapper.fromDomainListToResponseList(userDomain.getReviews(), Role.Admin.name())
                         : null);
     }
 
@@ -115,7 +116,7 @@ public class UserMapper {
                 .setUpdatedAt(userDomain.getUpdatedAt())
 
                 .setReviews(isIncludeReviews ?
-                        ReviewMapper.fromDomainListToResponseList(userDomain.getReviews())
+                        ReviewMapper.fromDomainListToResponseList(userDomain.getReviews(), Role.Reviewer.name())
                         : null);
     }
 

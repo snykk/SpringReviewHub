@@ -68,7 +68,7 @@ public class MovieMapper {
                 .setUpdatedAt(movieDomain.getUpdatedAt())
 
                 .setReviews(isIncludeReviews ?
-                        ReviewMapper.fromDomainListToResponseList(movieDomain.getReviews())
+                        ReviewMapper.fromDomainListToResponseList(movieDomain.getReviews(), role)
                         : null);
 
         // Map Admin-specific properties

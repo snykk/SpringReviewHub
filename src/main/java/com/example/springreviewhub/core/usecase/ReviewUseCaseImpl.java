@@ -89,19 +89,30 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
     }
 
     @Override
+    public List<ReviewDomain> getAllReviewsWithRole(String role) {
+        return reviewRepository.findAllReviewsWithRole(role);
+    }
+
+    @Override
     public ReviewDomain getReviewById(Long id) {
         return reviewRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Review with ID %d not found.", id)));
     }
 
     @Override
-    public List<ReviewDomain> getReviewsByMovieId(Long movieId) {
-        return reviewRepository.findByMovieId(movieId);
+    public ReviewDomain getReviewByIdWithRole(Long id, String role) {
+        return reviewRepository.findByIdWithRole(id, role)
+                .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
     }
 
     @Override
-    public List<ReviewDomain> getReviewsByUserId(Long userId) {
-        return reviewRepository.findByUserId(userId);
+    public List<ReviewDomain> getReviewsByMovieIdWithRole(Long movieId, String role) {
+        return reviewRepository.findByMovieIdWithRole(movieId, role);
+    }
+
+    @Override
+    public List<ReviewDomain> getReviewsByUserIdWithRole(Long userId, String role) {
+        return reviewRepository.findByUserIdWithRole(userId, role);
     }
 
     @Override
@@ -118,16 +129,4 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
 
         reviewRepository.softDelete(review.getId());
     }
-//
-//    private void refreshMovieRating(Long movieId) {
-//        Double avgRating = reviewRepository.getAverageRatingByMovieId(movieId);
-//        if (avgRating == null) {
-//            avgRating = 0.0;
-//        }
-//
-//        MovieDomain movieDomain = movieRepository.getMovieById(movieId, false)
-//                .orElseThrow(() -> new NotFoundException("Movie not found."));
-//        movieDomain.setRating(BigDecimal.valueOf(avgRating));
-//        movieRepository.updateMovie(movieId, movieDomain);
-//    }
 }

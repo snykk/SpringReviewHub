@@ -29,12 +29,26 @@ public class ReviewController {
         this.reviewUseCase = reviewUseCase;
     }
 
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<ReviewResponse>>> getAllReviews(
+            @AuthenticationPrincipal Claims claims
+    ) {
+        String role = JwtService.extractRoleFromClaims(claims);
+
+        List<ReviewDomain> reviews = reviewUseCase.getAllReviewsWithRole(role);
+
+        return ResponseEntity.ok(BaseResponse.success(
+                "all review data fetched successfully",
+                ReviewMapper.fromDomainListToResponseList(reviews, role)));
+    }
+
     @PostMapping
     public ResponseEntity<BaseResponse<ReviewResponse>> createReview(
             @RequestBody @Valid ReviewRequest reviewReq,
             @AuthenticationPrincipal Claims claims
     ) {
         Long userId = JwtService.extractIdFromClaims(claims);
+        String role = JwtService.extractRoleFromClaims(claims);
 
         ReviewDomain reviewDomain = ReviewMapper.fromReviewRequestToDomain(reviewReq);
 
@@ -42,7 +56,7 @@ public class ReviewController {
 
         return ResponseEntity.status(201).body(BaseResponse.success(
                 "review data created successfully",
-                ReviewMapper.fromDomainToReviewResponse(createdReview))
+                ReviewMapper.fromDomainToReviewResponse(createdReview, role))
         );
     }
 
@@ -53,6 +67,7 @@ public class ReviewController {
             @AuthenticationPrincipal Claims claims
     ) {
         Long userId = JwtService.extractIdFromClaims(claims);
+        String role = JwtService.extractRoleFromClaims(claims);
 
         ReviewDomain reviewDomain = ReviewMapper.fromReviewRequestToDomain(reviewReq);
 
@@ -60,56 +75,50 @@ public class ReviewController {
 
         return ResponseEntity.status(200).body(BaseResponse.success(
                 "review data updated successfully",
-                ReviewMapper.fromDomainToReviewResponse(updatedReview))
+                ReviewMapper.fromDomainToReviewResponse(updatedReview, role))
         );
-    }
-
-    @GetMapping
-    public ResponseEntity<BaseResponse<List<ReviewResponse>>> getAllReviews() {
-        List<ReviewResponse> reviews = reviewUseCase.getAllReviews().stream()
-                .map(ReviewMapper::fromDomainToReviewResponse)
-                .toList();
-
-        return ResponseEntity.ok(BaseResponse.success(
-                "all review data fetched successfully",
-                reviews));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<ReviewResponse>> getReviewById(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal Claims claims
     ) {
-        ReviewDomain review = reviewUseCase.getReviewById(id);
+        String role = JwtService.extractRoleFromClaims(claims);
+
+        ReviewDomain review = reviewUseCase.getReviewByIdWithRole(id, role);
 
         return ResponseEntity.ok(BaseResponse.success(
                 String.format("review data with id %d fetched successfully", id),
-                ReviewMapper.fromDomainToReviewResponse(review)));
+                ReviewMapper.fromDomainToReviewResponse(review, role)));
     }
 
     @GetMapping("/movie/{id}")
     public ResponseEntity<BaseResponse<List<ReviewResponse>>> getReviewsByMovieId(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal Claims claims
     ) {
-        List<ReviewResponse> reviews = reviewUseCase.getReviewsByMovieId(id).stream()
-                .map(ReviewMapper::fromDomainToReviewResponse)
-                .toList();
+        String role = JwtService.extractRoleFromClaims(claims);
+
+        List<ReviewDomain> reviews = reviewUseCase.getReviewsByMovieIdWithRole(id, role);
 
         return ResponseEntity.ok(BaseResponse.success(
                 String.format("review data by movie id %d fetched successfully", id),
-                reviews));
+                ReviewMapper.fromDomainListToResponseList(reviews, role)));
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<BaseResponse<List<ReviewResponse>>> getReviewsByUserId(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal Claims claims
     ) {
-        List<ReviewResponse> reviews = reviewUseCase.getReviewsByUserId(id).stream()
-                .map(ReviewMapper::fromDomainToReviewResponse)
-                .toList();
+        String role = JwtService.extractRoleFromClaims(claims);
+
+        List<ReviewDomain> reviews = reviewUseCase.getReviewsByUserIdWithRole(id, role);
 
         return ResponseEntity.ok(BaseResponse.success(
                 String.format("review data by user id %d fetched successfully", id),
-                reviews));
+                ReviewMapper.fromDomainListToResponseList(reviews, role)));
     }
 
     @DeleteMapping("/{id}")

@@ -1,8 +1,11 @@
 package com.example.springreviewhub.adapter.mapper;
 
+import com.example.springreviewhub.adapter.presenter.movie.MovieExtendedResponse;
+import com.example.springreviewhub.adapter.presenter.review.ReviewExtendedResponse;
 import com.example.springreviewhub.adapter.presenter.review.ReviewRequest;
 import com.example.springreviewhub.adapter.presenter.review.ReviewResponse;
 import com.example.springreviewhub.core.domain.ReviewDomain;
+import com.example.springreviewhub.core.domain.Role;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,18 +40,30 @@ public class ReviewMapper {
      * This method is used to convert domain models into response objects,
      * which can be returned to the client via the Controller layer.
      */
-    public static ReviewResponse fromDomainToReviewResponse(ReviewDomain reviewDomain) {
+    public static ReviewResponse fromDomainToReviewResponse(ReviewDomain reviewDomain, String role) {
         if (reviewDomain == null) {
             return null;
         }
-        return new ReviewResponse()
-                .setId(reviewDomain.getId())
+
+        // Determine the response type based on the role
+        ReviewResponse response = role.equals(Role.Admin.name())
+                ? new ReviewExtendedResponse()
+                : new ReviewResponse();
+
+        response.setId(reviewDomain.getId())
                 .setText(reviewDomain.getText())
                 .setRating(reviewDomain.getRating())
                 .setMovieId(reviewDomain.getMovieId())
                 .setUserId(reviewDomain.getUserId())
                 .setCreatedAt(reviewDomain.getCreatedAt())
                 .setUpdatedAt(reviewDomain.getUpdatedAt());
+
+        // Map Admin-specific properties
+        if (response instanceof ReviewExtendedResponse) {
+            ((ReviewExtendedResponse) response).setDeletedAt(reviewDomain.getDeleteddAt());
+        }
+
+        return response;
     }
 
     /**
@@ -60,9 +75,9 @@ public class ReviewMapper {
      * This method is useful for batch operations, such as returning a list of reviews
      * in a paginated API response. It leverages streams for efficient mapping.
      */
-    public static List<ReviewResponse> fromDomainListToResponseList(List<ReviewDomain> reviewDomains) {
+    public static List<ReviewResponse> fromDomainListToResponseList(List<ReviewDomain> reviewDomains, String role) {
         return reviewDomains.stream()
-                .map(ReviewMapper::fromDomainToReviewResponse)
+                .map(reviewDomain -> fromDomainToReviewResponse(reviewDomain, role))
                 .collect(Collectors.toList());
     }
 }

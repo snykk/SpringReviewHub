@@ -1,10 +1,12 @@
 package com.example.springreviewhub.infrastructure.database.repository;
 
+import com.example.springreviewhub.core.domain.MovieDomain;
 import com.example.springreviewhub.core.domain.ReviewDomain;
 import com.example.springreviewhub.core.interfaces.repositories.IReviewRepository;
 import com.example.springreviewhub.infrastructure.database.entity.Movie;
 import com.example.springreviewhub.infrastructure.database.entity.Review;
 import com.example.springreviewhub.infrastructure.database.entity.User;
+import com.example.springreviewhub.infrastructure.database.entity.mapper.MovieMapper;
 import com.example.springreviewhub.infrastructure.database.entity.mapper.ReviewMapper;
 import com.example.springreviewhub.infrastructure.database.jpa.MovieJpaRepository;
 import com.example.springreviewhub.infrastructure.database.jpa.ReviewJpaRepository;
@@ -33,6 +35,20 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     public ReviewRepositoryImpl(ReviewJpaRepository reviewJpaRepository, MovieJpaRepository movieJpaRepository) {
         this.reviewJpaRepository = reviewJpaRepository;
         this.movieJpaRepository = movieJpaRepository;
+    }
+
+    @Override
+    public List<ReviewDomain> findAll() {
+        return reviewJpaRepository.findAll().stream()
+                .map(review -> ReviewMapper.fromEntityToDomain(review, true, true))
+                .toList();
+    }
+
+    @Override
+    public List<ReviewDomain> findAllReviewsWithRole(String role) {
+        List<Review> reviewEntities = reviewJpaRepository.findAllWithRole(role);
+
+        return ReviewMapper.fromEntityListToDomList(reviewEntities, true, true);
     }
 
     @Override
@@ -84,19 +100,19 @@ public class ReviewRepositoryImpl implements IReviewRepository {
                 .map(review -> ReviewMapper.fromEntityToDomain(review, true, true));
     }
 
-
     @Override
-    public List<ReviewDomain> findAll() {
-        return reviewJpaRepository.findAll().stream()
-                .map(review -> ReviewMapper.fromEntityToDomain(review, true, true))
-                .toList();
+    public Optional<ReviewDomain> findByIdWithRole(Long id, String role) {
+        Optional<Review> reviewEntity = reviewJpaRepository.findByIdWithRole(id, role);
+
+        return reviewEntity.map(review -> ReviewMapper.fromEntityToDomain(review, true, true));
     }
 
     @Override
-    public List<ReviewDomain> findByMovieId(Long movieId) {
+    public List<ReviewDomain> findByMovieIdWithRole(Long movieId, String role) {
         TypedQuery<Review> query = entityManager.createQuery(
-                "SELECT r FROM Review r WHERE r.movie.id = :movieId", Review.class);
+                "SELECT r FROM Review r WHERE r.movie.id = :movieId AND (:role = 'Admin' OR r.deletedAt IS NULL)", Review.class);
         query.setParameter("movieId", movieId);
+        query.setParameter("role", role);
 
         return query.getResultList().stream()
                 .map(review -> ReviewMapper.fromEntityToDomain(review,true, true))
@@ -104,10 +120,11 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     }
 
     @Override
-    public List<ReviewDomain> findByUserId(Long userId) {
+    public List<ReviewDomain> findByUserIdWithRole(Long userId, String role) {
         TypedQuery<Review> query = entityManager.createQuery(
-                "SELECT r FROM Review r WHERE r.user.id = :userId", Review.class);
+                "SELECT r FROM Review r WHERE r.user.id = :userId AND (:role = 'Admin' OR r.deletedAt IS NULL)", Review.class);
         query.setParameter("userId", userId);
+        query.setParameter("role", role);
 
         return query.getResultList().stream()
                 .map(review -> ReviewMapper.fromEntityToDomain(review, true, true))

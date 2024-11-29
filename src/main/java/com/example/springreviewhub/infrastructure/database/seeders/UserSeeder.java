@@ -85,7 +85,22 @@ public class UserSeeder implements CommandLineRunner {
                     .setCreatedAt(LocalDateTime.now())
                     .setUpdatedAt(LocalDateTime.now());
 
-            userJpaRepository.saveAll(Arrays.asList(admin, reviewer));
+            User reviewer2 = new User()
+                    .setUsername("member")
+                    .setEmail("member@gmail.com")
+                    .setPassword(passwordEncoder.encode("12345678"))
+                    .setRole(Role.Reviewer)
+                    .setIsActive(true)
+                    .setFailedLoginAttempts(0)
+                    .setEmailVerified(true)
+                    .setPhoneNumber("0928272617281")
+                    .setAddress("Jl kerang no 31")
+                    .setDateOfBirth(LocalDate.of(1801, 1, 1))
+                    .setBio("Seorang reviewer tidak biasa juga")
+                    .setCreatedAt(LocalDateTime.now())
+                    .setUpdatedAt(LocalDateTime.now());
+
+            userJpaRepository.saveAll(Arrays.asList(admin, reviewer, reviewer2));
 
             System.out.println("[*] Data user berhasil di-seed");
         }
