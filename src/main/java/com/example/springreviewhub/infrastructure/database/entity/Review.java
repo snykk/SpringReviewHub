@@ -47,7 +47,7 @@ public class Review {
      * The movie associated with the review.
      * This is a eager-loaded relationship to the Movie entity.
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "movie_id", referencedColumnName = "id")
     @ToString.Exclude
     private Movie movie;
@@ -56,7 +56,7 @@ public class Review {
      * The user associated with the review.
      * This is a eager-loaded relationship to the User entity.
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ToString.Exclude
     private User user;
@@ -64,14 +64,18 @@ public class Review {
     /**
      * The timestamp when the review was created. Automatically set on persist and cannot be updated.
      */
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     /**
      * The timestamp when the review was last updated. Automatically set on update.
      */
-    @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+    /**
+     * The timestamp when the review record was deleted. This is nullable and indicates when the review account was deleted.
+     */
+    private LocalDateTime deletedAt; // Nullable
 
     /**
      * Sets the creation and update timestamps before the entity is persisted.
@@ -166,6 +170,17 @@ public class Review {
      */
     public Review setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+        return this;
+    }
+
+    /**
+     * Sets the deletion timestamp of the review.
+     *
+     * @param deletedAt the timestamp to set when the review is deleted
+     * @return the current instance of the Review object
+     */
+    public Review setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
         return this;
     }
 }

@@ -30,6 +30,7 @@ public class ReviewMapper {
                 .setUserId(review.getUser().getId())
                 .setCreatedAt(review.getCreatedAt())
                 .setUpdatedAt(review.getUpdatedAt())
+                .setdeletedAt(review.getDeletedAt())
 
                 .setUser(isPopulateUser ?
                         UserMapper.fromEntityToDomain(review.getUser(), false)
@@ -61,7 +62,8 @@ public class ReviewMapper {
                 .setMovie(MovieMapper.fromDomainToEntity(reviewDomain.getMovie()))
                 .setUser(UserMapper.fromDomainToEntity(reviewDomain.getUser()))
                 .setCreatedAt(reviewDomain.getCreatedAt())
-                .setUpdatedAt(reviewDomain.getUpdatedAt());
+                .setUpdatedAt(reviewDomain.getUpdatedAt())
+                .setDeletedAt(reviewDomain.getDeleteddAt());
     }
 
     /**
