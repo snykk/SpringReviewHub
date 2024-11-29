@@ -26,9 +26,9 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public Optional<UserDomain> findById(Long id) {
+    public Optional<UserDomain> findById(Long id, boolean includeReviews) {
         return userJpaRepository.findById(id)
-                .map(user -> UserMapper.fromEntityToDomain(user, false));
+                .map(user -> UserMapper.fromEntityToDomain(user, includeReviews));
     }
 
     @Override

@@ -123,7 +123,7 @@ public class ReviewRepositoryImpl implements IReviewRepository {
     @Override
     public Double getAverageRatingByMovieId(Long movieId) {
         TypedQuery<Double> query = entityManager.createQuery(
-                "SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId", Double.class);
+                "SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId AND r.deletedAt IS NULL", Double.class);
         query.setParameter("movieId", movieId);
         return query.getSingleResult();
     }

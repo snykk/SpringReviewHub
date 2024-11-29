@@ -1,17 +1,20 @@
 package com.example.springreviewhub.core.usecase;
 
+import com.example.springreviewhub.core.domain.ReviewDomain;
 import com.example.springreviewhub.core.domain.UserDomain;
 import com.example.springreviewhub.core.exception.BadRequestException;
 import com.example.springreviewhub.core.exception.ConflictException;
 import com.example.springreviewhub.core.exception.InvalidOldPasswordException;
 import com.example.springreviewhub.core.exception.NotFoundException;
+import com.example.springreviewhub.core.interfaces.repositories.IReviewRepository;
 import com.example.springreviewhub.core.interfaces.repositories.IUserRepository;
+import com.example.springreviewhub.core.interfaces.services.IMovieService;
 import com.example.springreviewhub.core.interfaces.usecases.IUserUseCase;
 import com.example.springreviewhub.core.util.UpdateUtils;
-import com.example.springreviewhub.infrastructure.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,14 +22,24 @@ import java.util.List;
 public class UserUseCaseImpl implements IUserUseCase {
 
     private final IUserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtUtil;
+
+    private final IReviewRepository reviewRepository;
+
+    private final IMovieService movieService;
 
     @Autowired
-    public UserUseCaseImpl(IUserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtTokenProvider) {
+    public UserUseCaseImpl(
+            IUserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            IReviewRepository reviewRepository,
+            IMovieService movieService
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtTokenProvider;
+        this.reviewRepository = reviewRepository;
+        this.movieService = movieService;
     }
 
     @Override
@@ -48,7 +61,7 @@ public class UserUseCaseImpl implements IUserUseCase {
 
     @Override
     public UserDomain updateUser(Long userId, UserDomain updatedUser) {
-        UserDomain existingUser = userRepository.findById(userId)
+        UserDomain existingUser = userRepository.findById(userId, false)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         if (updatedUser.getUsername() != null) {
@@ -69,9 +82,19 @@ public class UserUseCaseImpl implements IUserUseCase {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
-        userRepository.findById(userId)
+        UserDomain userDomain = userRepository.findById(userId, true)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
+
+        List<ReviewDomain> reviews = userDomain.getReviews();
+
+        reviews.forEach(review -> reviewRepository.softDelete(review.getId()));
+
+        reviews.stream()
+                .map(ReviewDomain::getMovieId)
+                .distinct()
+                .forEach(movieService::refreshMovieRating);
 
         userRepository.softDelete(userId);
     }
@@ -82,7 +105,7 @@ public class UserUseCaseImpl implements IUserUseCase {
             throw new BadRequestException("Old password cannot be the same as the new password");
         }
 
-        UserDomain user = userRepository.findById(userId)
+        UserDomain user = userRepository.findById(userId, false)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
@@ -96,7 +119,7 @@ public class UserUseCaseImpl implements IUserUseCase {
 
     @Override
     public UserDomain changeEmail(Long userId, String newEmail) {
-        UserDomain existingUser = userRepository.findById(userId)
+        UserDomain existingUser = userRepository.findById(userId, false)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         if (existingUser.getEmail().equals(newEmail)) {
@@ -116,7 +139,7 @@ public class UserUseCaseImpl implements IUserUseCase {
 
     @Override
     public void activateUser(Long userId) {
-        UserDomain user = userRepository.findById(userId)
+        UserDomain user = userRepository.findById(userId, false)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         if (user.isActive()) {
@@ -129,7 +152,7 @@ public class UserUseCaseImpl implements IUserUseCase {
 
     @Override
     public void deactivateUser(Long userId) {
-        UserDomain user = userRepository.findById(userId)
+        UserDomain user = userRepository.findById(userId, false)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID %d not found.", userId)));
 
         if (!user.isActive()) {

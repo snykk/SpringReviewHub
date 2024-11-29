@@ -7,13 +7,12 @@ import com.example.springreviewhub.core.exception.*;
 import com.example.springreviewhub.core.interfaces.repositories.IMovieRepository;
 import com.example.springreviewhub.core.interfaces.repositories.IReviewRepository;
 import com.example.springreviewhub.core.interfaces.repositories.IUserRepository;
+import com.example.springreviewhub.core.interfaces.services.IMovieService;
 import com.example.springreviewhub.core.interfaces.usecases.IReviewUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,17 +25,25 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
 
     private final IMovieRepository movieRepository;
 
+    private final IMovieService movieService;
+
     @Autowired
-    public ReviewUseCaseImpl(IReviewRepository reviewRepository, IUserRepository userRepository, IMovieRepository movieRepository) {
+    public ReviewUseCaseImpl(
+            IReviewRepository reviewRepository,
+            IUserRepository userRepository,
+            IMovieRepository movieRepository,
+            IMovieService movieService
+    ) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.movieRepository = movieRepository;
+        this.movieService = movieService;
     }
 
     @Override
     @Transactional
     public ReviewDomain createReview(Long userId, ReviewDomain reviewDomain) {
-        UserDomain user = userRepository.findById(userId)
+        UserDomain user = userRepository.findById(userId, false)
                 .orElseThrow(() -> new NotFoundException("User not found."));
         reviewDomain.setUser(user);
 
@@ -49,7 +56,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
         }
 
         ReviewDomain createdReview  = reviewRepository.saveReview(reviewDomain);
-        refreshMovieRating(reviewDomain.getMovieId());
+        movieService.refreshMovieRating(reviewDomain.getMovieId());
 
         return createdReview;
     }
@@ -71,7 +78,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
         existingReview.setText(reviewDomain.getText()).setRating(reviewDomain.getRating());
         ReviewDomain updatedReview = reviewRepository.saveReview(existingReview);
 
-        refreshMovieRating(reviewDomain.getMovieId());
+        movieService.refreshMovieRating(reviewDomain.getMovieId());
 
         return updatedReview;
     }
@@ -111,16 +118,16 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
 
         reviewRepository.softDelete(review.getId());
     }
-
-    private void refreshMovieRating(Long movieId) {
-        Double avgRating = reviewRepository.getAverageRatingByMovieId(movieId);
-        if (avgRating == null) {
-            avgRating = 0.0;
-        }
-
-        MovieDomain movieDomain = movieRepository.getMovieById(movieId, false)
-                .orElseThrow(() -> new NotFoundException("Movie not found."));
-        movieDomain.setRating(BigDecimal.valueOf(avgRating));
-        movieRepository.updateMovie(movieId, movieDomain);
-    }
+//
+//    private void refreshMovieRating(Long movieId) {
+//        Double avgRating = reviewRepository.getAverageRatingByMovieId(movieId);
+//        if (avgRating == null) {
+//            avgRating = 0.0;
+//        }
+//
+//        MovieDomain movieDomain = movieRepository.getMovieById(movieId, false)
+//                .orElseThrow(() -> new NotFoundException("Movie not found."));
+//        movieDomain.setRating(BigDecimal.valueOf(avgRating));
+//        movieRepository.updateMovie(movieId, movieDomain);
+//    }
 }

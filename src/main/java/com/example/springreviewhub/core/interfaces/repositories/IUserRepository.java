@@ -37,7 +37,7 @@ public interface IUserRepository {
      * @param id the unique identifier of the user
      * @return an `Optional` containing the user if found, otherwise `Optional.empty()`
      */
-    Optional<UserDomain> findById(Long id);
+    Optional<UserDomain> findById(Long id, boolean includeReviews);
 
     /**
      * Finds a user by their ID and role.
