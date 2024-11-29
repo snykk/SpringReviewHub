@@ -132,4 +132,16 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
 
         movieService.refreshMovieRating(review.getMovieId());
     }
+
+    @Override
+    @Transactional
+    public void deleteReviewByMovieId(Long movieId, Long userId) {
+        ReviewDomain review = reviewRepository.findByUserIdAndMovieId(userId, movieId)
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("No reviews found for userId {%d} and movieId {%d}", movieId, userId)));
+
+        reviewRepository.softDelete(review.getId());
+
+        movieService.refreshMovieRating(movieId);
+    }
 }

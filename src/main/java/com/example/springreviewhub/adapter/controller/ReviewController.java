@@ -122,7 +122,10 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse<Void>> deleteReview(@PathVariable Long id, @AuthenticationPrincipal Claims claims) {
+    public ResponseEntity<BaseResponse<Void>> deleteReview(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Claims claims
+    ) {
         Long userId = JwtService.extractIdFromClaims(claims);
 
         reviewUseCase.deleteReview(id, userId);
@@ -130,4 +133,15 @@ public class ReviewController {
         return ResponseEntity.status(204).build();
     }
 
+    @DeleteMapping("/movie/{id}")
+    public ResponseEntity<BaseResponse<Void>> deleteReviewByMovieId(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Claims claims
+    ) {
+        Long userId = JwtService.extractIdFromClaims(claims);
+
+        reviewUseCase.deleteReviewByMovieId(id, userId);
+
+        return ResponseEntity.status(204).build();
+    }
 }

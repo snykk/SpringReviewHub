@@ -130,4 +130,6 @@ public interface IReviewUseCase {
      * @param userId   the unique identifier of the user requesting the deletion
      */
     void deleteReview(Long reviewId, Long userId);
+
+    void deleteReviewByMovieId(Long movieId, Long userId);
 }
