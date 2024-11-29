@@ -124,7 +124,7 @@ public class MovieController {
             throw new IllegalArgumentException("minRating must be between 1.0 and 10.0");
         }
 
-        List<MovieDomain> movies = movieUseCase.searchMovies(title, genre, minRating, startDate, endDate, includeReviews);
+        List<MovieDomain> movies = movieUseCase.searchMovies(role, title, genre, minRating, startDate, endDate, includeReviews);
 
         List<MovieResponse> movieResponses = MovieMapper.fromDomainListToResponseList(movies, role, includeReviews);
 

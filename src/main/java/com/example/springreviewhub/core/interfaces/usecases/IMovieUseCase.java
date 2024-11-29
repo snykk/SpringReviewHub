@@ -99,6 +99,7 @@ public interface IMovieUseCase {
      * It is useful for implementing advanced search functionality for users.
      * </p>
      *
+     * @param role      the user role to support soft delete
      * @param title     the title of the movie (optional)
      * @param genre     the genre of the movie (optional)
      * @param minRating the minimum rating for filtering movies (optional)
@@ -108,6 +109,7 @@ public interface IMovieUseCase {
      * @return a list of {@link MovieDomain} objects matching the search criteria
      */
     List<MovieDomain> searchMovies(
+            String role,
             String title,
             String genre,
             BigDecimal minRating,

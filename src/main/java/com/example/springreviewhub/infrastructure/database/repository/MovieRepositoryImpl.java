@@ -82,6 +82,7 @@ public class MovieRepositoryImpl implements IMovieRepository {
 
     @Override
     public List<MovieDomain> searchMovies(
+            String role,
             String title,
             String genre,
             BigDecimal minRating,
@@ -89,7 +90,7 @@ public class MovieRepositoryImpl implements IMovieRepository {
             LocalDate endDate,
             boolean includeReviews
     ) {
-        List<Movie> movieEntities = movieJpaRepository.advancedSearch(title, genre, minRating, startDate, endDate);
+        List<Movie> movieEntities = movieJpaRepository.advancedSearch(role, title, genre, minRating, startDate, endDate);
 
         return MovieMapper.fromEntityListToDomList(movieEntities, includeReviews);
     }

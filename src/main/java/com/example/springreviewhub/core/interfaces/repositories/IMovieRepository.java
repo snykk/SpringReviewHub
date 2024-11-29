@@ -98,6 +98,7 @@ public interface IMovieRepository {
      * Optionally, associated reviews can also be included in the result.
      * </p>
      *
+     * @param role           the user role to support soft delete
      * @param title          the title of the movie (can be partial)
      * @param genre          the genre of the movie
      * @param minRating      the minimum rating threshold for movies
@@ -107,6 +108,7 @@ public interface IMovieRepository {
      * @return a list of movies matching the search criteria
      */
     List<MovieDomain> searchMovies(
+            String role,
             String title,
             String genre,
             BigDecimal minRating,

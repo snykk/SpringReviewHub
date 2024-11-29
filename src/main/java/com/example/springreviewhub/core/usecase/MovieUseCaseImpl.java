@@ -62,12 +62,13 @@ public class MovieUseCaseImpl implements IMovieUseCase {
 
     @Override
     public List<MovieDomain> searchMovies(
+            String role,
             String title,
             String genre,
             BigDecimal minRating,
             LocalDate startDate,
             LocalDate endDate,
             boolean includeReviews) {
-        return movieRepository.searchMovies(title, genre, minRating, startDate, endDate, includeReviews);
+        return movieRepository.searchMovies(role, title, genre, minRating, startDate, endDate, includeReviews);
     }
 }
