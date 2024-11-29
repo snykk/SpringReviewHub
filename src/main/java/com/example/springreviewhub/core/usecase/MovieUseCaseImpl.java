@@ -5,9 +5,11 @@ import com.example.springreviewhub.core.domain.ReviewDomain;
 import com.example.springreviewhub.core.domain.Role;
 import com.example.springreviewhub.core.exception.NotFoundException;
 import com.example.springreviewhub.core.interfaces.repositories.IMovieRepository;
+import com.example.springreviewhub.core.interfaces.repositories.IReviewRepository;
 import com.example.springreviewhub.core.interfaces.usecases.IMovieUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,9 +21,12 @@ public class MovieUseCaseImpl implements IMovieUseCase {
 
     private final IMovieRepository movieRepository;
 
+    private final IReviewRepository reviewRepository;
+
     @Autowired
-    public MovieUseCaseImpl(IMovieRepository movieRepository) {
+    public MovieUseCaseImpl(IMovieRepository movieRepository, IReviewRepository reviewRepository) {
         this.movieRepository = movieRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -76,10 +81,14 @@ public class MovieUseCaseImpl implements IMovieUseCase {
     }
 
     @Override
+    @Transactional
     public void deleteMovie(Long id) {
-        movieRepository.getMovieById(id, false)
-
+        MovieDomain movieDomain = movieRepository.getMovieById(id, true)
                 .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
+
+        List<ReviewDomain> reviews = movieDomain.getReviews();
+
+        reviews.forEach(review -> reviewRepository.softDelete(review.getId()));
 
         movieRepository.softDelete(id);
     }
