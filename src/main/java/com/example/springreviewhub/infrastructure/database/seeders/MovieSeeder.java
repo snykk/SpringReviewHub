@@ -56,7 +56,7 @@ public class MovieSeeder implements CommandLineRunner {
                     .setDuration(152)
                     .setGenre("Action, Drama, Thriller")
                     .setDirector("Christopher Nolan")
-                    .setRating(new BigDecimal("9.0"));
+                    .setRating(null);
 
             Movie movie2 = new Movie()
                     .setTitle("Inception")
@@ -65,7 +65,7 @@ public class MovieSeeder implements CommandLineRunner {
                     .setDuration(148)
                     .setGenre("Action, Sci-Fi, Thriller")
                     .setDirector("Christopher Nolan")
-                    .setRating(new BigDecimal("8.8"));
+                    .setRating(null);
 
             Movie movie3 = new Movie()
                     .setTitle("The Matrix")
@@ -74,7 +74,7 @@ public class MovieSeeder implements CommandLineRunner {
                     .setDuration(136)
                     .setGenre("Action, Sci-Fi")
                     .setDirector("The Wachowskis")
-                    .setRating(new BigDecimal("8.7"));
+                    .setRating(null);
 
             Movie movie4 = new Movie()
                     .setTitle("Interstellar")
@@ -83,7 +83,7 @@ public class MovieSeeder implements CommandLineRunner {
                     .setDuration(169)
                     .setGenre("Adventure, Drama, Sci-Fi")
                     .setDirector("Christopher Nolan")
-                    .setRating(new BigDecimal("8.6"));
+                    .setRating(null);
 
             Movie movie5 = new Movie()
                     .setTitle("Pulp Fiction")
@@ -92,7 +92,7 @@ public class MovieSeeder implements CommandLineRunner {
                     .setDuration(154)
                     .setGenre("Crime, Drama")
                     .setDirector("Quentin Tarantino")
-                    .setRating(new BigDecimal("8.9"));
+                    .setRating(null);
 
             Movie movie6 = new Movie()
                     .setTitle("The Lord of the Rings: The Fellowship of the Ring")
@@ -101,7 +101,7 @@ public class MovieSeeder implements CommandLineRunner {
                     .setDuration(178)
                     .setGenre("Adventure, Drama, Fantasy")
                     .setDirector("Peter Jackson")
-                    .setRating(new BigDecimal("8.8"));
+                    .setRating(null);
 
             Movie movie7 = new Movie()
                     .setTitle("Fight Club")
@@ -110,7 +110,7 @@ public class MovieSeeder implements CommandLineRunner {
                     .setDuration(139)
                     .setGenre("Drama")
                     .setDirector("David Fincher")
-                    .setRating(new BigDecimal("8.8"));
+                    .setRating(null);
 
             Movie movie8 = new Movie()
                     .setTitle("Forrest Gump")
@@ -119,7 +119,7 @@ public class MovieSeeder implements CommandLineRunner {
                     .setDuration(142)
                     .setGenre("Drama, Romance")
                     .setDirector("Robert Zemeckis")
-                    .setRating(new BigDecimal("8.8"));
+                    .setRating(null);
 
             Movie movie9 = new Movie()
                     .setTitle("The Shawshank Redemption")
@@ -128,7 +128,7 @@ public class MovieSeeder implements CommandLineRunner {
                     .setDuration(142)
                     .setGenre("Drama")
                     .setDirector("Frank Darabont")
-                    .setRating(new BigDecimal("9.3"));
+                    .setRating(null);
 
             Movie movie10 = new Movie()
                     .setTitle("The Godfather")
@@ -137,7 +137,7 @@ public class MovieSeeder implements CommandLineRunner {
                     .setDuration(175)
                     .setGenre("Crime, Drama")
                     .setDirector("Francis Ford Coppola")
-                    .setRating(new BigDecimal("9.2"));
+                    .setRating(null);
 
             movieJpaRepository.saveAll(Arrays.asList(movie1, movie2, movie3, movie4, movie5, movie6, movie7, movie8, movie9, movie10));
 

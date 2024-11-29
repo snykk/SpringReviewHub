@@ -1,23 +1,17 @@
 package com.example.springreviewhub.infrastructure.database.repository;
 
-import com.example.springreviewhub.core.domain.MovieDomain;
 import com.example.springreviewhub.core.domain.ReviewDomain;
 import com.example.springreviewhub.core.interfaces.repositories.IReviewRepository;
 import com.example.springreviewhub.infrastructure.database.entity.Movie;
 import com.example.springreviewhub.infrastructure.database.entity.Review;
 import com.example.springreviewhub.infrastructure.database.entity.User;
-import com.example.springreviewhub.infrastructure.database.entity.mapper.MovieMapper;
 import com.example.springreviewhub.infrastructure.database.entity.mapper.ReviewMapper;
-import com.example.springreviewhub.infrastructure.database.jpa.MovieJpaRepository;
 import com.example.springreviewhub.infrastructure.database.jpa.ReviewJpaRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,12 +23,9 @@ public class ReviewRepositoryImpl implements IReviewRepository {
 
     private final ReviewJpaRepository reviewJpaRepository;
 
-    private final MovieJpaRepository movieJpaRepository;
-
     @Autowired
-    public ReviewRepositoryImpl(ReviewJpaRepository reviewJpaRepository, MovieJpaRepository movieJpaRepository) {
+    public ReviewRepositoryImpl(ReviewJpaRepository reviewJpaRepository) {
         this.reviewJpaRepository = reviewJpaRepository;
-        this.movieJpaRepository = movieJpaRepository;
     }
 
     @Override
@@ -68,30 +59,13 @@ public class ReviewRepositoryImpl implements IReviewRepository {
 
     @Override
     public boolean existsByUserIdAndMovieId(Long userId, Long movieId) {
-        TypedQuery<Long> query = entityManager.createQuery(
-                "SELECT COUNT(r) FROM Review r WHERE r.user.id = :userId AND r.movie.id = :movieId", Long.class);
-        query.setParameter("userId", userId);
-        query.setParameter("movieId", movieId);
-
-        Long count = query.getSingleResult();
-        return count != null && count > 0;
+        return reviewJpaRepository.existsByUserIdAndMovieId(userId, movieId);
     }
 
     @Override
     public Optional<ReviewDomain> findByUserIdAndMovieId(Long userId, Long movieId) {
-        TypedQuery<Review> query = entityManager.createQuery(
-                "SELECT r FROM Review r WHERE r.user.id = :userId AND r.movie.id = :movieId", Review.class);
-        query.setParameter("userId", userId);
-        query.setParameter("movieId", movieId);
-
-        Review review;
-        try {
-            review = query.getSingleResult();
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
-
-        return Optional.of(ReviewMapper.fromEntityToDomain(review, true, true));
+        return reviewJpaRepository.findByUserIdAndMovieId(userId, movieId)
+                .map(review -> ReviewMapper.fromEntityToDomain(review, true, true));
     }
 
     @Override
@@ -109,24 +83,14 @@ public class ReviewRepositoryImpl implements IReviewRepository {
 
     @Override
     public List<ReviewDomain> findByMovieIdWithRole(Long movieId, String role) {
-        TypedQuery<Review> query = entityManager.createQuery(
-                "SELECT r FROM Review r WHERE r.movie.id = :movieId AND (:role = 'Admin' OR r.deletedAt IS NULL)", Review.class);
-        query.setParameter("movieId", movieId);
-        query.setParameter("role", role);
-
-        return query.getResultList().stream()
-                .map(review -> ReviewMapper.fromEntityToDomain(review,true, true))
+        return reviewJpaRepository.findByMovieIdWithRole(movieId, role).stream()
+                .map(review -> ReviewMapper.fromEntityToDomain(review, true, true))
                 .toList();
     }
 
     @Override
     public List<ReviewDomain> findByUserIdWithRole(Long userId, String role) {
-        TypedQuery<Review> query = entityManager.createQuery(
-                "SELECT r FROM Review r WHERE r.user.id = :userId AND (:role = 'Admin' OR r.deletedAt IS NULL)", Review.class);
-        query.setParameter("userId", userId);
-        query.setParameter("role", role);
-
-        return query.getResultList().stream()
+        return reviewJpaRepository.findByUserIdWithRole(userId, role).stream()
                 .map(review -> ReviewMapper.fromEntityToDomain(review, true, true))
                 .toList();
     }
@@ -139,14 +103,11 @@ public class ReviewRepositoryImpl implements IReviewRepository {
 
     @Override
     public Double getAverageRatingByMovieId(Long movieId) {
-        TypedQuery<Double> query = entityManager.createQuery(
-                "SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId AND r.deletedAt IS NULL", Double.class);
-        query.setParameter("movieId", movieId);
-        return query.getSingleResult();
+        return reviewJpaRepository.getAverageRatingByMovieId(movieId);
     }
 
     @Override
     public void softDelete(Long id) {
-        reviewJpaRepository.softDeleteMovie(id);
+        reviewJpaRepository.softDeleteReview(id);
     }
 }

@@ -72,7 +72,7 @@ public class Movie {
     /**
      * The rating of the movie, between 1.0 and 10.0, inclusive.
      */
-    @Column(nullable = false, precision = 3, scale = 1)
+    @Column( precision = 3, scale = 1) // nullable when movie has no reviews yet
     @DecimalMin(value = "1.0", inclusive = true)
     @DecimalMax(value = "10.0", inclusive = true)
     private BigDecimal rating;

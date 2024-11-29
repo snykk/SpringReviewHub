@@ -31,7 +31,7 @@ public class MovieUseCaseImpl implements IMovieUseCase {
 
     @Override
     public List<MovieDomain> getAllMoviesWithRole(String role, boolean includeReviews) {
-        List<MovieDomain> movieDomains = movieRepository.getAllMoviesWithRole(role, includeReviews);
+        List<MovieDomain> movieDomains = movieRepository.findAllMoviesWithRole(role, includeReviews);
 
         if (Role.Reviewer.name().equalsIgnoreCase(role)) {
             movieDomains.forEach(movie -> {
@@ -48,13 +48,13 @@ public class MovieUseCaseImpl implements IMovieUseCase {
 
     @Override
     public MovieDomain getMovieById(Long id, boolean includeReviews) {
-        return movieRepository.getMovieById(id, includeReviews)
+        return movieRepository.findMovieById(id, includeReviews)
                 .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
     }
 
     @Override
     public MovieDomain getMovieByIdWithRole(Long id, String role, boolean includeReviews) {
-        MovieDomain movieDomain = movieRepository.getMovieByIdWithRole(id, role, includeReviews)
+        MovieDomain movieDomain = movieRepository.findMovieByIdWithRole(id, role, includeReviews)
                 .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
 
         if (Role.Reviewer.name().equalsIgnoreCase(role)) {
@@ -74,7 +74,7 @@ public class MovieUseCaseImpl implements IMovieUseCase {
 
     @Override
     public MovieDomain updateMovie(Long id, MovieDomain movieDomain) {
-        movieRepository.getMovieById(id, false)
+        movieRepository.findMovieById(id, false)
                 .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
 
         return movieRepository.updateMovie(id, movieDomain);
@@ -83,7 +83,7 @@ public class MovieUseCaseImpl implements IMovieUseCase {
     @Override
     @Transactional
     public void deleteMovie(Long id) {
-        MovieDomain movieDomain = movieRepository.getMovieById(id, true)
+        MovieDomain movieDomain = movieRepository.findMovieById(id, true)
                 .orElseThrow(() -> new NotFoundException(String.format("Movie with ID %d not found.", id)));
 
         List<ReviewDomain> reviews = movieDomain.getReviews();

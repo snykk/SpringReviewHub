@@ -22,13 +22,13 @@ public class MovieServiceImpl implements IMovieService {
 
     public void refreshMovieRating(Long movieId) {
         Double avgRating = reviewRepository.getAverageRatingByMovieId(movieId);
-        if (avgRating == null) {
-            avgRating = 0.0;
-        }
 
-        MovieDomain movieDomain = movieRepository.getMovieById(movieId, false)
+        MovieDomain movieDomain = movieRepository.findMovieById(movieId, false)
                 .orElseThrow(() -> new NotFoundException("Movie not found."));
-        movieDomain.setRating(BigDecimal.valueOf(avgRating));
+
+        movieDomain.setRating(avgRating != null ? BigDecimal.valueOf(avgRating) : null);
+
         movieRepository.updateMovie(movieId, movieDomain);
     }
+
 }

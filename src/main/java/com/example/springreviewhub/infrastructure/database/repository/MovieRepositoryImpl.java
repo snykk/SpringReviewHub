@@ -24,21 +24,21 @@ public class MovieRepositoryImpl implements IMovieRepository {
     }
 
     @Override
-    public List<MovieDomain> getAllMoviesWithRole(String role, boolean includeReviews) {
+    public List<MovieDomain> findAllMoviesWithRole(String role, boolean includeReviews) {
         List<Movie> movieEntities = movieJpaRepository.findAllWithRole(role);
 
         return MovieMapper.fromEntityListToDomList(movieEntities, includeReviews);
     }
 
     @Override
-    public Optional<MovieDomain> getMovieById(Long id, boolean includeReviews) {
+    public Optional<MovieDomain> findMovieById(Long id, boolean includeReviews) {
         Optional<Movie> movieEntity = movieJpaRepository.findById(id);
 
         return movieEntity.map(movie ->  MovieMapper.fromEntityToDomain(movie, includeReviews));
     }
 
     @Override
-    public Optional<MovieDomain> getMovieByIdWithRole(Long id, String role, boolean includeReviews) {
+    public Optional<MovieDomain> findMovieByIdWithRole(Long id, String role, boolean includeReviews) {
         Optional<Movie> movieEntity = movieJpaRepository.findByIdWithRole(id, role);
 
         return movieEntity.map(movie -> MovieMapper.fromEntityToDomain(movie, includeReviews));

@@ -47,7 +47,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
                 .orElseThrow(() -> new NotFoundException("User not found."));
         reviewDomain.setUser(user);
 
-        MovieDomain movie = movieRepository.getMovieById(reviewDomain.getMovieId(), false)
+        MovieDomain movie = movieRepository.findMovieById(reviewDomain.getMovieId(), false)
                 .orElseThrow(() -> new NotFoundException("Movie not found."));
         reviewDomain.setMovie(movie);
 
@@ -116,6 +116,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
     }
 
     @Override
+    @Transactional
     public void deleteReview(Long reviewId, Long userId) {
         Optional<ReviewDomain> reviewOpt = reviewRepository.findById(reviewId);
         if (reviewOpt.isEmpty()) {
@@ -128,5 +129,7 @@ public class ReviewUseCaseImpl implements IReviewUseCase {
         }
 
         reviewRepository.softDelete(review.getId());
+
+        movieService.refreshMovieRating(review.getMovieId());
     }
 }

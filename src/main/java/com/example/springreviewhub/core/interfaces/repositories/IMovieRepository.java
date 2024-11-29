@@ -27,7 +27,7 @@ public interface IMovieRepository {
      * @param includeReviews whether to include associated reviews
      * @return a list of all movies filtered by role
      */
-    List<MovieDomain> getAllMoviesWithRole(String role, boolean includeReviews);
+    List<MovieDomain> findAllMoviesWithRole(String role, boolean includeReviews);
 
     /**
      * Retrieves a movie by its unique identifier with an option to include reviews.
@@ -40,7 +40,7 @@ public interface IMovieRepository {
      * @param includeReviews whether to include associated reviews
      * @return an Optional containing the movie if found, or an empty Optional if not found
      */
-    Optional<MovieDomain> getMovieById(Long id, boolean includeReviews);
+    Optional<MovieDomain> findMovieById(Long id, boolean includeReviews);
 
     /**
      * Retrieves a movie by its unique identifier and role, with an option to include reviews.
@@ -54,7 +54,7 @@ public interface IMovieRepository {
      * @param includeReviews whether to include associated reviews
      * @return an Optional containing the movie if found and matches the role, or an empty Optional otherwise
      */
-    Optional<MovieDomain> getMovieByIdWithRole(Long id, String role, boolean includeReviews);
+    Optional<MovieDomain> findMovieByIdWithRole(Long id, String role, boolean includeReviews);
 
     /**
      * Creates a new movie in the repository.
